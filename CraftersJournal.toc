@@ -23,6 +23,7 @@ Data\FirstAid.lua
 Data\Fishing.lua
 Data\Sources.lua
 Data\Names_esES.lua
+Data\Names_deDE.lua
 
 Locale.lua
 Locales\enUS.lua

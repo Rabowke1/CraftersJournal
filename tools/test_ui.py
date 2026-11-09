@@ -2142,12 +2142,14 @@ step("cambiar de idioma al momento (sin recargar)", function()
   GameTooltip.AddLine = nil
   log[#log+1] = "     pestaña en inglés: " .. tostring(tabTip)
   assert(tabTip ~= "Subir profesiones", "la pestaña sigue en español")
-  -- A alemán: sin datos propios de nombres (Data/Names_deDE.lua) y con el cliente en
-  -- otro idioma, las recetas se quedan en inglés; los textos, en alemán
+  -- A alemán: textos, recetas y objetos (Data/Names_deDE.lua) en alemán; el buscador
+  -- sigue encontrando el nombre inglés (nameEN)
   ES:SetLanguage("de")
-  assert(ES.Data.Cooking.recipes[2538].name == "Charred Wolf Meat", "receta en alemán sin datos: " .. ES.Data.Cooking.recipes[2538].name)
+  assert(ES.Data.Cooking.recipes[2538].name == "Verkohltes Wolfsfleisch", "receta en alemán: " .. ES.Data.Cooking.recipes[2538].name)
+  assert(ES.Data.Cooking.recipes[2538].nameEN == "Charred Wolf Meat", "nombre inglés guardado")
   assert(ES:ProfLabel("Cooking") == "Kochkunst", "profesión en alemán")
-  assert(ES:DataItemName(2318) == "Light Leather", "objeto en alemán sin datos: " .. tostring(ES:DataItemName(2318)))
+  assert(ES:DataItemName(2318) == "Leichtes Leder", "objeto en alemán: " .. tostring(ES:DataItemName(2318)))
+  log[#log+1] = "     receta 2538 en alemán: " .. ES.Data.Cooking.recipes[2538].name .. " · objeto 2318: " .. ES:DataItemName(2318)
   -- Y de vuelta a español
   ES:SetLanguage("es")
   assert(ES.Data.Cooking.recipes[2538].name == "Carne de lobo carbonizada", "receta en español")

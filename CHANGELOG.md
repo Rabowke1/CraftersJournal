@@ -2,7 +2,7 @@
 
 ## 0.40.0
 
-- **The addon speaks German.** Pick Deutsch from the language menu in the header, or it is used automatically on a German client. On a German client, recipe and item names come from the game itself; on a client in another language they stay in English until `Data/Names_deDE.lua` is generated from the Forever client tables (`tools/fetch_names.py deDE` and `tools/gen_names.py`, see README).
+- **The addon speaks German.** Pick Deutsch from the language menu in the header, or it is used automatically on a German client. Recipe and item names in German come from the Forever client tables (2,167 recipes and 3,805 items whose name differs from English), so they are also right when the game runs in another language.
 - **Numbers use a decimal comma in German too** ("2,5"), as in Spanish.
 - **Two texts that stayed in Spanish in the English addon are translated.** The price range in the market tooltip read "5s a 7s" (now "5s to 7s"), and the per-unit label in route, shopping list and Make money rows read "/u" (now "/ea").
 - **Trainer recipes are recognized by name in any addon language** when reading a trainer's prices (only the Spanish names were tried besides English).

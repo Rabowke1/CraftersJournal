@@ -1,0 +1,2562 @@
+ID,Name
+818,Einfaches Lagerfeuer
+2018,Schmiedekunst
+2108,Lederverarbeitung
+2149,Handgenähte Lederstiefel
+2152,Leichtes Rüstungsset
+2153,Handgenähte Lederhose
+2158,Feine Lederstiefel
+2159,Feiner Lederumhang
+2160,Geprägte Lederweste
+2161,Geprägte Lederstiefel
+2162,Geprägter Lederumhang
+2163,Weißes Lederwams
+2164,Feine Lederhandschuhe
+2165,Mittleres Rüstungsset
+2166,Gekräftigte Lederrüstung
+2167,Graue Lederstiefel
+2168,Dunkler Lederumhang
+2169,Dunkle Ledertunika
+2259,Alchimie
+2329,Elixier der schwachen Stärke
+2331,Schwacher Manatrank
+2332,Schwacher Verjüngungstrank
+2333,Elixier der geringen Beweglichkeit
+2334,Elixier der schwachen Seelenstärke
+2335,Hurtigkeitstrank
+2385,Braune Leinenweste
+2386,Leinenstiefel
+2387,Leinenumhang
+2389,Rote Leinenrobe
+2392,Rotes Leinenhemd
+2393,Weißes Leinenhemd
+2394,Blaues Leinenhemd
+2395,Barbarische Leinenweste
+2396,Grünes Leinenhemd
+2397,Verstärktes Leinencape
+2399,Grüne Wollweste
+2401,Wollstiefel
+2402,Wollcape
+2403,Graue Wollrobe
+2406,Graues Wollhemd
+2538,Verkohltes Wolfsfleisch
+2539,Gewürztes Wolfsfleisch
+2540,Geröstetes Eberfleisch
+2541,Kojotensteak
+2542,Pastete aus Geiferzahnleber
+2543,Westfall-Eintopf
+2544,Krebsküchlein
+2545,Gekochte Krebsschere
+2546,Trockene Schweinerippchen
+2547,Rotkammgulasch
+2548,Saftige Schweinerippchen
+2549,Gewürzter Wolfskebab
+2550,Kochkunst
+2660,Rauer Wetzstein
+2661,Kupferner Kettengürtel
+2662,Kupferne Kettenhose
+2663,Kupferarmschienen
+2664,Runenverzierte Kupferarmschienen
+2665,Grober Wetzstein
+2666,Runenverzierter Kupfergürtel
+2667,Runenverzierte Kupferbrustplatte
+2668,Raue bronzene Gamaschen
+2670,Rauer bronzener Kürass
+2671,Raue bronzene Armschienen
+2672,Gemusterte bronzene Armschienen
+2673,Bronzene Brustplatte mit Versilberung
+2674,Schwerer Wetzstein
+2675,Leuchtende silberne Brustplatte
+2737,Kupferstreitkolben
+2738,Kupferaxt
+2739,Kupferkurzschwert
+2740,Bronzener Streitkolben
+2741,Bronzene Axt
+2742,Bronzenes Kurzschwert
+2795,Eberrippchen in Biersauce
+2881,Leichtes Leder
+2963,Leinenstoffballen
+2964,Wollstoffballen
+3115,Rauer Gewichtsstein
+3116,Grober Gewichtsstein
+3117,Schwerer Gewichtsstein
+3170,Schwaches Trollblutelixier
+3171,Elixier der Weisheit
+3172,Schwacher Magiewiderstandstrank
+3173,Geringer Manatrank
+3174,Trank der Giftreinigung
+3175,Begrenzter Unverwundbarkeitstrank
+3176,Geringes Trollblutelixier
+3177,Elixier der geringen Verteidigung
+3188,Elixier der Ogerstärke
+3230,Elixier der schwachen Beweglichkeit
+3275,Leinenverband
+3276,Schwerer Leinenverband
+3277,Wollverband
+3278,Schwerer Wollverband
+3292,Schweres Kupferbreitschwert
+3293,Kupferstreitaxt
+3294,Dicke Kriegsaxt
+3295,Tödlicher Bronzepoignard
+3296,Schwerer bronzener Streitkolben
+3297,Mächtiger Eisenhammer
+3319,Kupferne Kettenstiefel
+3320,Rauer Schleifstein
+3321,Kupferne Kettenweste
+3323,Runenverzierte Kupferstulpen
+3324,Runenverzierte Kupferhose
+3325,Edelsteinbesetzte Kupferstulpen
+3326,Grober Schleifstein
+3328,Raue bronzene Schultern
+3330,Bronzene Schultern mit Versilberung
+3331,Bronzene Stiefel mit Versilberung
+3333,Bronzene Stulpen mit Versilberung
+3334,Grüne Eisenstiefel
+3336,Grüne Eisenstulpen
+3337,Schwerer Schleifstein
+3370,Krokiliskensteak
+3371,Blutwurst
+3372,Murlocflossensuppe
+3373,Krokiliskengumbo
+3376,Seltsam schmeckendes Omelett
+3377,Klebriger Spinnenkuchen
+3397,Großes Bärensteak
+3398,Scharfe Löwenkoteletts
+3399,Schmackhaftes Löwensteak
+3400,Milde Schildkrötensuppe
+3448,Geringer Unsichtbarkeitstrank
+3449,Schattenöl
+3450,Elixier der geringen Seelenstärke
+3452,Manatrank
+3453,Trunk der Entdeckung geringer Unsichtbarkeit
+3454,Frostöl
+3491,Großes bronzenes Messer
+3492,Gehärtetes Eisenkurzschwert
+3493,Jadeschlangenklinge
+3494,Robuster Eisenschlägel
+3495,Goldener Eisenzerstörer
+3496,Mondstahlbreitschwert
+3497,Frosttigerklinge
+3498,Massive Eisenaxt
+3500,Schattensichelaxt
+3501,Grüne Eisenarmschienen
+3502,Grüner Eisenhelm
+3503,Goldene Schuppenhelmkappe
+3504,Grüne Eisenschultern
+3505,Goldene Schuppenschultern
+3506,Grüne Eisengamaschen
+3507,Goldene Schuppengamaschen
+3508,Grüne Eisenhalsberge
+3511,Goldener Schuppenkürass
+3513,Polierte Stahlstiefel
+3515,Goldene Schuppenstiefel
+3753,Handgenähter Ledergürtel
+3755,Leinentasche
+3756,Geprägte Lederhandschuhe
+3757,Wolltasche
+3758,Grüne Wolltasche
+3759,Geprägte Lederhose
+3760,Umhang des Hügelwächters
+3761,Feine Ledertunika
+3762,Lederweste des Hügelwächters
+3763,Feiner Ledergürtel
+3764,Lederhandschuhe des Hügelwächters
+3765,Dunkle Lederhandschuhe
+3766,Dunkler Ledergürtel
+3767,Gürtel des Hügelwächters
+3768,Schultern des Hügelwächters
+3769,Dunkle Lederschultern
+3770,Gekräftigte Lederhandschuhe
+3771,Barbarische Handschuhe
+3772,Grüne Lederrüstung
+3773,Wächterrüstung
+3774,Grüner Ledergürtel
+3775,Wächtergürtel
+3776,Grüne Lederarmschienen
+3777,Wächterlederarmschienen
+3778,Edelsteinbesetzter Ledergürtel
+3779,Barbarischer Gürtel
+3813,Kleines Seidenpack
+3816,Geschmeidiger leichter Balg
+3817,Geschmeidiger mittlerer Balg
+3818,Geschmeidiger schwerer Balg
+3839,Seidenstoffballen
+3840,Schwere Leinenhandschuhe
+3841,Grüne Leinenarmschienen
+3842,Handgenähte Leinenkniehosen
+3843,Schwere Wollhandschuhe
+3844,Schwerer Wollumhang
+3845,Leinenschuhe mit weichen Sohlen
+3847,Rote Wollstiefel
+3848,Doppeltgenähte Wollschultern
+3849,Verstärkte Wollschultern
+3850,Schwere Wollhose
+3851,Phönixhose
+3852,Handschuhe der Meditation
+3854,Azurblaue Seidenhandschuhe
+3855,Spinnenseidenstiefel
+3856,Spinnenseidenslipper
+3857,Verzaubererkutte
+3858,Schattenkapuze
+3859,Azurblaue Seidenweste
+3860,Stiefel des Verzauberers
+3861,Langer Seidenumhang
+3862,Eisiger Umhang
+3863,Spinnengürtel
+3864,Sternengürtel
+3865,Magiestoffballen
+3866,Modisches rotes Hemd
+3868,Phönixhandschuhe
+3869,Hellgelbes Hemd
+3870,Dunkles Seidenhemd
+3871,Formelles weißes Hemd
+3872,Dunkellilanes Seidenhemd
+3873,Schwarzes Schwadroneurshemd
+3908,Schneiderei
+3914,Braune Leinenhose
+3915,Braunes Leinenhemd
+3918,Raues Sprengpulver
+3919,Raues Dynamit
+3920,Gefertigtes leichtes Geschoss
+3922,Eine Hand voll Kupferbolzen
+3923,Raue Kupferbombe
+3924,Kupferrohr
+3925,Raues Schießeisen
+3926,Kupfermodulator
+3928,Mechanisches Eichhörnchen
+3929,Grobes Sprengpulver
+3930,Gefertigtes schweres Geschoss
+3931,Grobes Dynamit
+3932,Zielattrappe
+3933,Kleine Zephyriumladung
+3934,Fliegerbrille
+3936,Tödliche Donnerbüchse
+3937,Große Kupferbombe
+3938,Bronzeröhre
+3939,Liebevoll hergestelltes Schießeisen
+3940,Schattenschutzbrille
+3941,Kleine Bronzebombe
+3942,Surrendes bronzenes Dingsda
+3944,Flammendeflektor
+3945,Schweres Sprengpulver
+3946,Schweres Dynamit
+3947,Gefertigtes robustes Geschoss
+3949,Versilberte Schrotflinte
+3950,Große Bronzebombe
+3952,Schwacher Rekombobulator
+3953,Bronzegerüst
+3954,Mondsichtgewehr
+3955,Explodierendes Schaf
+3956,Schutzbrille mit grünen Gläsern
+3957,Eisdeflektor
+3958,Eisenstrebe
+3959,Diskombobulatorstrahl
+3960,Tragbarer bronzener Mörser
+3961,Gyrochronatom
+3962,Eisengranate
+3963,Kompaktes Ernteschnitterset
+3965,Hochentwickelte Zielattrappe
+3966,Handwerkermonokel
+3967,Große Eisenbombe
+3968,Goblin-Landmine
+3969,Mechanischer Drachling
+3971,Gnomisches Verbergungsgerät
+3972,Große Zephyriumladung
+3973,Silberkontakt
+4036,Ingenieurskunst
+4094,Gegrillter Bussardflügel
+4096,Raptorbalgharnisch
+4097,Raptorbalggürtel
+4508,Schwacher verfärbter Heiltrank
+4942,Geringer Steinschildtrank
+5244,Kodobalgtasche
+6412,Kaldorei-Spinnenkebab
+6413,Skorpid Surprise
+6414,Geröstetes Kodofleisch
+6415,Frenzyfilet
+6416,Schreitereintopf
+6417,Grubenratteneintopf
+6418,Knuspriger Donnerechsenschwanz
+6419,Mageres Wildbret
+6458,Verschnörkeltes Handfernrohr
+6499,Gekochte Muscheln
+6500,Scharfe Muscheln nach Goblin-Art
+6501,Muschelsuppe
+6517,Perlengriffdolch
+6518,Schillernder Hammer
+6521,Perlenschnallenumhang
+6617,Wuttrank
+6618,Großer Wuttrank
+6624,Trank der freien Aktion
+6661,Barbarischer Harnisch
+6686,Rote Leinentasche
+6688,Rote Wolltasche
+6690,Geringe Hexerrobe
+6692,Roben von Arcana
+6693,Grünes Seidenpack
+6695,Schwarzes Seidenpack
+6702,Murlocschuppengürtel
+6703,Murlocschuppenbrustplatte
+6704,Dicke Murlocrüstung
+6705,Murlocschuppenarmschienen
+7126,Handgenähte Lederweste
+7133,Feine Lederhose
+7135,Dunkle Lederhose
+7147,Wächterhose
+7149,Barbarische Gamaschen
+7151,Barbarische Schultern
+7153,Wächterumhang
+7156,Wächterhandschuhe
+7179,Trunk der Wasseratmung
+7213,Riesenmuschelrisotto
+7222,Eisengegengewicht
+7223,Goldene Schuppenarmschienen
+7224,Stahlwaffenkette
+7255,Heiligschutztrank
+7256,Schattenschutztrank
+7257,Feuerschutztrank
+7258,Frostschutztrank
+7259,Naturschutztrank
+7408,Schwerer Kupferschlägel
+7411,Verzauberkunst
+7418,Armschiene - Minderwertige Ausdauer
+7420,Brust - Minderwertige Ausdauer
+7421,Runenverzierte Kupferrute
+7426,Brust - Schwache Absorption
+7428,Armschiene - Schwache Abwehr
+7430,Bogenlichtschraubenschlüssel
+7443,Brust - Schwache Intelligenz
+7454,Umhang - Schwacher Widerstand
+7457,Armschiene - Schwache Ausdauer
+7620,Angeln
+7623,Braune Leinenrobe
+7624,Weiße Leinenrobe
+7629,Rote Leinenweste
+7630,Blaue Leinenweste
+7633,Blaue Leinenrobe
+7636,Grüne Wollrobe
+7639,Blauer Overall
+7643,Große Adeptenrobe
+7745,Zweihandwaffe - Schwacher Einschlag
+7748,Brust - Geringe Ausdauer
+7751,Glänzender Kleinfisch
+7752,Glitschhautmakrele
+7753,Langzahniger Matschschnapper
+7754,Lochfrenzy Supreme
+7755,Stoppelfühlerwels
+7766,Armschiene - Schwache Willenskraft
+7771,Umhang - Schwacher Schutz
+7776,Brust - Geringe Intelligenz
+7779,Armschiene - Schwache Beweglichkeit
+7782,Armschiene - Schwache Stärke
+7786,Waffe - Schwacher Wildtiertöter
+7788,Waffe - Schwaches Schlagen
+7793,Zweihandwaffe - Geringe Intelligenz
+7795,Runenverzierte Silberrute
+7817,Raue bronzene Stiefel
+7818,Silberrute
+7827,Regenbogenflossenthunfisch
+7828,Steinschuppenkabeljau
+7836,Schwarzmaulöl
+7837,Feueröl
+7841,Schwimmtempotrank
+7845,Elixier der Feuermacht
+7857,Brust - Ausdauer
+7859,Armschiene - Geringe Willenskraft
+7861,Umhang - Geringer Feuerwiderstand
+7863,Stiefel - Schwache Ausdauer
+7867,Stiefel - Schwache Beweglichkeit
+7892,Modisches blaues Hemd
+7893,Modisches grünes Hemd
+7928,Seidenverband
+7929,Schwerer Seidenverband
+7953,Deviatschuppenumhang
+7954,Deviatschuppenhandschuhe
+7955,Deviatschuppengürtel
+8240,Elixier des Riesenwuchses
+8322,Mondscheinweste
+8334,Übungsschloss
+8366,Ironforgekette
+8367,Ironforgebrustplatte
+8368,Ironforgestulpen
+8465,Einfaches Kleid
+8467,Weißes Wollkleid
+8483,Weißes Schwadroneurshemd
+8489,Rotes Schwadroneurshemd
+8604,Kräutergebackenes Ei
+8607,Geräuchertes Bärenfleisch
+8758,Azurblaue Seidenhose
+8760,Azurblaue Seidenkapuze
+8762,Seidenes Stirnband
+8764,Irdene Weste
+8766,Azurblauer Seidengürtel
+8768,Eiserne Gürtelschnalle
+8770,Robe der Macht
+8772,Purpurroter Seidengürtel
+8774,Grüne Seidenschultern
+8776,Leinengürtel
+8778,Stiefel der Dunkelheit
+8780,Hände der Dunkelheit
+8782,Handschuhe des wahren Glaubens
+8784,Grüne Seidenrüstung
+8786,Azurblauer Seidenumhang
+8789,Purpurroter Seidenumhang
+8791,Purpurrote Seidenweste
+8793,Purpurrote Seidenschultern
+8795,Azurblaue Schultern
+8797,Irdener Seidengürtel
+8799,Purpurrote Seidenpantalons
+8802,Purpurrote Seidenrobe
+8804,Purpurrote Seidenhandschuhe
+8880,Kupferdolch
+9058,Handgenähter Lederumhang
+9059,Handgenähte Armschienen
+9060,Leichter Lederköcher
+9062,Kleiner Ledermunitionsbeutel
+9064,Unverwüstliche Lederhose
+9065,Leichte Lederarmschienen
+9068,Leichte Lederhose
+9070,Schwarzwelpenumhang
+9072,Rotwelpenhandschuhe
+9074,Behände Lederhandschuhe
+9145,Pfeilmacherhandschuhe
+9146,Kräuterkundigenhandschuhe
+9147,Irdene Lederschultern
+9148,Plündererhandschuhe
+9149,Schwere irdene Handschuhe
+9193,Schwerer Köcher
+9194,Schwerer Ledermunitionsbeutel
+9195,Schwärzliche Ledergamaschen
+9196,Schwärzliche Lederrüstung
+9197,Grünwelpenrüstung
+9198,Frostlederumhang
+9201,Schwärzliche Armschienen
+9202,Grünwelpenarmschienen
+9206,Schwärzlicher Gürtel
+9207,Schwärzliche Stiefel
+9208,Hurtige Stiefel
+9269,Gnomen-Universalfernbedienung
+9273,Goblin-Überbrückungskabel
+9513,Disteltee
+9787,Waffenschmied
+9788,Rüstungsschmied
+9811,Barbarische Eisenschultern
+9813,Barbarische Eisenbrustplatte
+9814,Barbarischer Eisenhelm
+9818,Barbarische Eisenstiefel
+9820,Barbarische Eisenhandschuhe
+9916,Stahlbrustplatte
+9918,Robuster Wetzstein
+9920,Robuster Schleifstein
+9921,Robuster Gewichtsstein
+9926,Schwere Mithrilschulter
+9928,Schwere Mithrilstulpen
+9931,Mithrilplattenhose
+9933,Schwere Mithrilhose
+9935,Stahlplattenhelm
+9937,Mithrilplattenarmschienen
+9942,Mithrilplattenhandschuhe
+9945,Verschnörkelte Mithrilhose
+9950,Verschnörkelte Mithrilhandschuhe
+9952,Verschnörkelte Mithrilschultern
+9954,Echtsilberstulpen
+9957,Orc-Kriegsgamaschen
+9959,Schwere Mithrilbrustplatte
+9961,Mithrilhelmkappe
+9966,Mithrilplattenschultern
+9968,Schwere Mithrilstiefel
+9970,Schwerer Mithrilhelm
+9972,Verschnörkelte Mithrilbrustplatte
+9974,Echtsilberbrustplatte
+9979,Verschnörkelte Mithrilstiefel
+9980,Verschnörkelter Mithrilhelm
+9983,Kupferclaymore
+9985,Bronzener Kriegshammer
+9986,Bronzenes Großschwert
+9987,Bronzene Streitaxt
+9993,Schwere Mithrilaxt
+9995,Blaue glitzernde Axt
+9997,Tückische Mithrilklinge
+10001,Großer schwarzer Streitkolben
+10003,Der Zertrümmerer
+10005,Funkelndes Mithrilrapier
+10007,Phantomklinge
+10009,Runenverzierter Mithrilhammer
+10013,Ebenholzmesser
+10015,Echtsilberchampion
+10482,Geschmeidiger dicker Balg
+10490,Bequemer Lederhut
+10499,Tunika des Nachtschleichers
+10507,Stirnband des Nachtschleichers
+10509,Schildkrötenschuppenhandschuhe
+10511,Schildkrötenschuppenbrustplatte
+10516,Schultern des Nachtschleichers
+10518,Schildkrötenschuppenarmschienen
+10520,Große Voodoorobe
+10525,Feste Skorpidbrustplatte
+10529,Wildlederschultern
+10531,Große Voodoomaske
+10533,Feste Skorpidarmschienen
+10542,Feste Skorpidhandschuhe
+10544,Wildlederweste
+10546,Wildlederhelm
+10548,Hose des Nachtschleichers
+10550,Umhang des Nachtschleichers
+10552,Schildkrötenschuppenhelm
+10554,Feste Skorpidstiefel
+10556,Schildkrötenschuppengamaschen
+10558,Stiefel des Nachtschleichers
+10560,Große Voodoohose
+10562,Großer Voodooumhang
+10564,Feste Skorpidschulterstücke
+10566,Wildlederstiefel
+10568,Feste Skorpidgamaschen
+10570,Fester Skorpidhelm
+10572,Wildledergamaschen
+10574,Wildlederumhang
+10619,Drachenschuppenstulpen
+10621,Wolfskopfhelm
+10630,Stulpen des Meeres
+10632,Helm des Feuers
+10647,Gefiederte Brustplatte
+10650,Drachenschuppenbrustplatte
+10656,Drachenlederverarbeitung
+10658,Elementarlederverarbeitung
+10660,Stammeslederverarbeitung
+10840,Magiestoffverband
+10841,Schwerer Magiestoffverband
+11447,Trunk des Wasserwandelns
+11448,Großer Manatrank
+11449,Elixier der Beweglichkeit
+11450,Elixier der Verteidigung
+11451,Öl des Feuerbrandes
+11452,Regenerationstrank
+11453,Magiewiderstandtrank
+11454,Veredelter Mithrilzylinder
+11456,Goblin-Raketentreibstoff
+11459,Stein der Weisen
+11460,Trunk der Untotenentdeckung
+11464,Unsichtbarkeitstrank
+11465,Elixier der großen Intelligenz
+11467,Elixier der großen Beweglichkeit
+11468,Trunk der Traumvision
+11472,Elixier der großen Stärke
+11473,Geisterfarbstoff
+11476,Elixier der Schattenmacht
+11478,Trunk der Dämonenentdeckung
+11479,Transmutieren: Eisen in Gold
+11480,Transmutieren: Mithril in Echtsilber
+11643,Goldene Schuppenstulpen
+12044,Einfache Leinenhose
+12045,Einfache Leinenstiefel
+12046,Einfacher Kilt
+12047,Bunter Kilt
+12048,Schwarze Magiestoffweste
+12049,Schwarze Magiestoffgamaschen
+12050,Schwarze Magiestoffrobe
+12052,Schattenzwirnhose
+12053,Schwarze Magiestoffhandschuhe
+12055,Schattenzwirnrobe
+12056,Rote Magiestoffweste
+12059,Weiße Banditenmaske
+12060,Rote Magiestoffhose
+12061,Oranges Magiestoffhemd
+12062,Sturmstoffhose
+12063,Sturmstoffhandschuhe
+12064,Oranges Kampfhemd
+12065,Magiestofftasche
+12066,Rote Magiestoffhandschuhe
+12067,Traumzwirnhandschuhe
+12068,Sturmstoffweste
+12069,Aschenstoffrobe
+12070,Traumzwirnweste
+12071,Schattenzwirnhandschuhe
+12072,Schwarzes Magiestoffstirnband
+12073,Schwarze Magiestoffstiefel
+12074,Schwarze Magiestoffschultern
+12075,Lavendelfarbenes Magiestoffhemd
+12076,Schattenzwirnschultern
+12077,Einfaches schwarzes Kleid
+12078,Rote Magiestoffschultern
+12079,Rote Magiestofftasche
+12080,Rosa Magiestoffhemd
+12082,Schattenzwirnstiefel
+12083,Sturmstoffstirnband
+12084,Rotes Magiestoffstirnband
+12085,Smokinghemd
+12086,Schattenzwirnmaske
+12087,Sturmstoffschultern
+12088,Aschenstoffstiefel
+12089,Smokinghose
+12090,Sturmstoffstiefel
+12091,Weißes Hochzeitskleid
+12092,Traumzwirnreif
+12093,Smokingjacke
+12259,Bronzene Gamaschen mit Versilberung
+12260,Raue Kupferweste
+12584,Goldkraftkern
+12585,Robustes Sprengpulver
+12587,Hellaugenschutzbrille
+12589,Mithrilrohr
+12590,Gyromatischer Mikroregler
+12591,Instabiler Auslöser
+12594,Feuerschutzbrille
+12595,Mithrildonnerbüchse
+12596,Stark einschlagende Mithrilpatronen
+12599,Mithrilgehäuse
+12607,Katzenaugen-Ultraschutzbrille
+12609,Katzenaugentrunk
+12614,Schwerkalibriges Mithrilgewehr
+12615,Zaubermachtschutzbrille Xtrem
+12616,Fallschirmumhang
+12617,Tiefentaucherhelm
+12618,Rosarote Schutzbrille
+12621,Gyro-Mithrilgeschoss
+12622,Grüne Linse
+12624,Mechanischer Mithrildrachling
+12715,Goblin-Raketentreibstoff-Rezept
+12716,Goblin-Mörser
+12717,Goblin-Bergbauhelm
+12718,Goblinscher Schutzhelm
+12719,Explosiver Pfeil
+12720,"Goblin-""Bumm""-Kasten"
+12722,Goblin-Radio
+12755,Goblin-Bombenspender
+12758,Goblin-Raketenhelm
+12759,Gnomentodesstrahl
+12760,Goblinsche Pioniersprengladung
+12895,Pläne: Veredelter Mithrilzylinder
+12897,Gnomen-Schutzbrille
+12899,Gnomen-Schrumpfstrahl
+12900,Mobiler Alarm
+12902,Gnomen-Net-o-Matik-Projektor
+12903,Gnomen-Unglücksverhinderungsgürtel
+12904,Gnomen-Amateurradio
+12905,Gnomen-Raketenstiefel
+12906,Gnomen-Kampfhuhn
+12907,Gnomen-Gedankenkontrollkappe
+12908,Goblinscher Drachenwerfer
+13028,Golddorntee
+13166,Kampfhuhn
+13240,Der Mörser: Wieder aufgeladen
+13258,Goblin-Bombe beschwören
+13262,Entzaubern
+13378,Schild - Schwache Ausdauer
+13380,Zweihandwaffe - Geringe Willenskraft
+13419,Umhang - Schwache Beweglichkeit
+13421,Umhang - Geringer Schutz
+13464,Schild - Geringer Schutz
+13485,Schild - Geringe Willenskraft
+13501,Armschiene - Geringe Ausdauer
+13503,Waffe - Geringes Schlagen
+13522,Umhang - Geringer Schattenwiderstand
+13529,Zweihandwaffe - Geringer Einschlag
+13536,Armschiene - Geringe Stärke
+13538,Brust - Geringe Absorption
+13607,Brust - Intelligenz
+13612,Handschuhe - Bergbau
+13617,Handschuhe - Kräuterkunde
+13620,Handschuhe - Angeln
+13622,Armschiene - Geringe Intelligenz
+13626,Brust - Schwache Werte
+13628,Runenverzierte Goldrute
+13631,Schild - Geringe Ausdauer
+13635,Umhang - Verteidigung
+13637,Stiefel - Geringe Beweglichkeit
+13640,Brust - Große Ausdauer
+13642,Armschiene - Willenskraft
+13644,Stiefel - Geringe Ausdauer
+13646,Armschiene - Geringe Abwehr
+13648,Armschiene - Ausdauer
+13653,Waffe - Geringer Wildtiertöter
+13655,Waffe - Geringer Elementartöter
+13657,Umhang - Feuerwiderstand
+13659,Schild - Willenskraft
+13661,Armschiene - Stärke
+13663,Brust - Große Intelligenz
+13687,Stiefel - Geringe Willenskraft
+13689,Schild - Geringes Blocken
+13693,Waffe - Schlagen
+13695,Zweihandwaffe - Einschlag
+13698,Handschuhe - Kürschnerei
+13700,Brust - Geringe Werte
+13702,Runenverzierte Echtsilberrute
+13746,Umhang - Große Verteidigung
+13794,Umhang - Widerstand
+13815,Handschuhe - Beweglichkeit
+13817,Schild - Ausdauer
+13822,Armschiene - Intelligenz
+13836,Stiefel - Ausdauer
+13841,Handschuhe - Hochentwickelter Bergbau
+13846,Armschiene - Große Willenskraft
+13858,Brust - Überragende Ausdauer
+13868,Handschuhe - Hochentwickelte Kräuterkunde
+13882,Umhang - Geringe Beweglichkeit
+13887,Handschuhe - Stärke
+13890,Stiefel - Schwaches Tempo
+13898,Waffe - Feurige Waffe
+13905,Schild - Große Willenskraft
+13915,Waffe - Dämonentöten
+13917,Brust - Überragende Intelligenz
+13931,Armschiene - Abwehr
+13933,Schild - Frostwiderstand
+13935,Stiefel - Beweglichkeit
+13937,Zweihandwaffe - Großer Einschlag
+13939,Armschiene - Große Stärke
+13941,Brust - Werte
+13943,Waffe - Großes Schlagen
+13945,Armschiene - Große Ausdauer
+13947,Handschuhe - Reitfertigkeit
+13948,Handschuhe - Schwaches Tempo
+14293,Geringer Magiezauberstab
+14379,Goldrute
+14380,Echtsilberrute
+14807,Großer Magiezauberstab
+14809,Geringer Mystikerzauberstab
+14810,Großer Mystikerzauberstab
+14930,Schnellziehköcher
+14932,Dicker Ledermunitionsbeutel
+15255,Mechanisches Reparierset
+15292,Dunkeleisenpulverisierer
+15293,Dunkeleisenpanzer
+15294,Dunkeleisenzerreißer
+15295,Dunkeleisenschultern
+15296,Dunkeleisenplatte
+15596,Rauchendes Herz des Berges
+15628,Winzige wandelnde Bombe
+15633,Lil' Smoky
+15833,Trank des traumlosen Schlafs
+15853,Mageres Wolfsteak
+15855,Gerösteter Raptor
+15856,Scharfe Wolfrippchen
+15861,Dschungeleintopf
+15863,Aas Surprise
+15865,Eigenartiger Eintopf
+15910,Schwerer Kodoeintopf
+15915,Gewürzter Chilikrebs
+15933,Monsteromelett
+15935,Knuspriger Fledermausflügel
+15972,Glitzernder Stahldolch
+15973,Sengende Goldklinge
+16639,Verdichteter Schleifstein
+16640,Verdichteter Gewichtsstein
+16641,Verdichteter Wetzstein
+16642,Thoriumrüstung
+16643,Thoriumgürtel
+16644,Thoriumarmschienen
+16645,Strahlender Gürtel
+16646,Imperiale Plattenschultern
+16647,Imperialer Plattengürtel
+16648,Strahlende Brustplatte
+16649,Imperiale Plattenarmschienen
+16650,Wilddornpanzerung
+16652,Thoriumstiefel
+16653,Thoriumhelm
+16654,Strahlende Handschuhe
+16655,Feurige Plattenstulpen
+16656,Strahlende Stiefel
+16657,Imperiale Plattenstiefel
+16658,Imperialer Plattenhelm
+16659,Strahlender Reif
+16660,Schultern der Morgenröte
+16661,Sturmstulpen
+16662,Thoriumgamaschen
+16663,Imperiale Plattenrüstung
+16664,Runenverzierte Plattenschultern
+16665,Runenverzierte Plattenstiefel
+16724,Helm der weißen Seele
+16725,Strahlende Gamaschen
+16726,Runenverzierter Plattenhelm
+16728,Helm des großen Häuptlings
+16729,Löwenherzhelm
+16730,Imperiale Plattengamaschen
+16731,Runenverzierte Brustplatte
+16732,Runenverzierte Plattengamaschen
+16741,Festungsstulpen
+16742,Verzauberter Thoriumhelm
+16744,Verzauberte Thoriumgamaschen
+16745,Verzauberte Thoriumbrustplatte
+16746,Unverwundbarer Panzer
+16960,Thoriumgroßschwert
+16965,Kahlholzhacke
+16967,Veredelter Thoriumhammer
+16969,Verschnörkelte Thoriumhandaxt
+16970,Dämmerungsschneide
+16971,Gewaltige Thoriumstreitaxt
+16973,Verzauberter Kampfhammer
+16978,Loderflammenrapier
+16980,Runenschneide
+16983,Beschaulichkeit
+16984,Vulkanischer Hammer
+16986,Blutkralle
+16987,Dunkelspeer
+16988,Hammer der Titanen
+16990,Arkanitchampion
+16991,Vernichter
+16992,Frostwache
+16993,Meisterlicher Sturmhammer
+16994,Arkanitschnitter
+16995,Herzsucher
+17039,Schwertschmiedemeister
+17040,Hammerschmiedemeister
+17041,Axtschmiedemeister
+17180,Verzaubertes Thorium
+17181,Verzaubertes Leder
+17187,Transmutieren: Arkanit
+17551,Steinschuppenöl
+17552,Mächtiger Wuttrank
+17553,Überragender Manatrank
+17554,Elixier der großen Verteidigung
+17559,Transmutieren: Luft zu Feuer
+17560,Transmutieren: Feuer zu Erde
+17561,Transmutieren: Erde zu Wasser
+17562,Transmutieren: Wasser zu Luft
+17563,Transmutieren: Untod zu Wasser
+17564,Transmutieren: Wasser zu Untod
+17565,Transmutieren: Leben zu Erde
+17566,Transmutieren: Erde zu Leben
+17570,Großer Steinschildtrank
+17572,Läuterungstrank
+17574,Großer Feuerschutztrank
+17575,Großer Frostschutztrank
+17576,Großer Naturschutztrank
+17577,Großer Arkanschutztrank
+17578,Großer Schattenschutztrank
+17579,Großer Heiligschutztrank
+17580,Erheblicher Manatrank
+17634,Fläschchen der Versteinerung
+17636,Fläschchen mit destillierter Weisheit
+17637,Fläschchen mit oberster Macht
+17638,Fläschchen mit chromatischem Widerstand
+18238,Tüpfelgelbschwanz
+18239,Gekochter glänzender Machtfisch
+18240,Gegrillter Kalmar
+18241,Rotkiemenfilet
+18242,Scharfer geräucherter Barsch
+18243,Nachtflossensuppe
+18244,Gedünsteter Sonnenschuppenlachs
+18245,Hummereintopf
+18246,Machtfischsteak
+18247,Gebackener Lachs
+18401,Runenstoffballen
+18402,Runenstoffgürtel
+18403,Winterzwirntunika
+18404,Winterzwirnrobe
+18405,Runenstofftasche
+18406,Runenstoffrobe
+18407,Runenstofftunika
+18408,Aschenstoffweste
+18409,Runenstoffumhang
+18410,Geisterzwirngürtel
+18411,Winterzwirnhandschuhe
+18412,Aschenstoffhandschuhe
+18413,Geisterzwirnhandschuhe
+18414,Hellstoffrobe
+18415,Hellstoffhandschuhe
+18416,Geisterzwirnweste
+18417,Runenstoffhandschuhe
+18418,Aschenstoffumhang
+18419,Teufelsstoffhose
+18420,Hellstoffumhang
+18421,Hexerzwirngamaschen
+18423,Runenstoffstiefel
+18424,Winterzwirnhose
+18434,Aschenstoffhose
+18436,Robe der Winternacht
+18437,Teufelsstoffstiefel
+18438,Runenstoffhose
+18439,Hellstoffhose
+18440,Mondstoffgamaschen
+18441,Geisterzwirnhose
+18442,Teufelsstoffkapuze
+18444,Runenstoffstirnband
+18445,Mondstofftasche
+18446,Hexerzwirnrobe
+18447,Mondstoffweste
+18448,Mondstoffschultern
+18449,Runenstoffschultern
+18450,Hexerzwirnturban
+18451,Teufelsstoffrobe
+18452,Mondstoffreif
+18453,Teufelsstoffschultern
+18454,Handschuhe der Zauberbeherrschung
+18455,Bodenlose Tasche
+18456,Trachten des wahren Glaubens
+18457,Robe des Erzmagiers
+18458,Robe der Leere
+18560,Mondstoff
+18629,Runenstoffverband
+18630,Schwerer Runenstoffverband
+19047,Geschmeidiger unverwüstlicher Balg
+19048,Schwere Skorpidarmschienen
+19049,Tückische Lederstulpen
+19050,Grüne Drachenschuppenbrustplatte
+19051,Schwere Skorpidweste
+19052,Tückische Lederarmschienen
+19053,Schimärenhandschuhe
+19054,Rote Drachenschuppenbrustplatte
+19055,Runenverzierte Lederstulpen
+19059,Vulkanische Gamaschen
+19060,Grüne Drachenschuppengamaschen
+19061,Lebendige Schultern
+19062,Eisenfederschultern
+19063,Schimärenstiefel
+19064,Schwere Skorpidstulpen
+19065,Runenverzierte Lederarmschienen
+19066,Frostsäblerstiefel
+19067,Sturmschleierhose
+19068,Kriegsbärenharnisch
+19070,Schwerer Skorpidgürtel
+19071,Tückisches Lederstirnband
+19072,Runenverzierter Ledergürtel
+19073,Schimärengamaschen
+19074,Frostsäblergamaschen
+19075,Schwere Skorpidgamaschen
+19076,Vulkanische Brustplatte
+19077,Blaue Drachenschuppenbrustplatte
+19078,Lebendige Gamaschen
+19079,Sturmschleierrüstung
+19080,Kriegsbärenwollwäsche
+19081,Schimärenweste
+19082,Runenverziertes Lederstirnband
+19083,Tückische Lederhose
+19084,Teufelssaurierstulpen
+19085,Schwarze Drachenschuppenbrustplatte
+19086,Eisenfederbrustplatte
+19087,Frostsäblerhandschuhe
+19088,Schwerer Skorpidhelm
+19089,Blaue Drachenschuppenschultern
+19090,Sturmschleierschultern
+19091,Runenverzierte Lederhose
+19092,Tückischer Ledergürtel
+19093,Onyxiaschuppenumhang
+19094,Schwarze Drachenschuppenschultern
+19095,Lebendige Brustplatte
+19097,Teufelssauriergamaschen
+19098,Tückische Lederrüstung
+19100,Schwere Skorpidschultern
+19101,Vulkanische Schultern
+19102,Runenverzierte Lederrüstung
+19103,Runenverzierte Lederschultern
+19104,Frostsäblertunika
+19106,Onyxiaschuppenbrustplatte
+19107,Schwarze Drachenschuppengamaschen
+19435,Mondstoffstiefel
+19788,Dichtes Sprengpulver
+19791,Thoriumapparat
+19792,Thoriumgewehr
+19793,Lebensechte mechanische Kröte
+19794,Zaubermachtschutzbrille Xtrem Plus
+19795,Thoriumröhre
+19796,Dunkeleisengewehr
+19800,Thoriumpatronen
+19804,Arkanitdrachling
+19815,Empfindlicher Arkanitwandler
+19819,Modularer Stimmenverstärker
+19825,Schutzbrille des Meisteringenieurs
+19833,Fehlerloses Arkanitgewehr
+20008,Armschiene - Große Intelligenz
+20009,Armschiene - Überragende Willenskraft
+20010,Armschiene - Überragende Stärke
+20011,Armschiene - Überragende Ausdauer
+20012,Handschuhe - Große Beweglichkeit
+20013,Handschuhe - Große Stärke
+20014,Umhang - Großer Widerstand
+20015,Umhang - Überragende Verteidigung
+20016,Schild - Erhebliche Willenskraft
+20017,Schild - Große Ausdauer
+20020,Stiefel - Große Ausdauer
+20023,Stiefel - Große Beweglichkeit
+20024,Stiefel - Willenskraft
+20025,Brust - Große Werte
+20026,Brust - Erhebliche Ausdauer
+20028,Brust - Erhebliche Intelligenz
+20029,Waffe - Eisiger Hauch
+20030,Zweihandwaffe - Überragender Einschlag
+20031,Waffe - Überragendes Schlagen
+20032,Waffe - Lebensdiebstahl
+20033,Waffe - Unheilige Waffe
+20034,Waffe - Kreuzfahrer
+20035,Zweihandwaffe - Erhebliche Willenskraft
+20036,Zweihandwaffen - Erhebliche Intelligenz
+20051,Runenverzierte Arkanitrute
+20201,Arkanitrute
+20219,Gnomen-Ingenieur
+20222,Goblin-Ingenieur
+20626,Undermine-Muschelsuppe
+20648,Mittleres Leder
+20649,Schweres Leder
+20650,Dickes Leder
+20848,Flimmerkernmantel
+20849,Flimmerkernhandschuhe
+20853,Kernhundstiefel
+20854,Schmelzhelm
+20855,Schwarze Drachenschuppenstiefel
+20872,Feuriger Kettengurt
+20873,Feurige Kettenschultern
+20874,Dunkeleisenarmschienen
+20876,Dunkeleisengamaschen
+20890,Dunkeleisenhäscher
+20897,Dunkeleisenzerstörer
+20916,Mithrilkopfforelle
+21143,Lebkuchen
+21144,Eierflip
+21161,Sulfuronhammer
+21175,Spinnenwurst
+21913,Schneide des Winters
+21923,Elixier der Frostmacht
+21931,Waffe - Wintermacht
+21943,Handschuhe des Altvaters
+21945,Grünes Festtagshemd
+22749,Waffe - Zauberkraft
+22331,Unverwüstliches Leder
+22430,Aufbereitete Schuppe von Onyxia
+22480,Zartes Wolfsteak
+22711,Schattenhauthandschuhe
+22732,Erheblicher Verjüngungstrank
+22750,Waffe - Heilkraft
+22757,Elementarwetzstein
+22759,Flimmerkernwickeltücher
+22761,Runn Tum Knolle Surprise
+22795,Kernscharfschützengewehr
+22808,Trunk der verbesserten Wasseratmung
+22866,Gürtel des Erzmagiers
+22867,Teufelsstoffhandschuhe
+22868,Infernohandschuhe
+22869,Mondstoffhandschuhe
+22870,Schutzumhang der Verteidigung
+22902,Mondstoffrobe
+22921,Gurt der Einsicht
+22922,Mungostiefel
+22923,Armschienen der schnellen Flucht
+22926,Chromatischer Umhang
+22927,Balg der Wildnis
+22928,Veränderlicher Umhang
+23069,EZ-Thro-Dynamit II
+23071,Echtsilberumwandler
+23077,Gyrofrosteisreflektor
+23078,Goblin-Überbrückungskabel XL
+23079,Großer Rekombobulator
+23081,Hyperstrahlender Flammenreflektor
+23082,Ultrablendender Schattenreflektor
+23096,Alarm-O-Bot
+23399,Barbarische Armschienen
+23486,Dimensionszerfetzer-Everlook
+23489,Extrem sicherer Transporter nach Gadgetzan
+23507,Schlangenexplosionsfeuerwerk
+23628,Schwerer Gürtel der Holzschlundfeste
+23629,Schwere Stiefel der Holzschlundfeste
+23632,Gurt der Dämmerung
+23633,Handschuhe der Dämmerung
+23636,Dunkeleisenhelm
+23637,Dunkeleisenstulpen
+23638,Schwarze Amnestie
+23639,Schattenzorn
+23650,Ebenholzhand
+23652,Finsterer Streiter
+23662,Weisheit der Holzschlundfeste
+23663,Mantel der Holzschlundfeste
+23664,Argentumstiefel
+23665,Argentumschultern
+23666,Flimmerkernrobe
+23667,Flimmerkerngamaschen
+23703,Macht der Holzschlundfeste
+23704,Kampfhandschuhe der Holzschlundfeste
+23705,Stiefel der Dämmerung
+23706,Goldener Mantel der Dämmerung
+23707,Lavagürtel
+23708,Chromatische Stulpen
+23709,Kernhundgürtel
+23710,Geschmolzener Gürtel
+23799,Waffe - Stärke
+23800,Waffe - Beweglichkeit
+23801,Armschiene - Manaregeneration
+23802,Armschiene - Heilkraft
+23803,Waffe - Mächtige Willenskraft
+23804,Waffe - Mächtige Intelligenz
+24091,Blutrebenweste
+24092,Blutrebengamaschen
+24093,Blutrebenstiefel
+24121,Urzeitliches Fledermaushautwams
+24122,Urzeitliche Fledermaushauthandschuhe
+24123,Urzeitliche Fledermaushautarmschienen
+24124,Bluttigerbrustplatte
+24125,Bluttigerschultern
+24136,Blutseelenbrustplatte
+24137,Blutseelenschultern
+24138,Blutseelenstulpen
+24139,Dunkelseelenbrustplatte
+24140,Dunkelseelengamaschen
+24141,Dunkelseelenschultern
+24266,Mojowahnsinn der Gurubashi
+24356,Blutrebenschutzbrille
+24357,Blutrebenlinse
+24365,Magierblutelixier
+24366,Großer Trank des traumlosen Schlafs
+24367,Trank der lebhaften Aktion
+24399,Dunkeleisenstiefel
+24418,Schwerer Krokiliskeneintopf
+24654,Blaue Drachenschuppengamaschen
+24655,Grüne Drachenschuppenstulpen
+24703,Traumschuppenbrustplatte
+24801,Geräucherte Wüstenknödel
+24846,Feuerspuckerarmschienen
+24847,Feuerspuckerstulpen
+24848,Feuerspuckerbrustplatte
+24849,Sandpirscherarmschienen
+24850,Sandpirscherstulpen
+24851,Sandpirscherbrustplatte
+24901,Runenverzierte stygische Gamaschen
+24902,Runenverzierter stygischer Gürtel
+24903,Runenverzierte stygische Stiefel
+24912,Dunkelrunenstulpen
+24913,Dunkelrunenhelm
+24914,Dunkelrunenbrustplatte
+24940,Schwarzwelpentunika
+25072,Handschuhe - Bedrohung
+25073,Handschuhe - Schattenmacht
+25074,Handschuhe - Frostmacht
+25078,Handschuhe - Feuermacht
+25079,Handschuhe - Heilkraft
+25080,Handschuhe - Überragende Beweglichkeit
+25081,Umhang - Großer Feuerwiderstand
+25082,Umhang - Großer Naturwiderstand
+25083,Umhang - Verstohlenheit
+25084,Umhang - Feingefühl
+25086,Umhang - Ausweichen
+25146,Elementarfeuer transmutieren
+25659,Dirges abgefahrene Chimaerokkoteletts
+25704,Geräucherter Weisenfisch
+25954,Weisenfisch Supreme
+26011,Ruhiger mechanischer Yeti
+26085,Seelenbeutel
+26086,Teufelsstofftasche
+26087,Kernteufelsstofftasche
+26277,Elixier der heiligen Kraft
+26279,Sturmschleierhandschuhe
+26403,Festtagskleid
+26407,Festtagsanzug
+26426,Großes blaues Raketenbündel
+26427,Großes grünes Raketenbündel
+26428,Großes rotes Raketenbündel
+26442,Zünder für Feuerwerk
+26443,Zünder für Raketenbündel
+27585,Schwerer Obsidiangürtel
+27586,Gezackter Obsidianschild
+27587,Dicke Obsidianbrustplatte
+27588,Leichter Obsidiangürtel
+27589,Dunkler Griff des Zerstörers
+27590,Obsidianpanzertunika
+27658,Verzauberter Magiestoffbeutel
+27659,Verzauberte Runenstofftasche
+27660,Große Verzauberertasche
+27724,Cenarische Kräutertasche
+27725,Cenarischer Ranzen
+27829,Gamaschen der Titanen
+27830,Willensbrecher
+27832,Weisenklinge
+27837,Zweihandwaffen - Beweglichkeit
+28205,Gletscherhandschuhe
+28207,Gletscherweste
+28208,Gletscherumhang
+28209,Gletscherhandschutz
+28210,Gaeas Umarmung
+28219,Polartunika
+28220,Polarhandschuhe
+28221,Polararmschienen
+28222,Eisschuppenbrustplatte
+28223,Eisschuppenstulpen
+28224,Eisschuppenarmschienen
+28242,Eisfluchbrustplatte
+28243,Eisfluchstulpen
+28244,Eisflucharmschienen
+28327,Dampfpanzersteuerung
+28461,Eisenrankenbrustplatte
+28462,Eisenrankenhandschuhe
+28463,Eisenrankengürtel
+28472,Dornenholzhelm
+28473,Dornenholzstiefel
+28474,Dornenholzgürtel
+28480,Sylvanweste
+28481,Sylvankrone
+28482,Sylvanschultern
+30021,Kristalldurchdrungener Verband
+43308,Fischsuche
+44950,Grüne Winterkleidung
+44953,Winterstiefel
+44958,Rote Winterkleidung
+424641,Automatische Bergungseinheit Schredder
+426607,Elixier der verschmolzenen Reue
+427061,Mantel des Zweiten Krieges
+428424,Phönixbindungen
+429348,Veränderliche silberne Brustplatte
+429351,Extraplanare Spinnenseidenstiefel
+429354,Leerenberührte Lederhandschuhe
+429869,Leerenberührte Lederstulpen
+430397,Blackfathom-Wetzstein
+430409,Blackfathom-Manaöl
+431362,Seelengefäß
+435481,Waffe - Zerlegen
+435610,Gneuro-verkettetes Arkanfaden-Monokel
+435819,Schwach leuchtendes Leder
+435827,Hyperleitender Arkanfaden
+435841,Kordel des Herbeirufers
+435848,Mantel des Herbeirufers
+435903,Brust - Vergelter
+435904,Leuchtende Gneuro-verkettete Gugel
+435906,Reflektierender Echtsilbergehirnkäfig
+435908,Gehärteter Interferenzen-negierender Helm
+435910,Echtsilberplatten mit geringer Grundstrahlung
+435949,Leuchtende hyperleitende Schuppenkappe
+435951,Gneuro-leitende Kapuze des Kanalisierers
+435953,Strahlungsresistente Schuppenkapuze
+435956,Polierte Echtsilberzahnräder
+435958,Wirbelnder Echtsilberzahnradschild
+435960,Hyperleitendes Goldnetz
+435966,EZ-Thro-Strahlungsbombe
+435969,Isolierendes Gniodin
+435971,Leicht bestrahlter Verjüngungstrank
+439102,Verzauberergugel
+446179,Schulterplatten des Schreckens
+446183,Paranoiamantel
+446185,Kreischende Schiftung
+446186,Kakofonische Kettenschulterschützer
+446188,Schulterschützer des Furchtschürers
+446189,Schulterpolster der Besessenheit
+446190,Wehklagender Kettenmantel
+446191,Elendige Schulterstücke
+446192,Membran der dunklen Neurose
+446193,Schulterstücke des zerrütteten Geists
+446194,Mantel des Wahnsinns
+446195,Schulterpolster der Verwirrten
+446226,Fläschchen der unvergänglichen Alpträume
+446236,Leerenaufgeladene Unterarmschienen des Herbeirufers
+446237,Leerenaufgeladene Unterarmschienen des Rächers
+446238,Leerenaufgeladene Unterarmschienen des Beschützers
+446851,Krug des alptraumhaften Mojo
+448085,Fläschchen der ruhelosen Träume
+448624,Schriftrolle der räumlichen Heilung
+451706,Schreiende Kettenschulterstücke
+461645,Geschliffene blaue Drachenschuppenschultern
+461647,Meisterlicher Sturmhammer des Himmelsreiters
+461649,Lebende grüne Drachenschuppengamaschen
+461651,Feurige Plattenstulpen der verborgenen Technik
+461653,Glänzender chromatischer Umhang
+461655,Gehärtete schwarze Drachenschuppenbrustplatte
+461657,Gehärtete schwarze Drachenschuppengamaschen
+461659,Gehärtete schwarze Drachenschuppenschultern
+461661,Meisterhafte vulkanische Brustplatte
+461663,Meisterhafte vulkanische Schultern
+461665,Meisterhafte vulkanische Gamaschen
+461667,Getemperte Dunkeleisenplatte
+461669,Veredelter Arkanitchampion
+461671,Festerungsstulpen
+461673,Geschliffene blaue Drachenschuppenbrustplatte
+461675,Veredelter Arkanitschnitter
+461677,Lebende grüne Drachenschuppenstulpen
+461690,Meisterlich gefertigter unbeständiger Umhang
+461692,Synthetischer Ogeranzug der Gordok
+461706,Unterarmschienen der schnellen Flucht
+461708,Gleißende Mondstoffrobe
+461710,Feuerkern-Scharfschützengewehr
+461712,Veredelter Hammer der Titanen
+461714,Entweihung
+461716,Tödlicher Herzsucher
+461720,Lebende grüne Drachenschuppenbrustplatte
+461722,Teufelskernstulpen
+461724,Teufelskerngamaschen
+461727,Lederverstärkte Runenstofftasche
+461730,Gehärtete Frostwache
+461733,Sorgsam verzauberter Kampfhammer
+461739,Kriegswappen des großen Häuptlings
+461743,Weisenklinge des Erzmagiers
+461747,Gleißende Mondstoffweste
+461750,Gleißender Mondstoffreif
+461752,Gleißende Mondstoffgamaschen
+461754,Gurt der arkanen Einsicht
+462227,Geschliffene blaue Drachenschuppengamaschen
+462282,Bestickter Gürtel des Erzmagiers
+463871,Schild - Naturgesetz
+470349,Dichter Runenstoffverband
+470359,Dunkelklauensuppe
+470370,Geräucherte Rotkieme
+471400,Prächtiger Trollschein
+1213481,Klingenstachelhirnkasten
+1213484,Klingenstachelschulterplatten
+1213490,Klingenstachelkampfplatte
+1213492,Obsidianhäscher
+1213498,Obsidianchampion
+1213500,Obsidianzerstörer
+1213502,Obsidiansturmhammer
+1213504,Obsidianweisenklinge
+1213506,Obsidianverteidiger
+1213513,Leuchtendes Chitinrüstungsset
+1213519,Geschliffenes Chitinrüstungsset
+1213521,Messerdornengugel
+1213523,Messerdornenschulterpolster
+1213525,Messerdornenlederwams
+1213527,Vampirgugel
+1213530,Vampirschal
+1213532,Vampirrobe
+1213534,Qirajiseidenschal
+1213536,Qirajiseidencape
+1213538,Qirajiseidenumhang
+1213540,Qirajiseidentuch
+1213544,Fläschchen des unnachgiebigen Kummers
+1213546,Fläschchen des uralten Wissens
+1213548,Fläschchen der Alten Götter
+1213552,Fläschchen des Wahnsinns
+1213559,Elixier des Honigdachses
+1213563,Elixier des Magierlords
+1213565,Elixier der Eisenflanken
+1213571,Elixier des Eifers
+1213573,Arkane Megabombe
+1213576,Der Ausräucherer
+1213578,Obsidianbombe
+1213586,Generator für 6u73 5chw1n6un63n
+1213588,Gestimmte machtreaktive Scheibe
+1213593,Geschwindigkeitsstein
+1213595,Träne des Träumers
+1213598,Leitstein der Vergeltung
+1213600,Verzauberte Stoppuhr
+1213603,Rubinbesetzte Brosche
+1213607,Schriftrolle: Zorn des Schwarms
+1213610,Verzaubertes Abwehrmittel
+1213616,Brust - Lebendige Werte
+1213622,Handschuhe - Heilige Kraft
+1213626,Handschuhe - Arkane Macht
+1213628,Verzauberter Gebetsband
+1213633,Verzaubertes Totem
+1213635,Verzauberter Pilz
+1213643,Obsidianschleifstein
+1213646,Obsidiansprengpulver
+1214137,Obsidianherzsucher
+1214145,Obsidianschrotflinte
+1214173,Qirajiseidenballen
+1214303,Traumschuppenkilt
+1214306,Traumschuppenarmschienen
+1214307,Traumschuppenfäustlinge
+1214309,Traumschuppenvisier
+1216005,Buchband der Rechtschaffenheit
+1216007,Buchband des Exorzisten
+1216014,Totem des pyroklastischen Donners
+1216016,Totem der donnernden Schläge
+1216018,Totem des fließenden Magmas
+1216020,Götze des siderischen Zorns
+1216022,Götze der Katzenwildheit
+1217189,Armschiene - Zaubermacht
+1217203,Armschiene - Beweglichkeit
+1219577,Schildhand - Überragende Intelligenz
+1219578,Schildhand - Ausgezeichnete Willenskraft
+1219579,Schildhand - Weisheit
+1219580,Zweihandwaffe - Zauberschlag
+1219581,Schild - Ausgezeichnete Ausdauer
+1219587,Umhang - Beweglichkeit
+1220623,Schild - Kritische Trefferchance
+1220624,Armschiene - Große Zaubermacht
+1223768,Frostige Weste
+1223770,Frostige Handschuhe
+1223772,Frostige Handgelenke
+1224607,Kapuze des scharlachroten Auguren
+1224608,Mantel des scharlachroten Auguren
+1224609,Gewänder des scharlachroten Auguren
+1224610,Manschetten des scharlachroten Auguren
+1224611,Fäustlinge des scharlachroten Auguren
+1224612,Riemen des scharlachroten Auguren
+1224613,Gamaschen des scharlachroten Auguren
+1224614,Sohlen des scharlachroten Auguren
+1224615,Bandana des scharlachroten Spitzels
+1224616,Schulterschützer des scharlachroten Spitzels
+1224617,Weste des scharlachroten Spitzels
+1224618,Armschienen des scharlachroten Spitzels
+1224619,Handschuhe des scharlachroten Spitzels
+1224620,Gürtel des scharlachroten Spitzels
+1224621,Beinkleider des scharlachroten Spitzels
+1224622,Schuhe des scharlachroten Spitzels
+1224623,Kappe des scharlachroten Jägers
+1224624,Schulterstücke des scharlachroten Jägers
+1224625,Kette des scharlachroten Jägers
+1224626,Handgelenksschützer des scharlachroten Jägers
+1224627,Handschützer des scharlachroten Jägers
+1224628,Schnalle des scharlachroten Jägers
+1224629,Beinschützer des scharlachroten Jägers
+1224630,Stiefel des scharlachroten Jägers
+1224631,Helm des scharlachroten Soldaten
+1224632,Schiftung des scharlachroten Soldaten
+1224633,Brustplatte des scharlachroten Soldaten
+1224635,Schützer des scharlachroten Soldaten
+1224636,Handschutz des scharlachroten Soldaten
+1224637,Taillenschutz des scharlachroten Soldaten
+1224638,Beinplatten des scharlachroten Soldaten
+1224639,Stampfer des scharlachroten Soldaten
+1225758,Pirschersteak
+1225759,Filet aus der Flanke
+1225760,Morgengrauenomelett
+1225762,Fleckfinnenfestmahl
+1225763,Großes Hummerbankett
+1226206,Tüftelkiste
+1226207,Tüftelkiste: Teleportation
+1226208,Tüftelkiste: Nitrobooster
+1226209,Tüftelkiste: Magnetversetzung
+1226213,Halbwegs sicherer Transporter: Neu-Avalon
+1226689,Scharlachroter Köcher
+1226690,Scharlachroter Munitionsbeutel
+1227723,Kreuzzüglerknappsack
+1227724,Blutrote Morgengespinsttasche
+1229432,Lagerzelt
+1229504,Fraktionsbanner
+1229745,Fischglas
+1230117,Verbandtasche
+1230171,Schleifstein
+1230564,Manabrunnen
+1230643,Verzauberte Laute
+1230656,Materialbot
+1231128,Waffe - Oberster Kreuzzügler
+1231139,Zweihandwaffe - Oberster Arkanist
+1231164,Waffe - Oberster Zauberer
+1232172,Zweihandwaffe verzaubern - Großinquisitor
+1240943,Alchemie
+1244421,Destilliertes Feuerwasser
+1244431,Schwacher Heiltrank
+1244436,Erheblicher Heiltrank
+1244645,Geringer verfärbter Heiltrank
+1244646,Verfärbter Heiltrank
+1244647,Großer verfärbter Heiltrank
+1244648,Überragender verfärbter Heiltrank
+1245287,Kupferrute
+1245320,Staub zu Partikel
+1245321,Übungszauberstab des Novizen
+1247741,Rückenflossenheilbutt
+1248458,Armschiene - Schwache Intelligenz
+1248459,Armschiene - Schwache Heilkraft
+1248460,Armschiene - Geringe Beweglichkeit
+1248461,Verwirbelter Netherzauberstab
+1248498,Armschiene - Geringere Heilkraft
+1248500,Armschiene - Große Beweglichkeit
+1248505,Kleiner ewiger Zauberstab
+1248509,Traumzweigzauberstab
+1248510,Enchant 2H Weapon - Lesser Agility
+1248511,Enchant 2H Weapon - Lesser Strength
+1248515,Großer ewiger Zauberstab
+1248528,Handschuhe - Hochentwickelte Kürschnerei
+1248599,Armschiene - Überragende Beweglichkeit
+1248607,Enchant 2H Weapon - Mighty Spell Power
+1248636,Enchant 2H Weapon - Mighty Healing Power
+1248640,Handschuhe - Überragende Stärke
+1248645,Handschuhe - Natürliche Macht
+1248650,Hervorragender Zauberstab
+1248661,Armschiene - Überragende Intelligenz
+1248665,Armschiene - Überragende Abwehr
+1248668,Enchant 2H Weapon - Strength
+1248703,Schimmernder Stab
+1248739,Seelenstab
+1248745,Kugel der mystischen Einsicht
+1248748,Kugel der Seelen
+1248752,Mystischer Pilz
+1248754,Grundsätze der Silbernen Hand
+1248755,Ikone aus poliertem Treibholz
+1248757,Waffe - Einsicht
+1248760,Waffe - Erholung
+1248805,Waffe - Offenbarung
+1248974,Klauen des Zorns
+1249006,Buchband der Anrufung
+1249019,Halskette - Stärke
+1249057,Halskette - Zaubermacht
+1249058,Halskette - Heilkraft
+1249059,Halskette - Beweglichkeit
+1249060,Halskette - Abwehr
+1249061,Strahlender Stab
+1249064,Traumstab
+1249069,Echtsilbermedium
+1249070,Gefäß der gewundenen Essenz
+1249071,Brust - Absorption
+1249107,Gefrorenes Herz des Berges
+1249112,Geschmolzenes Herz des Berges
+1249114,Schlafendes Herz des Berges
+1249128,Götze des Traums
+1249630,Himmelblauer Farbstoff
+1249631,Magentafarbener Farbstoff
+1249632,Viridiangrüner Farbstoff
+1249633,Schwefelsäure
+1249634,Sandpapier
+1249957,Ruhetee
+1249958,Königlicher Tee
+1249959,Wurzeltee
+1249960,Triagetee
+1249961,Sonniger Tee
+1249962,Tee des Weisen
+1249963,Giftiger Smoothie
+1249964,Schleimiger Smoothie
+1249965,Mrrggl Smrrthle
+1249966,Verkalkter Smoothie
+1249967,Scharfer Smoothie
+1249968,Heftiger Smoothie
+1250142,Pikante Hirschfrikadelle
+1250143,Erhabener Rollbraten
+1250144,Fledermausragout
+1250145,Pikanter Schildkröteneintopf
+1250146,Pfefferflanke
+1250147,Bärengeschnetzeltes
+1250148,Dampfendes Hirschsteak
+1250149,Flinkschlagsteak
+1250150,Rippchen vom tobenden Raptor
+1250151,Bärenbraten
+1250152,Langsam gegarter prähistorischer Raptor
+1250153,Raptorrouladen
+1250154,Zweifach gewürzte Raptorscheibe
+1250155,Riesiges Rührei
+1250156,Schmackhafte Raptorenhappen
+1250157,Frühstücksomelett
+1250158,Muschellinguine
+1250775,Enthüllender Trunk
+1250776,Trank der Raubtierinstinkte
+1250777,Elixier der Gerissenheit
+1250778,Elixier der Phalanx
+1250779,Schwaches Klerikerelixier
+1250780,Geringes Klerikerelixier
+1250781,Klerikerelixier
+1250782,Großes Klerikerelixier
+1250783,Elixier der Seelenstärke
+1250784,Elixier der großen Seelenstärke
+1250785,Elixier der bösartigen Regeneration
+1250786,Elixier der Eule
+1250788,Schwaches Magierblutelixier
+1250789,Geringes Magierblutelixier
+1250790,Großes Magierblutelixier
+1250792,Elixier der Naturmacht
+1250793,Elixier der schwachen Willenskraft
+1250794,Elixier der geringen Willenskraft
+1250795,Elixier der Willenskraft
+1250796,Elixier der großen Willenskraft
+1250797,Elixier des Wals
+1250798,Elixier der Stärke
+1250799,Elixier der Wildheit
+1250800,Elixier des Grizzlybären
+1250801,Elixier der geringen Intelligenz
+1250802,Elixier der Intelligenz
+1251729,Schwacher Trank des Zauberschlags
+1251730,Geringer Trank des Zauberschlags
+1251731,Trank des Zauberschlags
+1251732,Großer Trank des Zauberschlags
+1251733,Überragender Trank des Zauberschlags
+1251734,Erheblicher Trank des Zauberschlags
+1251735,Schwacher Trank der Raserei
+1251736,Geringer Trank der Raserei
+1251737,Trank der Raserei
+1251738,Großer Trank der Raserei
+1251739,Überragender Trank der Raserei
+1251740,Erheblicher Trank der Raserei
+1251741,Schwacher Trank des Heilers
+1251742,Geringer Trank des Heilers
+1251743,Trank des Heilers
+1251745,Überragender Trank des Heilers
+1251747,Erheblicher Trank des Heilers
+1251748,Trank des giftigen Blutes
+1251749,Trank des ätzenden Dunstes
+1251751,Drachenfeuertrank
+1251752,Trank der Elementarbannung
+1251753,Trank des Wildtiertötens
+1252229,Edelsteinbesetzte Kupferstiefel
+1252230,Seltsame Bronzestiefel
+1252231,Leuchtende Kupferstiefel
+1252232,Sterlingsilberstiefel
+1252233,Sterlingsilbergamaschen
+1252234,Sterlingsilberstulpen
+1252235,Sterlingsilberschulterstücke
+1252236,Sterlingsilberbrustplatte
+1252237,Kettenhemd des Veteranen
+1252238,Kettenhemd des Gardisten
+1252239,Kettenhemd des Beschützers
+1252240,Kettenhemd des Akolythen
+1252241,Kettenhemd des Kreuzfahrers
+1252242,Kettengamaschen des Veteranen
+1252243,Kettengamaschen des Gardisten
+1252244,Kettengamaschen des Beschützers
+1252245,Kettengamaschen des Akolythen
+1252246,Kettengamaschen des Kreuzfahrers
+1252247,Kettenhelm des Veteranen
+1252248,Kettenhelm des Gardisten
+1252249,Kettenhelm des Beschützers
+1252250,Kettenhelm des Akolythen
+1252251,Kettenhelm des Kreuzfahrers
+1252252,Stiefel des Veteranen
+1252253,Stiefel des Gardisten
+1252254,Stiefel des Beschützers
+1252255,Stiefel des Akolythen
+1252256,Stiefel des Kreuzfahrers
+1252257,Handschuhe des Veteranen
+1252258,Handschuhe des Gardisten
+1252259,Handschuhe des Beschützers
+1252260,Handschuhe des Akolythen
+1252261,Handschuhe des Kreuzfahrers
+1252262,Kettengürtel des Veteranen
+1252263,Kettengürtel des Gardisten
+1252264,Kettengürtel des Beschützers
+1252265,Kettengürtel des Akolythen
+1252266,Kettengürtel des Kreuzfahrers
+1252267,Versilbertes Kettenhemd des Veteranen
+1252268,Versilbertes Kettenhemd des Gardisten
+1252269,Versilbertes Kettenhemd des Beschützers
+1252270,Versilbertes Kettenhemd des Akolythen
+1252271,Versilbertes Kettenhemd des Kreuzfahrers
+1252272,Versilberte Kettengamaschen des Veteranen
+1252273,Versilberte Kettengamaschen des Gardisten
+1252274,Versilberte Kettengamaschen des Beschützers
+1252275,Versilberte Kettengamaschen des Akolythen
+1252276,Versilberte Kettengamaschen des Kreuzfahrers
+1252277,Versilberter Kettenhelm des Veteranen
+1252278,Versilberter Kettenhelm des Gardisten
+1252279,Versilberter Kettenhelm des Beschützers
+1252280,Versilberter Kettenhelm des Akolythen
+1252281,Versilberter Kettenhelm des Kreuzfahrers
+1252282,Hartgoldkürass
+1252283,Hartgoldstiefel
+1252284,Hartgoldarmschienen
+1252285,Hartgoldgamaschen
+1252286,Hartgoldkappe
+1252287,Hartgoldstulpen
+1252288,Hartgoldschulterstücke
+1252289,Glänzende Mithrilbrustplatte
+1252290,Glänzende Mithrilschulterstücke
+1252291,Glänzende Mithrilstiefel
+1252292,Glänzender Mithrilhelm
+1252293,Glänzende Mithrilhose
+1252294,Glänzende Mithrilstulpen
+1252295,Stiefel des Offiziers
+1252296,Stiefel der Schildwache
+1252297,Stiefel der Wacht
+1252298,Stiefel des Präfekten
+1252299,Stiefel des Rechtsprechers
+1252300,Handschuhe des Offiziers
+1252301,Handschuhe der Schildwache
+1252302,Handschuhe der Wacht
+1252303,Handschuhe des Präfekten
+1252304,Handschuhe des Rechtsprechers
+1252305,Gürtel des Offiziers
+1252306,Gürtel der Schildwache
+1252307,Gürtel der Wacht
+1252308,Gürtel des Präfekten
+1252309,Gürtel des Rechtsprechers
+1252310,Sabatons des Offiziers
+1252311,Sabatons der Schildwache
+1252312,Sabatons der Wacht
+1252313,Sabatons des Präfekten
+1252314,Sabatons des Rechtsprechers
+1252315,Stulpen des Offiziers
+1252316,Stulpen der Schildwache
+1252317,Stulpen der Wacht
+1252318,Stulpen des Präfekten
+1252319,Stulpen des Rechtsprechers
+1252320,Taillenschutz des Offiziers
+1252321,Taillenschutz der Schildwache
+1252322,Taillenschutz der Wacht
+1252323,Taillenschutz des Präfekten
+1252324,Taillenschutz des Rechtsprechers
+1252325,Schulterstücke des Offiziers
+1252326,Schulterstücke der Schildwache
+1252327,Schulterstücke der Wacht
+1252328,Schulterstücke des Präfekten
+1252329,Schulterstücke des Rechtsprechers
+1252330,Handgelenksschützer des Offiziers
+1252331,Handgelenksschützer der Schildwache
+1252332,Handgelenksschützer der Wacht
+1252333,Handgelenksschützer des Präfekten
+1252334,Handgelenksschützer des Rechtsprechers
+1252335,Gesegnete Plattenschulterstücke
+1252336,Gesegnete Plattenstiefel
+1252337,Gesegnete Plattenstulpen
+1252338,Imperiale Plattenstulpen
+1252339,Gesegnete Plattenarmschienen
+1252340,Gesegnete Plattengamaschen
+1252341,Gesegneter Plattengürtel
+1252342,Gesegneter Plattenhelm
+1252343,Gesegnete Plattenrüstung
+1252344,Angereicherte Thoriumbrustplatte
+1252345,Angereicherte Thoriumgamaschen
+1252346,Angereicherter Thoriumhelm
+1252347,Beinplatten des Feldherrn
+1252348,Bruchfester Helm
+1252349,Märtyrerbeinplatten
+1252350,Erretterbrustplatte
+1252351,Messingschlagring
+1252352,Bronzenes Dory
+1252353,Eisenfäuste
+1252354,Stahlspeer
+1252355,Eiserner Morgenstern
+1252356,Mithrilkurzschwert
+1252357,Mithrilkriegshammer
+1252358,Mithrilklauen
+1252359,Mithrilclaymore
+1252360,Mithrilstilett
+1252361,Geladene Mithrilstreitaxt
+1252362,Thoriumgroßstreitkolben
+1252363,Thoriumcestus
+1252364,Thoriumstangenaxt
+1252365,Grober Dolch
+1252366,Sturmschnitzer
+1252367,Baghnakh
+1252368,Gleve des Legioniten
+1252566,Pikantes Schalkflosse Supreme
+1254967,Makellose Skorpidgamaschen
+1254968,Schwarzer Drachenschuppenhelm
+1254969,Blauer Drachenschuppenhelm
+1254970,Rote Drachenschuppengamaschen
+1254971,Geladene Skorpidstiefel
+1254972,Weiche Skorpidsabatons
+1254973,Geladene Skorpidgamaschen
+1254974,Weiche Skorpidweste
+1254975,Geladene Skorpidweste
+1254976,Weicher Skorpidhelm
+1254977,Geladene Skorpidstulpen
+1254978,Weicher Skorpidgürtel
+1254979,Schwere Skorpidstiefel
+1254980,Geladene Skorpidarmschienen
+1254981,Geschmeidige Skorpidschultern
+1254982,Panzergürtel des Heilers
+1254983,Panzergürtel des Scharmützlers
+1254984,Panzergürtel des Himmelsrufers
+1254985,Panzergürtel des Pirschers
+1254986,Panzerstulpen des Heilers
+1254987,Panzerstulpen des Scharmützlers
+1254988,Panzerstulpen des Himmelsrufers
+1254989,Panzerstulpen des Pirschers
+1254990,Geladene Skorpidschultern
+1254991,Weiche Skorpidarmschienen
+1254992,Geladener Skorpidhelm
+1254993,Weiche Skorpidgamaschen
+1254994,Panzersabatons des Heilers
+1254995,Panzersabatons des Scharmützlers
+1254996,Panzersabatons des Himmelsrufers
+1254997,Panzersabatons des Pirschers
+1254998,Geladener Skorpidgürtel
+1254999,Weiche Skorpidstiefel
+1255000,Panzerarmschienen des Heilers
+1255001,Panzerarmschienen des Scharmützlers
+1255002,Panzerarmschienen des Himmelsrufers
+1255003,Panzerarmschienen des Pirschers
+1255004,Panzerschultern des Heilers
+1255005,Panzerschultern des Scharmützlers
+1255006,Panzerschultern des Himmelsrufers
+1255007,Panzerschultern des Pirschers
+1255008,Panzerstiefel des Heilers
+1255009,Panzerstiefel des Scharmützlers
+1255010,Panzerstiefel des Himmelsrufers
+1255011,Panzerstiefel des Pirschers
+1255012,Eisenfedergamaschen
+1255013,Kriegsbärenhelm
+1255014,Tunika der Holzschlundfeste
+1255015,Dämmerrüstung
+1255016,Lebendige Krone
+1255017,Blauer Wildlederhut
+1255018,Kunstvoll gefertigte Lederhose
+1255019,Blaue Wildlederarmschienen
+1255020,Kunstvoll gefertigte Lederschulterklappen
+1255021,Blauer Wildledergürtel
+1255022,Kunstvoll gefertigte Lederarmschienen
+1255023,Tückische Lederschulterstücke
+1255024,Blaue Wildlederrüstung
+1255025,Kunstvoll gefertigte Lederkrone
+1255026,Blaue Wildlederschultern
+1255027,Kunstvoll gefertigte Lederstulpen
+1255028,Tückische Lederstiefel
+1255029,Blaue Wildlederhose
+1255030,Kunstvoll gefertigte Lederrüstung
+1255031,Ledertaillenschutz des Heilers
+1255032,Ledertaillenschutz des Himmelsrufers
+1255033,Ledertaillenschutz des Aufsehers
+1255034,Ledertaillenschutz des Schleichers
+1255035,Ledertaillenschutz des Streuners
+1255036,Lederstulpen des Heilers
+1255037,Lederstulpen des Himmelsrufers
+1255038,Lederstulpen des Aufsehers
+1255039,Lederstulpen des Schleichers
+1255040,Lederstulpen des Streuners
+1255041,Blaue Wildlederhandschuhe
+1255042,Kunstvoll gefertigte Lederstiefel
+1255043,Lederstiefel des Heilers
+1255044,Lederstiefel des Himmelsrufers
+1255045,Lederstiefel des Aufsehers
+1255046,Lederstiefel des Schleichers
+1255047,Lederstiefel des Streuners
+1255048,Blaue Wildlederschuhe
+1255049,Kunstvoll gefertigter Ledergürtel
+1255050,Lederarmschienen des Heilers
+1255051,Lederarmschienen des Himmelsrufers
+1255052,Lederarmschienen des Aufsehers
+1255053,Lederarmschienen des Schleichers
+1255054,Lederarmschienen des Streuners
+1255055,Lederschultern des Heilers
+1255056,Lederschultern des Himmelsrufers
+1255057,Lederschultern des Wächters
+1255058,Lederschultern des Lauerers
+1255059,Lederschultern des Pirschers
+1255060,Lederschuhe des Heilers
+1255061,Lederschuhe des Himmelsrufers
+1255062,Lederschuhe des Aufsehers
+1255063,Lederschuhe des Schleichers
+1255064,Lederschuhe des Streuners
+1255065,Lederhandschuhe des Heilers
+1255066,Lederhandschuhe des Himmelsrufers
+1255067,Lederhandschuhe des Scharmützlers
+1255068,Lederhandschuhe des Aufsehers
+1255069,Lederhandschuhe des Pirschers
+1255070,Lederhandschuhe des Schleichers
+1255071,Lederhandschuhe des Streuners
+1255075,Ledergürtel des Heilers
+1255076,Ledergürtel des Himmelsrufers
+1255077,Ledergürtel des Scharmützlers
+1255078,Ledergürtel des Aufsehers
+1255079,Ledergürtel des Pirschers
+1255080,Ledergürtel des Schleichers
+1255081,Ledergürtel des Streuners
+1255082,Ledergamaschen der Weisheit
+1255083,Lederkilt des Sturmreiters
+1255084,Totemikerledergamaschen
+1255085,Lederkilt des Verteidigers
+1255086,Lederbeinschützer des Fallenstellers
+1255087,Lederbeinschützer des Grubenkämpfers
+1255088,Lederhelm der Weisheit
+1255089,Lederhelm des Sturmreiters
+1255090,Totemikerlederhelm
+1255091,Lederhelm des Verteidigers
+1255092,Lederhelm des Fallenstellers
+1255093,Lederhelm des Grubenkämpfers
+1255097,Ledertunika der Weisheit
+1255098,Ledertunika des Sturmreiters
+1255099,Totemikerledertunika
+1255100,Ledertunika des Verteidigers
+1255101,Ledertunika des Fallenstellers
+1255102,Ledertunika des Grubenkämpfers
+1255103,Lederstiefel des Hügelwächters
+1255104,Lederkapuze der Weisheit
+1255105,Lederkapuze des Sturmreiters
+1255106,Totemikerlederkapuze
+1255107,Lederkapuze des Verteidigers
+1255108,Lederkapuze des Fallenstellers
+1255109,Lederkapuze des Grubenkämpfers
+1255110,Lederhose der Weisheit
+1255111,Lederhose des Sturmreiters
+1255112,Totemikerlederhose
+1255113,Lederhose des Verteidigers
+1255114,Lederhose des Fallenstellers
+1255115,Lederhose des Grubenkämpfers
+1255116,Lederstiefel der Weisheit
+1255117,Lederstiefel des Sturmreiters
+1255118,Totemikerlederstiefel
+1255119,Lederstiefel des Verteidigers
+1255120,Lederstiefel des Fallenstellers
+1255121,Lederstiefel des Grubenkämpfers
+1255123,Kraftvolles mittleres Rüstungsset
+1255124,Mystisches mittleres Rüstungsset
+1255125,Lederhandschuhe der Weisheit
+1255126,Lederhandschuhe des Sturmreiters
+1255127,Totemikerlederhandschuhe
+1255128,Lederhandschuhe des Verteidigers
+1255129,Lederhandschuhe des Fallenstellers
+1255130,Lederhandschuhe des Grubenkämpfers
+1255131,Lederrüstung der Weisheit
+1255132,Lederrüstung des Sturmreiters
+1255133,Totemikerlederrüstung
+1255134,Lederrüstung des Verteidigers
+1255135,Lederrüstung des Fallenstellers
+1255136,Lederrüstung des Grubenkämpfers
+1255137,Ledergürtel der Weisheit
+1255138,Ledergürtel des Sturmreiters
+1255139,Totemikerledergürtel
+1255140,Ledergürtel des Verteidigers
+1255141,Ledergürtel des Fallenstellers
+1255142,Ledergürtel des Grubenkämpfers
+1255143,Mondscheinstiefel
+1255144,Murlocschuppenschuhe
+1255145,Dunkle Lederstiefel
+1255146,Schwarzwelpenpantoffeln
+1255241,Reinigender Eintopf
+1257013,Leinenreagenzientasche
+1257017,Wollreagenzientasche
+1257368,Schärpe des Novizenarkanisten
+1257369,Schärpe des inbrünstigen Novizen
+1257370,Makellose Stiefel
+1257371,Seidenstiefel
+1257372,Flammenstiefel
+1257373,Schattenstiefel
+1257374,Perlenstiefel
+1257375,Glänzende Stiefel
+1257376,Filigrane makellose Robe
+1257377,Filigrane Seidenrobe
+1257378,Filigrane Flammenrobe
+1257379,Filigrane Schattenrobe
+1257380,Filigrane Perlenrobe
+1257381,Filigrane glänzende Robe
+1257382,Makellose Handschuhe
+1257383,Seidenhandschuhe
+1257384,Flammenhandschuhe
+1257385,Schattenhandschuhe
+1257386,Perlenhandschuhe
+1257387,Glänzende Handschuhe
+1257388,Makellose Schärpe
+1257389,Seidenschärpe
+1257390,Flammenschärpe
+1257391,Schattenschärpe
+1257392,Perlenschärpe
+1257393,Glänzende Schärpe
+1257394,Filigrane makellose Gamaschen
+1257395,Filigrane Seidengamaschen
+1257396,Filigrane Flammengamaschen
+1257397,Filigrane Schattengamaschen
+1257398,Filigrane Perlengamaschen
+1257399,Filigrane glänzende Gamaschen
+1257400,Makelloser Reif
+1257401,Seidenreif
+1257402,Flammenreif
+1257403,Schattenreif
+1257404,Perlenreif
+1257405,Glänzender Reif
+1257406,Makellose Robe
+1257407,Seidenrobe
+1257408,Flammenrobe
+1257409,Schattenrobe
+1257410,Perlenrobe
+1257411,Glänzende Robe
+1257412,Seidenreagenzientasche
+1257413,Filigraner makelloser Reif
+1257414,Filigraner Seidenreif
+1257415,Filigraner Flammenreif
+1257416,Filigraner Schattenreif
+1257417,Filigraner Perlenreif
+1257418,Filigraner glänzender Reif
+1257419,Makellose Gamaschen
+1257420,Seidengamaschen
+1257421,Flammengamaschen
+1257422,Schattengamaschen
+1257423,Perlengamaschen
+1257424,Glänzende Gamaschen
+1257425,Gamaschen der Irdenen
+1257426,Vergoldete Pantoffeln
+1257427,Schäumende Pantoffeln
+1257428,Feurige Pantoffeln
+1257429,Schwarze Pantoffeln
+1257430,Goldene Pantoffeln
+1257431,Strahlende Pantoffeln
+1257432,Irdene Seidenpantoffeln
+1257433,Irdene Seidenkapuze
+1257434,Irdene Seidenhandschuhe
+1257435,Irdene Seidenmanschetten
+1257436,Vergoldete Handwickel
+1257437,Schäumende Handwickel
+1257438,Feurige Handwickel
+1257439,Schwarze Handwickel
+1257440,Goldene Handwickel
+1257441,Strahlende Handwickel
+1257442,Irdene Seidenschulterstücke
+1257443,Magiestoffreagenzientasche
+1257444,Vergoldete Kordel
+1257445,Schäumende Kordel
+1257446,Feurige Kordel
+1257447,Schwarze Kordel
+1257448,Goldene Kordel
+1257449,Strahlende Kordel
+1257450,Nethergeldschulterstücke
+1257451,Netherschaumschulterstücke
+1257452,Netherflammenschulterstücke
+1257453,Netherperlenschulterstücke
+1257454,Netherglanzschulterstücke
+1257455,Netherlichtschulterstücke
+1257456,Nethergeldmanschetten
+1257457,Netherschaummanschetten
+1257458,Netherflammenmanschetten
+1257459,Netherperlenmanschetten
+1257460,Netherglanzmanschetten
+1257461,Netherlichtmanschetten
+1257462,Geisterzwirnkordel
+1257463,Irdene Stoffhandschuhe
+1257464,Irdene Stoffkordel
+1257465,Runenstoffreagenzientasche
+1257466,Vergoldeter Hüftgürtel
+1257467,Schäumender Hüftgürtel
+1257468,Feuriger Hüftgürtel
+1257469,Schwarzer Hüftgürtel
+1257470,Goldener Hüftgürtel
+1257471,Strahlender Hüftgürtel
+1257472,Irdene Stoffstiefel
+1257473,Vergoldete Handschuhe
+1257474,Schäumende Handschuhe
+1257475,Feurige Handschuhe
+1257476,Schwarze Handschuhe
+1257477,Goldene Handschuhe
+1257479,Vergoldete Sandalen
+1257480,Schäumende Sandalen
+1257481,Feurige Sandalen
+1257482,Schwarze Sandalen
+1257483,Goldene Sandalen
+1257484,Strahlende Sandalen
+1257485,Irdener Stoffmantel
+1257486,Irdene Stoffweste
+1257487,Runenstoffmanschetten
+1257488,Irdene Stoffgamaschen
+1257489,Geisterzwirnmantel
+1257490,Geisterzwirnstiefel
+1257491,Irdene Stoffmanschetten
+1257492,Mondstoffreagenzientasche
+1257493,Geisterzwirnkapuze
+1257494,Irdene Stoffkrone
+1257495,Bodenlose Reagenzientasche
+1262978,Krümels Festmahl
+1262990,Angelständer
+1262996,Studierzimmer für Gifte
+1262998,Angelhütte
+1263001,Labor des Seuchenarztes
+1263005,Gärbehälter
+1263031,Gerbrahmen
+1263032,Spinnrad
+1263034,Reparaturbot
+1263056,Arkaner Wiederverwerter
+1263067,Eisenofen
+1263073,Meisterschmiede
+1263078,Alchemielaboratorium
+1263079,Nähmaschine
+1263080,Webstuhl
+1263082,Arkane Schmiede
+1263083,Werkbank des Anarchisten
+1266893,SAF-T-Griffe
+1266905,SAF-T-Dynamit
+1266906,SAF-T-Kupferbombe
+1266907,EZ-Thro-Wickel
+1266908,EZ-Thro-Kupferbombe XL
+1266909,Rutschfeste SAF-T-Polsterung
+1266910,SAF-T-Bronzebombe
+1266911,Riesiges SAF-T-Dynamit
+1266912,SAF-T-Glocke
+1266913,Sicherheitsschafe
+1266914,Feuerfeste EZ-Thro-Lunte
+1266915,EZ-Thro-Bronzemörser
+1266916,EZ-Thro-Granate
+1266917,SAF-T-Hülle
+1266918,SAF-T-Bombe
+1266919,Notfallfeldumhang
+1266920,Kompakter Kleintiertransportkorb
+1266921,EZ-Thro Tru-Trigger
+1266922,Tru-Trigger Frag Bomb
+1266923,SAF-T-Einwegfallschirm
+1266924,Gnomisches Armeemesser
+1266925,Plünderang
+1266926,SAF-T-Röhre
+1266927,Schlaues SAF-T-Dynamit
+1266928,EZ-Thro-Gehäuse
+1266929,EZ-Thro-Thoriumgranate
+1266930,EZ-Thro-Dunkelbombe
+1266931,EZ-Thro-Manabombe
+1266932,EZ-Thro-Feldtransporter: Gadgetzan
+1266933,SAF-T-Notzerfetzer: Everlook
+1266934,EZ- und SAF-Feldtransporter: Hyjalgipfel
+1266935,Ultrasichere wiederaufladbare Batterie
+1266936,Dimensionstransporter: Hyjalgipfel
+1266937,Gnomischer Geflügelisierer
+1266938,Ultraleichter Goblingleiter
+1266939,Gnomische Wettermaschine
+1266940,Tarner 52
+1266941,SAF-T-Nitrobooster
+1266942,Magnetischer EZ-Thro-Versetzer
+1266943,SAF-T-Teleporter
+1270632,Tierkekse
+1270633,Himmelswallsoufflé
+1270635,Zangenhappen
+1278067,Köder und Angelzubehör
+1283400,Lagerfeuer des Gesellen
+1286792,Aufstellvorrichtung für Zentaurenbanner
+1286796,Hufförmiges Pedal
+1291341,Expertenlagerfeuer
+1292920,Beinkleider des Hainhüters
+1292921,Handschutz des Hainhüters
+1292923,Schulterpolster des Hainhüters
+1292924,Stampfer des Hainhüters
+1292925,Kilt des Hainhüters
+1292926,Fäustlinge des Hainhüters
+1292927,Mantelung des Hainhüters
+1292928,Sandalen des Hainhüters
+1292929,Beinschützer des Hainhüters
+1292930,Handschützer des Hainhüters
+1292931,Schulterstücke des Hainhüters
+1292932,Stiefel des Hainhüters
+1292933,Gamaschen des Hainhüters
+1292934,Stulpen des Hainhüters
+1292935,Schiftung des Hainhüters
+1292936,Treter des Hainhüters
+1292937,Beinschützer des Wildpirschers
+1292938,Stulpen des Wildpirschers
+1292939,Schiftung des Wildpirschers
+1292940,Schienbeinschützer des Wildpirschers
+1292941,Manaflammenhose
+1292942,Manaflammenhandschuhe
+1292943,Manaflammenmantelung
+1292944,Manaflammenstiefel
+1292945,Gamaschen der Gerechtigkeit
+1292946,Stulpen der Gerechtigkeit
+1292947,Schiftung der Gerechtigkeit
+1292948,Schienbeinschützer der Gerechtigkeit
+1292949,Beinplatten der Gerechtigkeit
+1292950,Handschuhe der Gerechtigkeit
+1292951,Schulterklappen der Gerechtigkeit
+1292952,Treter der Gerechtigkeit
+1292953,Beinschützer der Gerechtigkeit
+1292954,Handschützer der Gerechtigkeit
+1292955,Schulterstücke der Gerechtigkeit
+1292956,Sabatons der Gerechtigkeit
+1292957,Hose der Überzeugung
+1292958,Handschuhe der Überzeugung
+1292959,Mantelung der Überzeugung
+1292960,Treter der Überzeugung
+1292961,Gamaschen der Überzeugung
+1292962,Handschützer der Überzeugung
+1292963,Schulterstücke des Glaubens
+1292964,Stiefel der Überzeugung
+1292965,Grimmstichhose
+1292966,Grimmstichhandschuhe
+1292967,Grimmstichschiftung
+1292968,Grimmstichstiefel
+1292969,Geistrufergamaschen
+1292970,Geistruferhandschutz
+1292971,Geistruferschiftung
+1292972,Geistrufertreter
+1292973,Geistruferhose
+1292974,Geistruferstulpen
+1292975,Geistruferschulterklappen
+1292976,Geistruferbeinschützer
+1292977,Dämonenherzgamaschen
+1292978,Dämonenherzhandschuhe
+1292979,Dämonenherzschiftung
+1292980,Dämonenherzstiefel
+1292981,Beinplatten des Ruhms
+1292982,Stulpen des Ruhms
+1292983,Schultern des Ruhms
+1292984,Schienbeinschützer des Ruhms
+1292985,Beinschützer des Ruhms
+1292986,Handschützer des Ruhms
+1292987,Schulterstücke des Ruhms
+1292988,Sabatons des Ruhms
+1293559,Fläschchen der natürlichen Genauigkeit
+1293560,Fläschchen der natürlichen Aggression
+1293561,Fläschchen der natürlichen Präzision
+1293562,Fläschchen der natürlichen Schnelligkeit
+1293849,Flinkfederpfeil
+1293850,Flinkschlagschuss
+1294014,Süßtatzenmarmelade
+1294054,Handschuhe - Lotusklaue
+1295805,Salziger Meeresfrüchteeintopf
+1295834,Stinknormaler Bleichhauer
+1297120,Handschuhe des Giftspeiers
+1297121,Kordel des Giftspeiers
+1297122,Fußpolster des Giftspeiers
+1297123,Handschuhe des Schwarmpflegers
+1297124,Kordel des Schwarmpflegers
+1297125,Fußpolster des Schwarmpflegers
+1297126,Gallblasenklauen
+1297127,Gallblasengurt
+1297128,Gallblasenstiefel
+1297129,Klauen des Schwarmschlägers
+1297130,Gurt des Schwarmschlägers
+1297131,Stiefel des Schwarmschlägers
+1297132,Schuppendarmklammerer
+1297133,Schuppendarmgürtel
+1297134,Schuppendarmtreter
+1297135,Klammerer des Brutwächters
+1297136,Gürtel des Brutwächters
+1297137,Treter des Brutwächters
+1297138,Handschutz des Schreckensschlitzers
+1297139,Unterstützung des Schreckensschlitzers
+1297140,Stampfer des Schreckensschlitzers
+1297141,Handschutz des Gelegefürsten
+1297142,Unterstützung des Gelegefürsten
+1297143,Stampfer des Gelegefürsten
+1299914,Geistruferkilt
+1299915,Geistruferhandschuhe
+1299916,Geistrufermantelung
+1299917,Geistruferstiefel
+1301421,Wolkenblaues himmelsgeschmiedetes Kettenhemd
+1301422,Wolkenblauer himmelsgeschmiedeter Handgelenksschutz
+1301423,Wolkenblaue himmelsgeschmiedete Stulpen
+1301424,Wolkenblaue himmelsgeschmiedete Kette
+1301425,Wolkenblaue himmelsgeschmiedete Beinschützer
+1301427,Wolkenblauer böengewobener Harnisch
+1301428,Wolkenblaue böengewobene Armschienen
+1301429,Wolkenblaue böengewobene Handschuhe
+1301430,Wolkenblauer böengewobener Gürtel
+1301431,Wolkenblaue böengewobene Beinkleider
+1301432,Wolkenblaue böengewobene Stiefel
+1301433,Wolkenblaues windgewickeltes Wams
+1301434,Wolkenblaue windgewickelte Armschützer
+1301435,Wolkenblaue windgewickelte Fäustlinge
+1301436,Wolkenblaues windgewickeltes Band
+1301437,Wolkenblaue windgewickelte Hosen
+1301438,Wolkenblaue windgewickelte Fußlappen
+1301439,Wolkenblaue sturmgenähte Weste
+1301440,Wolkenblaue sturmgenähte Manschetten
+1301441,Wolkenblaue sturmgenähte Handwickel
+1301442,Wolkenblaue sturmgenähte Kordel
+1301443,Wolkenblaue sturmgenähte Gamaschen
+1301444,Wolkenblaue sturmgenähte Schuhe
+1301445,Azurblaues himmelsgeschmiedetes Kettenhemd
+1301446,Azurblauer himmelsgeschmiedeter Handgelenksschutz
+1301447,Azurblaue himmelsgeschmiedete Stulpen
+1301448,Azurblaue himmelsgeschmiedete Kette
+1301449,Azurblaue himmelsgeschmiedete Beinschützer
+1301451,Azurblauer böengewobener Harnisch
+1301452,Azurblaue böengewobene Armschienen
+1301453,Azurblaue böengewobene Handschuhe
+1301454,Azurblauer böengewobener Gürtel
+1301455,Azurblaue böengewobene Beinkleider
+1301456,Azurblaue böengewobene Stiefel
+1301457,Azurblaues windgewickeltes Wams
+1301458,Azurblaue windgewickelte Armschützer
+1301459,Azurblaue windgewickelte Fäustlinge
+1301460,Azurblaues windgewickeltes Band
+1301461,Azurblaue windgewickelte Hosen
+1301462,Azurblaue windgewickelte Fußlappen
+1301463,Azurblaue sturmgenähte Weste
+1301464,Azurblaue sturmgenähte Manschetten
+1301465,Azurblaue sturmgenähte Handwickel
+1301466,Azurblaue sturmgenähte Kordel
+1301468,Azurblaue sturmgenähte Gamaschen
+1301469,Azurblaue sturmgenähte Schuhe
+1301526,Wolkenblauer himmelsgeschmiedeter Helm
+1301527,Wolkenblaue himmelsgeschmiedete Schulterstücke
+1301528,Wolkenblaue böengewobene Kapuze
+1301529,Wolkenblaue böengewobene Schiftung
+1301530,Wolkenblaue windgewickelte Bedeckung
+1301531,Wolkenblaues windgewickeltes Tuch
+1301532,Wolkenblaue sturmgenähte Gugel
+1301533,Wolkenblaue sturmgenähte Schulterklappen
+1301534,Azurblauer himmelsgeschmiedeter Helm
+1301535,Azurblaue himmelsgeschmiedete Schulterstücke
+1301536,Azurblaue böengewobene Kapuze
+1301537,Azurblaue böengewobene Schiftung
+1301538,Azurblaue windgewickelte Bedeckung
+1301539,Azurblaues windgewickeltes Tuch
+1301540,Azurblaue sturmgenähte Gugel
+1301541,Azurblaue sturmgenähte Schulterklappen
+1302161,Überschreibender Singalwirker für Erntearbeiter
+1302598,Raue kupferne Kettenstiefel
+1302604,Leichte Lederreagenzientasche
+1306520,Fackel des Lichts
+1306521,Standhafter Buchband
+1306522,Buchband der Infusion
+1306523,Totem der Dringlichkeit
+1306524,Götze der Schnelligkeit
+1306525,Götze der Bärenzwillinge
+1306526,Holderwildkordel
+1306527,Halsband des Gesetzlosen
+1306528,Holderwildhosen
+1306529,Ewigkeitsschulterstücke
+1306530,Gelassene Handgelenksschützer
+1306531,Trauernde Handschützer
+1306532,Wildlederrüstungsset
+1306533,Eisenholzklinge
+1306534,Axt des Waldverteidigers
+1306535,Grünhammer
+1306536,Immergrüner Schild
+1306537,Ausgelaugte Thoriumsabatons
+1306538,Schwere Thoriumstulpen
+1306539,Azerothiumbeinplatten
+1306540,Roben der schwelenden Verwüstung
+1306541,Manaerfüllte Kordel
+1306542,Reifverkrustete Stiefel
+1306543,Teufelscape
+1306544,Umhang von Erde und Himmel
+1306545,Teufelsblutseelenbeutel
+1306546,SAF-T-Ultrapräzisionsfernrohr
+1306547,Hyper-Scharfschützengewehr Mk XVII Deluxe
+1308178,Launisches Hüfttuch
+1308179,Gerätschaftengurt
+1308180,Klapperkordel
+1308182,Zackenriemen
+1308183,Lockere Schutzbrille
+1308184,Verbogene Schutzbrille
+1308185,Klemmknopfschutzbrille
+1308186,Verbeulte Schutzbrille
+1317270,Ungeweihte Granate
+1317279,Transmutieren: Legionit
+1317958,Säckchen mit Kupferbomben
+1317959,Säckchen mit Bronzebomben
+1317960,Säckchen mit Eisenbomben
+1317961,Säckchen mit Dunkeleisenbomben
+1317962,Rissiger Schmiedehammer
+1317963,Mithrilschmiedehammer
+1317964,Arkanitschmiedehammer
+1319313,Panzerfisch
+1328948,Stiefel - Geschwindigkeit
+16985,Verderbnis
+1244433,Heiltrank
+7183,Elixier der schwachen Verteidigung
+461718,Gelassenheit
+3273,Erste Hilfe
+3274,Erste Hilfe
+7924,Erste Hilfe
+10846,Erste Hilfe
+1240927,Erste Hilfe
+1240928,Erste Hilfe
+1240929,Erste Hilfe
+1240930,Erste Hilfe
+1229737,Einfaches Lagerfeuer
+3100,Schmiedekunst
+3538,Schmiedekunst
+9785,Schmiedekunst
+1240944,Schmiedekunst
+1240955,Schmiedekunst
+1240966,Schmiedekunst
+1240979,Schmiedekunst
+3104,Lederverarbeitung
+3811,Lederverarbeitung
+10662,Lederverarbeitung
+1240950,Lederverarbeitung
+1240961,Lederverarbeitung
+1240972,Lederverarbeitung
+1240985,Lederverarbeitung
+3101,Alchimie
+3464,Alchimie
+11611,Alchimie
+2365,Trunk der Sprachen
+1244432,Geringer Heiltrank
+3102,Kochkunst
+3413,Kochkunst
+18260,Kochkunst
+1240945,Kochkunst
+1240956,Kochkunst
+1240967,Kochkunst
+1240980,Kochkunst
+3780,Schweres Rüstungsset
+3451,Trollblutelixier
+439128,Mondstahlbreitschwert
+439126,Goldene Schuppenhelmkappe
+439130,Goldene Schuppenschultern
+439132,Goldene Schuppengamaschen
+439124,Goldener Schuppenkürass
+439122,Goldene Schuppenstiefel
+439112,Wächtergürtel
+439110,Wächterlederarmschienen
+439097,Stiefel des Verzauberers
+439094,Langer Seidenumhang
+3909,Schneiderei
+3910,Schneiderei
+12180,Schneiderei
+1240953,Schneiderei
+1240964,Schneiderei
+1240976,Schneiderei
+1240988,Schneiderei
+4073,Mechanischer Drachling
+3977,Kunstloses Zielfernrohr
+3978,Standardzielfernrohr
+3979,Genaues Zielfernrohr
+4037,Ingenieurskunst
+4038,Ingenieurskunst
+12656,Ingenieurskunst
+1235244,Ingenieurskunst
+1240947,Ingenieurskunst
+1240958,Ingenieurskunst
+1240969,Ingenieurskunst
+1240982,Ingenieurskunst
+8243,Blitzstrahlbombe
+23066,Rotes Feuerwerk
+439114,Wächterhose
+1244434,Großer Heiltrank
+9964,Mithrilsporen
+7221,Eisenschildstachel
+7412,Verzauberkunst
+7413,Verzauberkunst
+13920,Verzauberkunst
+1240946,Verzauberkunst
+1240957,Verzauberkunst
+1240968,Verzauberkunst
+1240981,Verzauberkunst
+7731,Angeln
+7732,Angeln
+7738,Angeln
+18248,Angeln
+1240948,Angeln
+1240959,Angeln
+1240970,Angeln
+1240983,Angeln
+7934,Gegengift
+7935,Starkes Gegengift
+9271,Aquadynamischer Fischanlocker
+8238,Pikantes Deviat-Supreme
+8339,EZ-Thro-Dynamit
+439100,Irdene Weste
+439098,Purpurroter Seidengürtel
+439093,Purpurrote Seidenschultern
+439091,Irdener Seidengürtel
+439085,Purpurrote Seidenrobe
+8895,Goblin-Raketenstiefel
+9939,Mithrilschildstachel
+10011,Verseuchung
+10487,Dickes Rüstungsset
+439118,Schildkrötenschuppenhandschuhe
+439116,Schildkrötenschuppenbrustplatte
+439108,Große Voodoorobe
+439105,Große Voodoomaske
+11466,Arthas' Gabe
+11458,Wildrankentrank
+11461,Arkanes Elixier
+11477,Trank des Dämonentötens
+1244435,Überragender Heiltrank
+23067,Blaues Feuerwerk
+23068,Grünes Feuerwerk
+439120,Goldene Schuppenstulpen
+12081,Admiralshut
+439086,Schwarze Magiestoffweste
+439088,Schwarze Magiestoffgamaschen
+12586,Robustes Dynamit
+12603,Mithrilschrapnellbombe
+12597,Tödliches Zielfernrohr
+12620,Heckenschützen-Zielfernrohr
+12619,Hochexplosive Bombe
+12754,Der Große
+12749,Mechanischer Mithrildrachling
+439134,Großer Mystikerzauberstab
+15906,Drachenodemchili
+16667,Dämonengeschmiedete Brustplatte
+16651,Thoriumschildstachel
+1257478,Strahlende Handschuhe
+461737,Sturmstulpen
+461735,Unverwundbarer Panzer
+17573,Großes Arkanelixier
+17555,Elixier der Weisen
+1250787,Elixier der Weisen
+17557,Elixier der rohen Gewalt
+17571,Elixier des Mungos
+17632,Alchimistenstein
+17635,Fläschchen der Titanen
+23653,Einbruch der Nacht
+18422,Umhang des Feuers
+463972,Bodenlose Tasche
+19058,Unverwüstliches Rüstungsset
+19567,Salzstreuer
+19666,Silberdietrich
+19667,Golddietrich
+19668,Echtsilberdietrich
+19669,Arkanitdietrich
+19790,Thoriumgranate
+19799,Dunkeleisenbombe
+19830,Arkanitdrachling
+19814,Meisterliche Zielattrappe
+19831,Arkane Bombe
+460460,Sulfuronhammer
+21940,Schneemeister 9000
+22797,Machtreaktive Scheibe
+22704,Feldreparaturbot-74A
+22727,Kernrüstungsset
+22813,Ogeranzug der Gordok
+22815,Ogeranzug der Gordok
+22793,Biznicks 247x128 treffsicheres Zielfernrohr
+23080,Mächtige Zephyriumladung
+23070,Dichtes Dynamit
+23129,Weltvergrößerer
+23190,Schwerer Lederball
+23787,Mächtiges Gegengift
+24368,Erhebliches Trollblutelixier
+1213751,Traumschuppenbrustplatte
+1213726,Feuerspuckerarmschienen
+1213728,Feuerspuckerstulpen
+1213731,Feuerspuckerbrustplatte
+1213717,Sandpirscherarmschienen
+1213720,Sandpirscherstulpen
+1213723,Sandpirscherbrustplatte
+25124,Schwaches Zauberöl
+25125,Schwaches Manaöl
+25126,Geringes Zauberöl
+25127,Geringes Manaöl
+25128,Zauberöl
+25129,Hervorragendes Zauberöl
+25130,Hervorragendes Manaöl
+26418,Kleine rote Rakete
+26416,Kleine blaue Rakete
+26417,Kleine grüne Rakete
+1319154,Kleine lila Rakete
+1319155,Kleine weiße Rakete
+1319156,Kleine gelbe Rakete
+26423,Blaues Raketenbündel
+26424,Grünes Raketenbündel
+1319160,Lila Raketenbündel
+26425,Rotes Raketenbündel
+1319161,Weißes Raketenbündel
+1319162,Gelbes Raketenbündel
+26420,Große blaue Rakete
+26421,Große grüne Rakete
+1319157,Große lila Rakete
+26422,Große rote Rakete
+1319158,Große weiße Rakete
+1319159,Große gelbe Rakete
+1319163,Großes lila Raketenbündel
+1319164,Großes weißes Raketenbündel
+1319165,Großes gelbes Raketenbündel
+1213746,Schwerer Obsidiangürtel
+1214270,Gezackter Obsidianschild
+1215507,Dicke Obsidianbrustplatte
+1213748,Leichter Obsidiangürtel
+1214257,Dunkler Griff des Zerstörers
+1214274,Obsidianpanzertunika
+1223764,Gletscherhandschuhe
+1223760,Gletscherweste
+1223762,Gletscherumhang
+1223766,Gletscherhandschutz
+1223780,Polartunika
+1223782,Polarhandschuhe
+1223784,Polararmschienen
+1223774,Eisschuppenbrustplatte
+1223776,Eisschuppenstulpen
+1223778,Eisschuppenarmschienen
+1223787,Eisfluchbrustplatte
+1223789,Eisfluchstulpen
+1223791,Eisflucharmschienen
+1213715,Eisenrankenbrustplatte
+1213711,Eisenrankenhandschuhe
+1213709,Eisenrankengürtel
+1213738,Dornenholzhelm
+1213736,Dornenholzstiefel
+1213734,Dornenholzgürtel
+1213744,Sylvanweste
+1213742,Sylvankrone
+1213740,Sylvanschultern
+1251744,Großer Trank des Heilers
+1216024,Götze der Bärenwut
+435964,Hoch wirksame Strahlungsbombe
+439156,Siegel der Innovation
+439960,Geringes Arkanelixier
+1250791,Geringes Arkanelixier
+446243,Siegel der lebendigen Träume
+1249152,Buchband des heiligen Eifers
+1249154,Totem des Donners
+463866,Siegel des fließenden Wassers
+463869,Leitende Schildbeschichtung
+1216010,Buchband der Heiligkeit
+1248497,Armschiene - Beweglichkeit
+1217207,Obsidianzielfernrohr
+1221012,Gruselige Zensorensensoren
+1228088,Aufstellbäumchen
+1226210,Tüftelei: Teleportation
+1226211,Tüftelei: Nitrobooster
+1226212,Tüftelei: Magnetversetzung
+1263425,Fraktionsbanner
+1231583,Erheblicher verfärbter Heiltrank
+1263041,Amboss
+1240954,Alchemie
+1240965,Alchemie
+1240977,Alchemie
+1245246,Schwaches Arkanelixier
+1245250,Elixier der schwachen Gewalt
+1249015,Totem des Schutzes der Ahnen
+1255095,Kraftvolles schweres Rüstungsset
+1255096,Mystisches schweres Rüstungsset
+1255074,Mystisches dickes Rüstungsset
+1255073,Kraftvolles dickes Rüstungsset
+1254966,Mystisches unverwüstliches Rüstungsset
+1254965,Kraftvolles unverwüstliches Rüstungsset
+1259341,Wirksames Gegengift
+1259342,Einfache Schlammpackung
+1259343,Schlaue Schlammpackung
+1259344,Überragende Schlammpackung
+1259345,Starke Schlammpackung
+1259347,Wollabschnürbinde
+1259348,Lederabschnürbinde
+1259349,Chirurgische Abschnürbinde
+1293088,9-60 Batteriepack
+1301426,Wolkenblaue himmelsgeschmiedete Beinschützer
+1301450,Azurblaue himmelsgeschmiedete Beinschützer
