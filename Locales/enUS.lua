@@ -119,7 +119,6 @@ ES.Locales.en = {
   ["pergamino en la AH"] = "recipe on the AH",
   ["pergamino en tus bolsas"] = "recipe in your bags",
   ["Oficial"] = "Journeyman",
-  ["Experto"] = "Expert",
   ["Artesano"] = "Artisan",
   ["Ruta"] = "Route",
   ["Profit"] = "Profit",
@@ -491,6 +490,12 @@ ES.Locales.en = {
   [", por "] = ", for ",
   [" más"] = " more",
   ["Nada que mostrar en esta vista."] = "Nothing to show in this view.",
+  -- Per-unit labels in rows and tooltips
+  ["%s %s(%s/u, %s)|r"] = "%s %s(%s/ea, %s)|r",
+  [" /u"] = " /ea",
+  ["/u"] = "/ea",
+  ["AH · %s/u%s"] = "AH · %s/ea%s",
+  [" a "] = " to ",
 
   -- RecipesUI
   ["Materiales (1 fabricación = %s uds):"] = "Materials (1 craft = %s units):",

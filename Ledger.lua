@@ -100,13 +100,19 @@ local function ServiceRecipe(i, profs)
   local spell = link and tonumber(link:match("spell:(%d+)") or link:match("enchant:(%d+)"))
   local item = link and tonumber(link:match("item:(%d+)"))
   local name = GetTrainerServiceInfo and (GetTrainerServiceInfo(i))
-  local names = ES.Data.NamesES and ES.Data.NamesES.spells or {}
+  -- El nombre en cualquiera de los idiomas de los datos (Data/Names_<idioma>.lua)
+  local function OwnName(id, n)
+    for _, t in pairs(ES.Data.Names or {}) do
+      if t.spells and t.spells[id] == n then return true end
+    end
+    return false
+  end
   local byName = {}
   for _, key in ipairs(profs) do
     for id, r in pairs(ES.Data[key].recipes) do
       if spell == id then return id, r, key end
       if item and r.out and r.out[1] == item then return id, r, key end
-      if name and (name == r.name or name == r.nameEN or name == names[id] or name == SpellName(id)) then
+      if name and (name == r.name or name == r.nameEN or OwnName(id, name) or name == SpellName(id)) then
         byName[#byName + 1] = { id, r, key }
       end
     end

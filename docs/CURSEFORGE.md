@@ -57,9 +57,9 @@ Crafter's Journal tells you exactly what to craft, what to buy and where to go t
 - **Scan the Auction House** from the addon (the server allows one full scan every 15 minutes; a countdown shows when you can scan again).
 - A **shopping panel** next to the Auction House searches the materials your route needs, one by one.
 
-## 🌍 English and Español
+## 🌍 English, Español and Deutsch
 
-Switch language at any time from the addon window — interface, recipe names and item names change instantly.
+Switch language at any time from the addon window — interface, recipe names and item names change instantly. On a German client the recipe and item names come from the game itself.
 
 ---
 

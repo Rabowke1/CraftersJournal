@@ -563,6 +563,27 @@ step("idioma inglés", function()
   ES.lang = "es"
   assert(ES.Num(2.5) == "2,5" and ES.L["Ruta"] == "Ruta", "español")
 end)
+step("idioma alemán", function()
+  -- El alemán tiene todas las claves del inglés (y ninguna de más): las dos tablas van a la par
+  local missing, extra = {}, {}
+  for key in pairs(ES.Locales.en) do if not ES.Locales.de[key] then missing[#missing + 1] = key end end
+  for key in pairs(ES.Locales.de) do if not ES.Locales.en[key] then extra[#extra + 1] = key end end
+  assert(#missing == 0, #missing .. " sin traducir al alemán: " .. table.concat(missing, " | "))
+  assert(#extra == 0, #extra .. " claves solo en alemán: " .. table.concat(extra, " | "))
+  -- Los mismos huecos (%d, %s...) en cada traducción que en su clave
+  local function Specs(s) local t = {} for spec in s:gmatch("%%[%+%-]?%d*%.?%d*[dsf%%]") do t[#t + 1] = spec end table.sort(t) return table.concat(t, ",") end
+  local bad = {}
+  for key, de in pairs(ES.Locales.de) do if Specs(key) ~= Specs(de) then bad[#bad + 1] = key end end
+  assert(#bad == 0, #bad .. " con formato distinto: " .. table.concat(bad, " | "))
+  ES.lang = "de"
+  ES.ApplyLocalization()
+  assert(ES.L["Ruta"] == "Route" and ES.Num(2.5) == "2,5", "alemán no aplicado")
+  assert(ES:ProfLabel("Leatherworking") == "Lederverarbeitung", "profesión: " .. ES:ProfLabel("Leatherworking"))
+  assert(ES.L["Subir profesiones"] == "Berufe leveln", "pestaña en alemán")
+  ES.lang = "es"
+  ES.ApplyLocalization()
+  log[#log+1] = "     alemán: " .. ES.Locales.de["Lista de compra"] .. " · " .. ES.Locales.de["Casa de Subastas"]
+end)
 step("recetas de reputación", function()
   -- Heavy Timbermaw Belt pide Amistoso con Fauces de Madera (576)
   local r, n = nil, 0
@@ -2121,6 +2142,12 @@ step("cambiar de idioma al momento (sin recargar)", function()
   GameTooltip.AddLine = nil
   log[#log+1] = "     pestaña en inglés: " .. tostring(tabTip)
   assert(tabTip ~= "Subir profesiones", "la pestaña sigue en español")
+  -- A alemán: sin datos propios de nombres (Data/Names_deDE.lua) y con el cliente en
+  -- otro idioma, las recetas se quedan en inglés; los textos, en alemán
+  ES:SetLanguage("de")
+  assert(ES.Data.Cooking.recipes[2538].name == "Charred Wolf Meat", "receta en alemán sin datos: " .. ES.Data.Cooking.recipes[2538].name)
+  assert(ES:ProfLabel("Cooking") == "Kochkunst", "profesión en alemán")
+  assert(ES:DataItemName(2318) == "Light Leather", "objeto en alemán sin datos: " .. tostring(ES:DataItemName(2318)))
   -- Y de vuelta a español
   ES:SetLanguage("es")
   assert(ES.Data.Cooking.recipes[2538].name == "Carne de lobo carbonizada", "receta en español")

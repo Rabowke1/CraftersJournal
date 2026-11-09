@@ -1971,16 +1971,17 @@ end
 ---------------------------------------------------------------------------
 -- Nivel actual del jugador en una profesión
 ---------------------------------------------------------------------------
+-- (inglés, español y alemán: los idiomas del addon)
 local LOCAL_NAMES = {
-  [165] = { "Leatherworking", "Peletería", "Peleteria" },
-  [333] = { "Enchanting", "Encantamiento" },
-  [197] = { "Tailoring", "Sastrería", "Sastreria" },
-  [164] = { "Blacksmithing", "Herrería", "Herreria" },
-  [171] = { "Alchemy", "Alquimia" },
-  [202] = { "Engineering", "Ingeniería", "Ingenieria" },
-  [185] = { "Cooking", "Cocina" },
-  [129] = { "First Aid", "Primeros auxilios" },
-  [356] = { "Fishing", "Pesca" },
+  [165] = { "Leatherworking", "Peletería", "Peleteria", "Lederverarbeitung" },
+  [333] = { "Enchanting", "Encantamiento", "Verzauberkunst" },
+  [197] = { "Tailoring", "Sastrería", "Sastreria", "Schneiderei" },
+  [164] = { "Blacksmithing", "Herrería", "Herreria", "Schmiedekunst" },
+  [171] = { "Alchemy", "Alquimia", "Alchemie" },
+  [202] = { "Engineering", "Ingeniería", "Ingenieria", "Ingenieurskunst" },
+  [185] = { "Cooking", "Cocina", "Kochkunst" },
+  [129] = { "First Aid", "Primeros auxilios", "Erste Hilfe" },
+  [356] = { "Fishing", "Pesca", "Angeln" },
 }
 
 function ES:GetProfessionSkill(skillLine)

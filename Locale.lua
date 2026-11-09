@@ -5,19 +5,30 @@ local _, ES = ...
 -- no hay traducción (así nada se rompe si falta alguna).
 --
 -- El idioma se lee de CraftersJournalDB.lang al cargar (ADDON_LOADED); hasta
--- entonces, el del cliente. Cambiarlo recarga la interfaz: las tablas que se
--- crean al cargar los archivos se traducen donde se usan (L[TABLA[k]]).
+-- entonces, el del cliente. Cambiarlo se aplica al momento (ES:SetLanguage): las
+-- tablas que se crean al cargar los archivos se traducen donde se usan (L[TABLA[k]]).
 
 ES.LANGS = {
   { key = "es", name = "Español" },
   { key = "en", name = "English" },
+  { key = "de", name = "Deutsch" },
 }
 ES.Locales = {}
 
-function ES.DefaultLanguage()
+-- Idioma del cliente (GetLocale) -> idioma del addon; nil si el addon no lo tiene
+local CLIENT_LANGS = { esES = "es", esMX = "es", enUS = "en", enGB = "en", deDE = "de" }
+function ES.ClientLanguage()
   local loc = GetLocale and GetLocale() or "esES"
-  return (loc == "esES" or loc == "esMX") and "es" or "en"
+  return CLIENT_LANGS[loc]
 end
+
+-- Idioma por defecto: el del cliente si el addon lo tiene; si no, inglés
+function ES.DefaultLanguage()
+  return ES.ClientLanguage() or "en"
+end
+
+-- Idiomas que escriben los decimales con coma ("2,5"); los demás, con punto
+ES.DECIMAL_COMMA = { es = true, de = true }
 
 ES.lang = ES.DefaultLanguage()
 

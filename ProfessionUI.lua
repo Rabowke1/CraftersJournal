@@ -595,7 +595,7 @@ local function RecipeTooltip(step, plan)
       local kinds = {}
       for kind in pairs(rg.kinds) do kinds[#kinds + 1] = SOURCE_LABEL[kind] or kind end
       GameTooltip:AddDoubleLine(string.format("%dx %s", math.ceil(rg.qty - 0.001), name),
-        string.format("%s %s(%s/u, %s)|r", ES.Money(rg.cost), GREY, ES.Money(rg.cost / rg.qty), table.concat(kinds, "+")),
+        string.format(L["%s %s(%s/u, %s)|r"], ES.Money(rg.cost), GREY, ES.Money(rg.cost / rg.qty), table.concat(kinds, "+")),
         1, 1, 1, 1, 1, 1)
     end
 
@@ -707,7 +707,7 @@ local function ShopTooltip(it, plan)
         mats[#mats + 1] = rq[2] .. "x " .. (ItemLabel(rq[1], L["objeto "] .. rq[1]))
       end
       GameTooltip:AddLine(" ")
-      GameTooltip:AddDoubleLine(L["Fabricarlo tú ("] .. table.concat(mats, ", ") .. ")", ES.Money(craftUnit) .. " /u", 0.8, 0.8, 0.8, 1, 1, 1)
+      GameTooltip:AddDoubleLine(L["Fabricarlo tú ("] .. table.concat(mats, ", ") .. ")", ES.Money(craftUnit) .. L[" /u"], 0.8, 0.8, 0.8, 1, 1, 1)
       if craftUnit > it.unit then
         GameTooltip:AddLine(string.format(L["Comprarlo hecho sale más barato (%s frente a %s por unidad), así que el plan lo compra."],
           ES.Money(it.unit), ES.Money(craftUnit)), 0.6, 1, 0.6, true)
@@ -2091,7 +2091,7 @@ local function ShopLines(plan, page)
   local function Buy(it)
     local name, texture = ItemLabel(it.itemID, L["Objeto "] .. it.itemID)
     local sub = it.source == "ah"
-      and string.format("AH · %s/u%s", ES.Money(it.unit), it.supply and string.format(L[" · hay %d a la venta"], it.supply) or "")
+      and string.format(L["AH · %s/u%s"], ES.Money(it.unit), it.supply and string.format(L[" · hay %d a la venta"], it.supply) or "")
       or string.format(L["Vendedor · %s/u"], ES.Money(it.unit))
     sub = Progress(it.itemID) .. " · " .. sub
     -- Clic: con la AH abierta, la busca; con el vendedor abierto, compra lo que falta

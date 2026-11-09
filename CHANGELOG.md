@@ -1,5 +1,13 @@
 # Crafter's Journal
 
+## 0.40.0
+
+- **The addon speaks German.** Pick Deutsch from the language menu in the header, or it is used automatically on a German client. On a German client, recipe and item names come from the game itself; on a client in another language they stay in English until `Data/Names_deDE.lua` is generated from the Forever client tables (`tools/fetch_names.py deDE` and `tools/gen_names.py`, see README).
+- **Numbers use a decimal comma in German too** ("2,5"), as in Spanish.
+- **Two texts that stayed in Spanish in the English addon are translated.** The price range in the market tooltip read "5s a 7s" (now "5s to 7s"), and the per-unit label in route, shopping list and Make money rows read "/u" (now "/ea").
+- **Trainer recipes are recognized by name in any addon language** when reading a trainer's prices (only the Spanish names were tried besides English).
+- **Data checked against the Forever client tables.** All 2,175 recipes (names, materials, crafted items, skill thresholds, recipe scrolls, reputation) and 2,641 item names and prices match the client; `tools/check_data.py` repeats the check. 180 recipes added by Season of Discovery or Forever craft an item the client export doesn't include, so those show the item's name only once the game has loaded it.
+
 ## 0.39.0
 
 - **Routes now go up to 300 (Artisan).** The maximum target is 300 in every profession. If your saved target was 225 (the old maximum), it moves to 300 once; a route you've already started keeps its target.

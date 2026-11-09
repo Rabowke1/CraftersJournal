@@ -2,8 +2,9 @@
 ## Title: Crafter's Journal
 ## Notes: The cheapest way to level every profession and your full recipe collection, with where to get each recipe.
 ## Notes-esES: La forma más barata de subir cada profesión y tu colección de recetas, con dónde conseguir cada una.
+## Notes-deDE: Der günstigste Weg, jeden Beruf zu leveln, und deine komplette Rezeptsammlung mit dem Fundort jedes Rezepts.
 ## Author: Bruno
-## Version: 0.39.0
+## Version: 0.40.0
 ## Category: Professions
 ## SavedVariables: CraftersJournalDB
 ## IconTexture: Interface\Icons\Trade_BlackSmithing
@@ -25,6 +26,7 @@ Data\Names_esES.lua
 
 Locale.lua
 Locales\enUS.lua
+Locales\deDE.lua
 
 Core.lua
 Jobs.lua

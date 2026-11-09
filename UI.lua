@@ -146,7 +146,7 @@ local function CreateRow(parent, i)
         local lo, hi = math.huge, 0
         for _, p in ipairs(ph) do lo, hi = math.min(lo, p.median), math.max(hi, p.median) end
         GameTooltip:AddDoubleLine(string.format(L["Precio en %d escaneos (desde %s)"], #ph, TimeAgo(ph[1].time)),
-          Money(lo) .. " a " .. Money(hi), unpack(W))
+          Money(lo) .. L[" a "] .. Money(hi), unpack(W))
       end
       local vendor = ES:VendorSellPrice(self.itemID)
       if vendor then GameTooltip:AddDoubleLine(L["Precio de vendedor"], Money(vendor), unpack(W)) end

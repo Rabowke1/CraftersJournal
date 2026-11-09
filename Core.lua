@@ -135,13 +135,14 @@ local DEFAULTS = {
   scans = {},
 }
 
--- Números para mostrar en español: coma decimal ("2,5"), sin decimales a
--- partir de 10 ("15", no "14.7", que en español parece catorce mil)
+-- Números para mostrar: coma decimal donde toca ("2,5" en español y alemán; ver
+-- ES.DECIMAL_COMMA), sin decimales a partir de 10 ("15", no "14.7", que en español
+-- parece catorce mil)
 function ES.Num(x)
   if not x then return "—" end
   if math.abs(x) >= 10 then return tostring(math.floor(x + 0.5)) end
   local s = string.format("%.1f", x):gsub("%.0$", "")
-  if ES.lang == "es" then s = s:gsub("%.", ",") end -- en inglés, punto decimal
+  if ES.DECIMAL_COMMA[ES.lang] then s = s:gsub("%.", ",") end -- en inglés, punto decimal
   return s
 end
 
@@ -195,14 +196,20 @@ end
 local GetItemInfoCompat = (C_Item and C_Item.GetItemInfo) or GetItemInfo
 local GetItemInfoInstantCompat = (C_Item and C_Item.GetItemInfoInstant) or GetItemInfoInstant
 
--- Nombre de un objeto en el idioma del addon según los datos propios: español
--- (Data/Names_esES.lua) o inglés (ES.Data.ItemNames); nil si no lo tenemos
+-- Nombres de recetas y objetos en los idiomas del addon distintos del inglés de los
+-- datos (Data/Names_<idioma>.lua, generados por tools/gen_names.py; solo los que
+-- cambian respecto al inglés): ES.Data.Names[idioma] = { spells = {}, items = {} }
+function ES:LangNames(lang)
+  return ES.Data.Names and ES.Data.Names[lang or self.lang] or nil
+end
+
+-- Nombre de un objeto en el idioma del addon según los datos propios: el de su
+-- idioma si lo tenemos; si no, el inglés (ES.Data.ItemNames); nil si no lo tenemos
 function ES:DataItemName(itemID)
-  if self.lang == "es" then
-    local es = ES.Data.NamesES and ES.Data.NamesES.items[itemID]
-    if es then return es end
-  end
-  return ES.Data.ItemNames and ES.Data.ItemNames[itemID] -- en español, si no cambia, es igual que en inglés
+  local names = self:LangNames()
+  local own = names and names.items[itemID]
+  if own then return own end
+  return ES.Data.ItemNames and ES.Data.ItemNames[itemID] -- si no cambia, es igual que en inglés
 end
 
 -- Datos de un objeto. El nombre que da el juego va en el idioma del cliente: si el
@@ -212,19 +219,32 @@ function ES:GetItemData(itemID)
   if not texture and GetItemInfoInstantCompat then
     texture = select(5, GetItemInfoInstantCompat(itemID))
   end
-  if name and self.lang ~= ES.DefaultLanguage() then name = self:DataItemName(itemID) or name end
+  if name and self.lang ~= ES.ClientLanguage() then name = self:DataItemName(itemID) or name end
   return name, quality, texture
 end
 
--- Recetas con el nombre en el idioma del addon: en español, el de Data/Names_esES.lua;
--- en inglés, el original (guardado en nameEN, que también usa el buscador)
+-- Nombre de un hechizo según el cliente (en el idioma del cliente)
+local SpellNameCompat = (C_Spell and C_Spell.GetSpellName)
+  or (GetSpellInfo and function(id) return (GetSpellInfo(id)) end)
+
+-- Recetas con el nombre en el idioma del addon: el de Data/Names_<idioma>.lua; si no
+-- lo tenemos y el cliente está en ese mismo idioma, el que da el juego (las recetas
+-- son hechizos: el cliente conoce su nombre aunque no las sepas); en inglés, o sin
+-- nada mejor, el original (guardado en nameEN, que también usa el buscador)
 function ES:LocalizeRecipeNames()
-  local names = ES.Data.NamesES and ES.Data.NamesES.spells or {}
+  local names = self:LangNames()
+  local spells = names and names.spells or {}
+  local client = self.lang ~= "en" and self.lang == ES.ClientLanguage() and SpellNameCompat or nil
   for _, prof in ipairs(self.PROFESSIONS) do
     for id, r in pairs(ES.Data[prof.key] and ES.Data[prof.key].recipes or {}) do
-      if self.lang == "es" and names[id] then
+      local name = spells[id]
+      if not name and client and id > 0 then
+        local ok, n = pcall(client, id)
+        if ok and type(n) == "string" and n ~= "" then name = n end
+      end
+      if name then
         r.nameEN = r.nameEN or r.name
-        r.name = names[id]
+        r.name = name
       elseif r.nameEN then
         r.name = r.nameEN
       end
@@ -731,7 +751,8 @@ SlashCmdList.CRAFTERSJOURNAL = function(msg)
     -- Se mira a los 3 s: al escribir el comando el ratón no suele estar encima
     ES:Print(L["Pon el ratón sobre el icono: en 3 segundos lo leo."])
     C_Timer.After(3, function() ES:PrintIconUnderMouse() end)
-  elseif msg == "errores" or msg == "errors" or msg == "errores borrar" or msg == "errors clear" then
+  elseif msg == "errores" or msg == "errors" or msg == "fehler" or msg == "errores borrar" or msg == "errors clear"
+    or msg == "fehler leeren" then
     -- Lo apuntado por ES:RecordError (ver arriba)
     if msg:find(" ") then
       ES.db.errorLog = nil

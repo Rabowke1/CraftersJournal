@@ -1,10 +1,11 @@
 -- Generado por tools/gen_names.py (cliente de Forever en esES, wago.tools). No editar a mano.
 local _, ES = ...
 ES.Data = ES.Data or {}
+ES.Data.Names = ES.Data.Names or {}
 
 -- Nombres en español (solo los que cambian respecto al inglés)
-ES.Data.NamesES = { spells = {}, items = {} }
-local S, I = ES.Data.NamesES.spells, ES.Data.NamesES.items
+ES.Data.Names.es = { spells = {}, items = {} }
+local S, I = ES.Data.Names.es.spells, ES.Data.Names.es.items
 S[818] = "Hoguera básica"
 S[2149] = "Botas de cuero cosidas a mano"
 S[2152] = "Complemento ligero para armadura"

@@ -1,7 +1,7 @@
 """Auditoría estática simple: locales sin usar y globales escritas sin querer."""
 import re
 from pathlib import Path
-A = Path(r"C:\Program Files (x86)\World of Warcraft\_classic_beta_\Interface\AddOns\CraftersJournal")
+A = Path(__file__).resolve().parent.parent  # el repositorio
 toc = (A / "CraftersJournal.toc").read_text(encoding="utf-8")
 files = [l.strip() for l in toc.splitlines() if l.strip() and not l.startswith("#") and not l.startswith("Data")]
 

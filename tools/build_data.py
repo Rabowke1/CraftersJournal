@@ -10,7 +10,7 @@ Pasos:
   2. (opcional) extract_cmangos.py: instructores desde el volcado de CMaNGOS
   3. gen_profession.py para las 8 profesiones (Data/<Profesion>.lua) y gen_fishing.py (Data/Fishing.lua)
   4. gen_sources.py: vendedores, misiones, botín y PNJ desde QuestieDB (Data/Sources.lua)
-     gen_names.py: nombres en español de recetas y objetos (Data/Names_esES.lua; descarga con fetch_names_es.py)
+     gen_names.py: nombres en español y alemán de recetas y objetos (Data/Names_<locale>.lua; descarga con fetch_names.py)
   5. pruebas: test_ui.py, iterate.py y pilot_cooking.py (buscan FAIL / errores)
 
 Uso:

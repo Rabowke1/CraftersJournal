@@ -66,7 +66,7 @@ local function IdeaLine(idea, dim)
   local sub = string.format(L["%s · coste %s/u · %s"], ES:ProfLabel(idea.profKey), ES.Money(e.cost), where)
   if dim then
     return { icon = texture or 134400, title = GREY .. (name or e.recipe.name) .. "|r", sub = sub,
-      value = GREY .. "+" .. ES.Money(e.profit) .. "/u|r", item = e.itemID, tooltip = IdeaTooltip(idea) }
+      value = GREY .. "+" .. ES.Money(e.profit) .. L["/u"] .. "|r", item = e.itemID, tooltip = IdeaTooltip(idea) }
   end
   if idea.crafts == 0 then
     -- Ya tienes las que tocan: no hay que fabricar, solo anunciarlas

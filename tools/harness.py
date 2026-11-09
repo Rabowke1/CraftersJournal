@@ -11,8 +11,12 @@ from lupa import lua51
 ADDON = Path(__file__).resolve().parent.parent  # el repositorio (no depende del enlace en AddOns)
 # Tus datos guardados: los de Forever (su carpeta desde el lanzamiento); si no, los de la beta
 _WOW = Path(r"C:\Program Files (x86)\World of Warcraft")
-SV = next(p for folder in ("_forever_", "_classic_beta_")
-          for p in (_WOW / folder / "WTF" / "Account").glob("*/SavedVariables/CraftersJournal.lua"))
+# (o la ruta del archivo en la variable de entorno ESSV, fuera de ese PC)
+SV = Path(os.environ["ESSV"]) if os.environ.get("ESSV") else next(
+    (p for folder in ("_forever_", "_classic_beta_")
+     for p in (_WOW / folder / "WTF" / "Account").glob("*/SavedVariables/CraftersJournal.lua")), None)
+if SV is None or not SV.exists():
+    sys.exit("No se encuentra CraftersJournal.lua (SavedVariables): indica su ruta en la variable de entorno ESSV")
 
 lua = lua51.LuaRuntime(unpack_returned_tuples=True)
 lua.globals().py_clock = pytime.perf_counter
