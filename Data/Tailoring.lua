@@ -12,6 +12,7 @@ ES.Data = ES.Data or {}
 -- bop = lo fabricado se liga al recogerlo: no se puede vender en la AH (sí al vendedor)
 -- favor / favorRep = se compra con Merchant's Favor en el campamento de tu bando, y la reputación que pide
 -- train ajustado a Forever: nivel de Classic menos lo que Forever bajó la amarilla de esa receta
+-- cooldown = segundos de enfriamiento (transmutaciones, tela lunar, hoguera): la ruta no las usa para subir
 -- basic = se aprende sola al coger la profesión; trainer = de instructor sin precio conocido
 --   (receta nueva de Forever que no está en CMaNGOS: se aprende al ponerse amarilla)
 ES.Data.Tailoring = {
@@ -215,7 +216,7 @@ ES.Data.Tailoring = {
     [18456] = { name = "Truefaith Vestments", t = { 1, 310, 325, 340 }, scroll = 14512, train = 295, sq = 4, r = { { 14048, 12 }, { 14342, 8 }, { 12811, 2 }, { 13926, 2 }, { 9210, 8 }, { 14341, 2 }, { 249431, 10 } }, out = { 14154, 1 }, oq = 4, bop = true },
     [18457] = { name = "Robe of the Archmage", t = { 1, 310, 325, 340 }, scroll = 14513, train = 295, sq = 4, r = { { 14048, 12 }, { 7078, 8 }, { 7082, 8 }, { 7076, 8 }, { 7080, 8 }, { 14341, 2 }, { 249431, 10 } }, out = { 14152, 1 }, oq = 4, bop = true },
     [18458] = { name = "Robe of the Void", t = { 1, 310, 325, 340 }, scroll = 14514, train = 295, sq = 4, r = { { 14048, 12 }, { 12662, 20 }, { 14256, 40 }, { 7078, 8 }, { 12808, 8 }, { 14341, 2 }, { 249431, 10 } }, out = { 14153, 1 }, oq = 4, bop = true },
-    [18560] = { name = "Mooncloth", t = { 1, 270, 285, 300 }, scroll = 14526, train = 230, scrollPrice = 20000, sq = 1, r = { { 14256, 2 } }, out = { 14342, 1 }, oq = 1 },
+    [18560] = { name = "Mooncloth", t = { 1, 270, 285, 300 }, cooldown = 342000, scroll = 14526, train = 230, scrollPrice = 20000, sq = 1, r = { { 14256, 2 } }, out = { 14342, 1 }, oq = 1 },
     [19435] = { name = "Mooncloth Boots", t = { 1, 285, 300, 315 }, r = { { 14048, 6 }, { 14342, 4 }, { 7971, 2 }, { 14341, 1 } }, out = { 15802, 1 }, oq = 3 },
     [20848] = { name = "Flarecore Mantle", t = { 1, 315, 330, 345 }, scroll = 17017, train = 300, scrollPrice = 180000, rep = { 59, 5 }, sq = 1, r = { { 14048, 12 }, { 17010, 4 }, { 17011, 4 }, { 12810, 6 }, { 14341, 2 } }, out = { 16980, 1 }, oq = 4 },
     [20849] = { name = "Flarecore Gloves", t = { 1, 315, 330, 345 }, scroll = 17018, train = 300, scrollPrice = 80000, rep = { 59, 4 }, sq = 1, r = { { 14048, 8 }, { 17010, 6 }, { 7078, 4 }, { 12810, 2 }, { 14341, 2 } }, out = { 16979, 1 }, oq = 4 },

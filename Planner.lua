@@ -130,6 +130,14 @@ function Planner.TotalCrafts(plan)
 end
 local MAX_CRAFT_DEPTH = 3
 local EPS = 1e-6
+-- Recetas con enfriamiento (transmutaciones: 1 h a 2 días; tela lunar: 4 días; la
+-- hoguera: 5 min): no sirven para subir ni para fabricar materiales de la ruta (113
+-- transmutaciones seguidas no se pueden hacer). Desde este enfriamiento (s) quedan fuera
+Planner.ROUTE_MAX_COOLDOWN = 300
+local function Routable(recipe)
+  return not (recipe.cooldown and recipe.cooldown >= Planner.ROUTE_MAX_COOLDOWN)
+end
+Planner.Routable = Routable
 
 -- Probabilidad clásica de subir punto
 function Planner.Chance(t, skill)
@@ -319,7 +327,7 @@ local function NewContext(data, opts)
   end
   if not shared then
     for id, r in pairs(data.recipes) do
-      local learn = r.out and Planner.LearnSkill(r, opts)
+      local learn = r.out and Routable(r) and Planner.LearnSkill(r, opts)
       if learn and learn <= opts.to then
         local list = ctx.producers[r.out[1]] or {}
         list[#list + 1] = id
@@ -714,7 +722,7 @@ local function GPSRecipes(data, opts, ctx)
   if not ctx.gpsRecipes then
     local list = {}
     for id, r in pairs(data.recipes) do
-      local learn = Planner.LearnSkill(r, opts)
+      local learn = Routable(r) and Planner.LearnSkill(r, opts)
       if learn and learn < opts.to and r.t[4] > opts.from and not (opts.excluded and opts.excluded[id]) then
         -- Empezarla paga el instructor y, si pide una herramienta que no tienes
         -- (Arclight Spanner para Crude Scope), la herramienta. Sin precio: no vale
@@ -1435,7 +1443,7 @@ function Planner:Plan(data, opts)
   end
   local info = {}
   for id, r in pairs(data.recipes) do
-    local learn = (not only or only[id]) and Planner.LearnSkill(r, opts)
+    local learn = (not only or only[id]) and Routable(r) and Planner.LearnSkill(r, opts)
     -- opts.excluded: recetas que el jugador ha quitado de la ruta (p. ej. el pergamino está lejos)
     if learn and learn < opts.to and r.t[4] > opts.from and not (opts.excluded and opts.excluded[id]) then
       local learnCost, learnSource = Planner.LearnCost(ctx, r)
@@ -1839,7 +1847,7 @@ function Planner.BagsAlternative(data, plan, owned, from, excluded, onlyWorth)
   local best
   for id, r in pairs(data.recipes) do
     local learn = r.out and not inRoute[id] and not excluded[id] and not r.conversion and not r.intermediate
-      and Planner.LearnSkill(r, ctx.opts)
+      and Routable(r) and Planner.LearnSkill(r, ctx.opts)
     if learn and learn < to and r.t[4] > from then
       -- Fabricaciones que te dan tus materiales (lo del vendedor se compra)
       local crafts, mine = math.huge, false
@@ -2027,7 +2035,7 @@ function Planner.AlternativeCandidates(data, plan, st)
   local out = {}
   for id, r in pairs(data.recipes) do
     if id ~= st.id and not r.conversion and not r.intermediate and r.t[4] > st.from
-      and not (opts.excluded and opts.excluded[id]) then
+      and not (opts.excluded and opts.excluded[id]) and Routable(r) then
       local learn = Planner.LearnSkill(r, opts)
       if learn and learn <= st.from then out[#out + 1] = id end
     end

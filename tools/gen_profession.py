@@ -39,6 +39,8 @@ EXTRA_VENDOR = {247786, 6217, 5956, 6219}  # + Copper Rod, Blacksmith Hammer, Ar
 # Objetos fabricados que se ligan al recogerlo y no están en el ItemSparse exportado (los
 # manda el servidor): Smoking Heart of the Mountain (Wowhead, Forever)
 EXTRA_BOP = {11811}
+# Enfriamiento mínimo (s) que se guarda en los datos (transmutaciones, tela lunar, hoguera)
+MIN_COOLDOWN = 60
 
 # Conversión de esencias de encantamiento (clic derecho): 3 menores <-> 1 mayor
 ESSENCES = [(10938, 10939), (10998, 11082), (11134, 11135), (11174, 11175), (16202, 16203)]
@@ -191,6 +193,14 @@ def load_common():
         if best is None or (item in item_skill, item) > (best in item_skill, best):
             scrolls[spell] = item
 
+    # Enfriamiento de la receta (SpellCooldowns): la ruta no usa las que lo tienen (Planner.lua)
+    cooldowns = {}
+    if (WAGO / "SpellCooldowns_forever.csv").exists():
+        for r in rows("SpellCooldowns_forever"):
+            cd = max(int(r["CategoryRecoveryTime"] or 0), int(r["RecoveryTime"] or 0)) // 1000
+            if cd >= MIN_COOLDOWN:
+                cooldowns[int(r["SpellID"])] = max(cooldowns.get(int(r["SpellID"]), 0), cd)
+
     tools, tool_masks = {}, {}
     for r in rows("SpellTotems_forever"):
         # La herramienta puede ir en cualquiera de las dos casillas (Flying Tiger Goggles
@@ -227,7 +237,7 @@ def load_common():
     return dict(sla=sla, era=era, names=names, reagents=reagents, creates=creates, scrolls=scrolls,
                 item_info=item_info, item_rep=item_rep, item_skill=item_skill, item_class=item_class,
                 item_quality=item_quality, item_bop=item_bop,
-                tools=tools, tool_masks=tool_masks, fees=fees, ranks=ranks, trainers=trainers)
+                tools=tools, tool_masks=tool_masks, fees=fees, ranks=ranks, trainers=trainers, cooldowns=cooldowns)
 
 
 ALLIANCE_RACES = 1 | 4 | 8 | 64     # humano, enano, elfo de la noche, gnomo
@@ -429,6 +439,7 @@ def main():
         "-- bop = lo fabricado se liga al recogerlo: no se puede vender en la AH (sí al vendedor)",
         "-- favor / favorRep = se compra con Merchant's Favor en el campamento de tu bando, y la reputación que pide",
         "-- train ajustado a Forever: nivel de Classic menos lo que Forever bajó la amarilla de esa receta",
+        "-- cooldown = segundos de enfriamiento (transmutaciones, tela lunar, hoguera): la ruta no las usa para subir",
         "-- basic = se aprende sola al coger la profesión; trainer = de instructor sin precio conocido",
         "--   (receta nueva de Forever que no está en CMaNGOS: se aprende al ponerse amarilla)",
         f"ES.Data.{prof} = {{",
@@ -449,6 +460,8 @@ def main():
         t = thresholds[sid]
         name = c["names"].get(sid, str(sid)).replace("\\", "\\\\").replace('"', '\\"')
         parts = [f'name = "{name}"', "t = { %d, %d, %d, %d }" % t]
+        if sid in c["cooldowns"]:
+            parts.append(f"cooldown = {c['cooldowns'][sid]}")
 
         def forever_train(classic, is_forever=False):
             # Los niveles de Classic se desplazan a los de Forever; los del CSV de

@@ -533,6 +533,21 @@ end)
 step("sin variables globales sueltas", function()
   assert(#LEAKS == 0, "globales: " .. table.concat(LEAKS, ", "))
 end)
+step("recetas con enfriamiento fuera de las rutas", function()
+  -- Los datos traen el enfriamiento del cliente y el planificador no usa esas recetas
+  local A, T, C = ES.Data.Alchemy.recipes, ES.Data.Tailoring.recipes, ES.Data.Cooking.recipes
+  assert(A[11480].cooldown == 3600 and A[17187].cooldown == 169200 and T[18560].cooldown == 342000 and C[818].cooldown == 300, "enfriamientos en los datos")
+  assert(not ES.Planner.Routable(A[11480]) and ES.Planner.Routable(A[2329]), "Routable")
+  for _, prof in ipairs({ "Alchemy", "Tailoring", "Cooking" }) do
+    local p = ES.Planner:Plan(ES.Data[prof], { from = 1, to = 300, hours = 24, ignoreSupply = true, reuseCrafted = true, sourcedScrolls = true })
+    for _, st in ipairs(p.steps) do
+      assert(ES.Planner.Routable(st.recipe), prof .. ": la ruta usa " .. st.recipe.name)
+    end
+    for _, c in ipairs(p.crafted or {}) do
+      assert(not c.recipe or ES.Planner.Routable(c.recipe), prof .. ": fabrica con " .. tostring(c.recipe and c.recipe.name))
+    end
+  end
+end)
 step("idioma inglés", function()
   -- Todas las claves L[...] del código tienen traducción al inglés
   local missing = {}

@@ -3,7 +3,7 @@
 Uso: python filter_wago.py <carpeta con CSV completos> <tools/wago del addon>
 
 En la carpeta de entrada (descargadas de https://wago.tools/db2/<Tabla>/csv?build=<build de Forever>):
-  SpellReagents, SpellEffect, SpellTotems, TotemCategory, SpellName, ItemSparse,
+  SpellReagents, SpellEffect, SpellTotems, SpellCooldowns, TotemCategory, SpellName, ItemSparse,
   Item, ItemEffect, ItemXItemEffect
 En tools/wago ya deben estar SkillLineAbility_forever.csv y SkillLineAbility_era.csv
 (qué recetas tiene cada profesión en Forever y en Classic Era).
@@ -41,7 +41,7 @@ with open(dst / "SkillLineAbility_forever.csv", encoding="utf-8") as f:
 
 items = set(TOOL_ITEMS)
 effects, effect_fields = read("SpellEffect")
-for name in ("SpellReagents", "SpellEffect", "SpellTotems"):
+for name in ("SpellReagents", "SpellEffect", "SpellTotems", "SpellCooldowns"):
     rows, fields = (effects, effect_fields) if name == "SpellEffect" else read(name)
     rows = [row for row in rows if row["SpellID"] in spells]
     write(name, fields, rows)

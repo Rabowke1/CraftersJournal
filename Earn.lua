@@ -177,8 +177,10 @@ function Earn:Ideas()
   return res
 end
 
--- Recetas con enfriamiento (transmutaciones, tela lunar...) que sabes y están listas
-local COOLDOWN_NAMES = { "^Transmute", "Mooncloth" }
+-- Recetas con enfriamiento (transmutaciones, tela lunar...) que sabes y están listas.
+-- El enfriamiento viene en los datos (recipe.cooldown, segundos); antes se buscaba
+-- "Transmute" en el nombre, que en español o alemán no aparece
+local MIN_LISTED_COOLDOWN = 600
 function Earn:Cooldowns()
   local list = {}
   if not GetSpellCooldown then return list end
@@ -186,9 +188,7 @@ function Earn:Cooldowns()
     local data = ES.Data[profKey]
     ES.Planner.Annotate(data)
     for id, r in pairs(data.recipes) do
-      local isCd = false
-      for _, pat in ipairs(COOLDOWN_NAMES) do if (r.name or ""):find(pat) then isCd = true end end
-      if isCd and ES:IsRecipeKnown(id) then
+      if (r.cooldown or 0) >= MIN_LISTED_COOLDOWN and ES:IsRecipeKnown(id) then
         local start, duration = GetSpellCooldown(id)
         local left = (start and start > 0 and duration) and (start + duration - GetTime()) or 0
         -- Beneficio de hacerlo, si está entre las ideas (o las descartadas por el mercado)
