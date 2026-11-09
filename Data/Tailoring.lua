@@ -7,6 +7,7 @@ ES.Data = ES.Data or {}
 -- (sin fee = se aprende de pergamino: de dónde sale, en Data/Sources.lua; scrollPrice = su precio si lo vende un PNJ)
 -- rep = { facción, nivel } que pide el pergamino para aprenderla (5 amistoso, 6 honorable, 7 venerado, 8 exaltado)
 -- r = { {itemID, cantidad} }; out = { itemID, cantidad }
+-- tool = herramienta que pide (clave de ES.Data.Tools: categoría de tótem, o el objeto si pide uno concreto)
 -- sq / oq = calidad del pergamino / de lo fabricado (0 pobre, 1 común, 2 poco común, 3 raro, 4 épico)
 -- faction = bando que puede aprenderla, si solo es de uno
 -- bop = lo fabricado se liga al recogerlo: no se puede vender en la AH (sí al vendedor)
@@ -426,7 +427,8 @@ ES.Data.Tailoring = {
   },
 }
 
--- Herramientas: [categoría] = { objeto, máscara } (un bastón superior cubre a los inferiores)
+-- Herramientas: [categoría de tótem, o el propio objeto si la receta pide uno concreto (Flint and Tinder)]
+--   = { objeto, máscara, familia }: dentro de una familia, una superior cubre a las inferiores (bastones rúnicos)
 ES.Data.Tools = ES.Data.Tools or {}
 ES.Data.Tools[12] = { item = 9149, mask = 1, family = "stone" }
 ES.Data.Tools[14] = { item = 6219, mask = 1, family = "spanner" }
@@ -437,6 +439,7 @@ ES.Data.Tools[374] = { item = 6339, mask = 3, family = "rod" }
 ES.Data.Tools[375] = { item = 11130, mask = 7, family = "rod" }
 ES.Data.Tools[376] = { item = 11145, mask = 15, family = "rod" }
 ES.Data.Tools[377] = { item = 16207, mask = 31, family = "rod" }
+ES.Data.Tools[4471] = { item = 4471, mask = 1, family = "tinder" }
 
 ES.Data.VendorPrices = ES.Data.VendorPrices or {}
 ES.Data.SellPrices = ES.Data.SellPrices or {}

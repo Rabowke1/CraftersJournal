@@ -35,7 +35,7 @@ EXTRA_RANKS = {
 RANK_CAP = {1: 75, 2: 150, 3: 225, 4: 300}  # paso de rango -> tope de habilidad
 
 # Materiales de vendedor que QuestieDB no conoce (Mote of Magic es nuevo de Forever)
-EXTRA_VENDOR = {247786, 6217, 5956, 6219}  # + Copper Rod, Blacksmith Hammer, Arclight Spanner
+EXTRA_VENDOR = {247786, 6217, 5956, 6219, 4471}  # + Copper Rod, Blacksmith Hammer, Arclight Spanner, Flint and Tinder
 # Objetos fabricados que se ligan al recogerlo y no están en el ItemSparse exportado (los
 # manda el servidor): Smoking Heart of the Mountain (Wowhead, Forever)
 EXTRA_BOP = {11811}
@@ -54,6 +54,21 @@ TOOL_ITEMS = {373: 6218, 374: 6339, 375: 11130, 376: 11145, 377: 16207,
               15: 10498}   # Gyromatic Micro-Adjustor (Ingeniería, se fabrica)
 TOOL_FAMILY = {373: "rod", 374: "rod", 375: "rod", 376: "rod", 377: "rod", 162: "hammer", 12: "stone",
                14: "spanner", 15: "adjustor"}
+# Herramientas que la receta pide como objeto concreto, no como categoría (SpellTotems,
+# Totem_0/1): las hogueras de Cocina piden Flint and Tinder. Van en ES.Data.Tools con el
+# propio objeto como clave (los IDs de objeto no chocan con los de TotemCategory, que no
+# llegan a 1000) y cada una en su familia con máscara 1: ninguna otra la cubre
+TOTEM_ITEMS = {4471: "tinder"}  # Flint and Tinder
+
+
+def tool_item(key):
+    """Objeto de una herramienta de ES.Data.Tools: el de su categoría de tótem, o el propio
+    objeto cuando la receta pide uno concreto."""
+    return TOOL_ITEMS.get(key, key)
+
+
+def tool_family(key):
+    return TOOL_FAMILY.get(key) or TOTEM_ITEMS[key]
 
 # Materiales que se recolectan: (clase, subclase) de objeto -> profesión de recolección
 # Bienes comerciales (7): 6 cuero -> Desuello (393), 7 metal y piedra -> Minería (186), 9 hierba -> Herboristería (182)
@@ -203,15 +218,29 @@ def load_common():
 
     tools, tool_masks = {}, {}
     for r in rows("SpellTotems_forever"):
+        spell = int(r["SpellID"])
         # La herramienta puede ir en cualquiera de las dos casillas (Flying Tiger Goggles
-        # lleva la llave inglesa en la segunda)
+        # lleva la llave inglesa en la segunda). Los datos guardan una herramienta por
+        # receta: si pide dos (martillo y llave inglesa, Copper Modulator), la primera
         for slot in ("RequiredTotemCategoryID_0", "RequiredTotemCategoryID_1"):
             cat = int(r[slot] or 0)
             if cat in TOOL_ITEMS:
-                tools[int(r["SpellID"])] = cat
+                tools.setdefault(spell, cat)
+        # O un objeto concreto en vez de una categoría (Flint and Tinder para la hoguera):
+        # la clave de la herramienta es el propio objeto
+        for slot in ("Totem_0", "Totem_1"):
+            item = int(r[slot] or 0)
+            if item in TOTEM_ITEMS:
+                tools.setdefault(spell, item)
+            elif item:
+                print(f"aviso: la receta {spell} pide el objeto {item} como herramienta y no está en TOTEM_ITEMS",
+                      file=sys.stderr)
     for r in rows("TotemCategory_forever"):
+        assert int(r["ID"]) not in TOTEM_ITEMS, f"la categoría de tótem {r['ID']} choca con un objeto de TOTEM_ITEMS"
         if int(r["ID"]) in TOOL_ITEMS:
             tool_masks[int(r["ID"])] = int(r["TotemCategoryMask"])
+    for item in TOTEM_ITEMS:
+        tool_masks[item] = 1
 
     # Instructores (CMaNGOS): por receta, el más barato; por línea, los rangos y quién enseña qué
     fees, ranks, trainers = {}, defaultdict(dict), defaultdict(dict)
@@ -368,7 +397,7 @@ def main():
     trainers = sorted(quest_trainers()[prof].items())
 
     tools = c["tools"]
-    used_tools = {TOOL_ITEMS[t] for s, t in tools.items() if s in recipes}
+    used_tools = {tool_item(t) for s, t in tools.items() if s in recipes}
 
     # Recetas que no dan puntos (amarilla == gris) pero fabrican un material que
     # otra receta necesita, p. ej. Cured Thick Hide (Thick Hide + Deeprock Salt)
@@ -434,6 +463,7 @@ def main():
         "-- (sin fee = se aprende de pergamino: de dónde sale, en Data/Sources.lua; scrollPrice = su precio si lo vende un PNJ)",
         "-- rep = { facción, nivel } que pide el pergamino para aprenderla (5 amistoso, 6 honorable, 7 venerado, 8 exaltado)",
         "-- r = { {itemID, cantidad} }; out = { itemID, cantidad }",
+        "-- tool = herramienta que pide (clave de ES.Data.Tools: categoría de tótem, o el objeto si pide uno concreto)",
         "-- sq / oq = calidad del pergamino / de lo fabricado (0 pobre, 1 común, 2 poco común, 3 raro, 4 épico)",
         "-- faction = bando que puede aprenderla, si solo es de uno",
         "-- bop = lo fabricado se liga al recogerlo: no se puede vender en la AH (sí al vendedor)",
@@ -537,11 +567,12 @@ def main():
     out.append("  },")
     out.append("}")
     out.append("")
-    out.append("-- Herramientas: [categoría] = { objeto, máscara } (un bastón superior cubre a los inferiores)")
+    out.append("-- Herramientas: [categoría de tótem, o el propio objeto si la receta pide uno concreto (Flint and Tinder)]")
+    out.append("--   = { objeto, máscara, familia }: dentro de una familia, una superior cubre a las inferiores (bastones rúnicos)")
     out.append("ES.Data.Tools = ES.Data.Tools or {}")
     tool_masks = c["tool_masks"]
-    for cat in sorted(cc for cc in tool_masks if TOOL_ITEMS[cc] in used_tools or any(t == cc for t in tools.values())):
-        out.append(f"ES.Data.Tools[{cat}] = {{ item = {TOOL_ITEMS[cat]}, mask = {tool_masks[cat]}, family = \"{TOOL_FAMILY[cat]}\" }}")
+    for cat in sorted(cc for cc in tool_masks if tool_item(cc) in used_tools or any(t == cc for t in tools.values())):
+        out.append(f"ES.Data.Tools[{cat}] = {{ item = {tool_item(cat)}, mask = {tool_masks[cat]}, family = \"{tool_family(cat)}\" }}")
     out.append("")
     out.append("ES.Data.VendorPrices = ES.Data.VendorPrices or {}")
     out.append("ES.Data.SellPrices = ES.Data.SellPrices or {}")

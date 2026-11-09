@@ -466,6 +466,7 @@ ID,Display_lang,BuyPrice,SellPrice,VendorStackCount,MinFactionID,MinReputation,R
 4457,Barbecued Buzzard Wing,1200,300,1,0,0,0,0,1,35,0,0
 4461,Raptor Hide,835,208,1,0,0,0,0,1,30,0,0
 4470,Simple Wood,38,9,1,0,0,0,0,1,5,0,0
+4471,Flint and Tinder,135,33,1,0,0,0,0,1,5,0,0
 4536,Shiny Red Apple,25,1,5,0,0,0,0,1,5,0,0
 4589,Long Elegant Feather,2120,530,1,0,0,0,0,1,1,0,0
 4592,Longjaw Mud Snapper,20,1,5,0,0,0,0,1,15,0,0

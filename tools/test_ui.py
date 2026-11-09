@@ -655,6 +655,30 @@ step("recetas con enfriamiento fuera de las rutas", function()
     end
   end
 end)
+step("herramienta que es un objeto concreto (Flint and Tinder)", function()
+  -- Las hogueras de Cocina piden Flint and Tinder: un objeto (4471), no una categoría de
+  -- tótem. En los datos va como herramienta con el propio objeto de clave, con su nombre,
+  -- sus precios y su nombre en alemán y español
+  local C = ES.Data.Cooking.recipes
+  for _, id in ipairs({ 818, 1229737, 1283400, 1291341 }) do
+    assert(C[id].tool == 4471, "la hoguera " .. id .. " pide Flint and Tinder")
+  end
+  local tool = ES.Data.Tools[4471]
+  assert(tool and tool.item == 4471 and tool.mask == 1 and tool.family == "tinder", "ES.Data.Tools[4471]")
+  assert(ES.Data.ItemNames[4471] == "Flint and Tinder" and ES.Data.VendorPrices[4471] == 135 and ES.Data.SellPrices[4471] == 33,
+    "nombre y precios de Flint and Tinder")
+  assert(ES.Data.Names.de.items[4471] == "Feuerstein und Zunder" and ES.Data.Names.es.items[4471] == "Sílex y Yesca",
+    "Flint and Tinder en alemán y español")
+  -- La ruta la compra al vendedor una sola vez, la primera vez que usa una hoguera y no la tienes
+  local forced = { [1] = 1229737, [2] = 1229737, [3] = 1229737, [4] = 1229737 }
+  local p = ES.Planner:Plan(ES.Data.Cooking, { from = 1, to = 5, hours = 24, ignoreSupply = true, forced = forced })
+  assert(p.steps[1] and p.steps[1].id == 1229737 and p.steps[#p.steps].to == 5, "la ruta forzada usa el kit de hoguera de 1 a 5")
+  assert(#p.tools == 1 and p.tools[1].item == 4471 and p.tools[1].cost == 135 and p.toolsCost == 135,
+    "compra Flint and Tinder una vez (135c): " .. tostring(p.toolsCost))
+  -- Y con una en las bolsas, no
+  p = ES.Planner:Plan(ES.Data.Cooking, { from = 1, to = 5, hours = 24, ignoreSupply = true, forced = forced, owned = { [4471] = 1 } })
+  assert(#p.tools == 0 and p.toolsCost == 0, "con Flint and Tinder en las bolsas no la compra")
+end)
 step("idioma inglés", function()
   -- Todas las claves L[...] del código tienen traducción al inglés
   local missing = {}

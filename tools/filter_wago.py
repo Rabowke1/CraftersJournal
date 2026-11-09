@@ -18,6 +18,7 @@ dst = Path(sys.argv[2])
 SKILL_LINES = {"165", "333", "197", "164", "171", "202", "185", "129", "356"}
 TOOL_ITEMS = {"6218", "6339", "11130", "11145", "16207", "6217", "6338", "11128", "11144", "16206",
               "5956", "9149", "6219", "10498"}  # + martillo, piedra filosofal, llave inglesa, microajustador
+# (las herramientas que una receta pide como objeto concreto, p. ej. Flint and Tinder, salen de SpellTotems)
 RECIPE_CLASS = "9"  # clase de objeto "Receta"
 LEARN_SPELL = "36"  # efecto "aprender hechizo"
 
@@ -51,6 +52,11 @@ for name in ("SpellReagents", "SpellEffect", "SpellTotems", "SpellCooldowns"):
                 items.add(row[f"Reagent_{k}"])
         if row.get("Effect") == "24" and row.get("EffectItemType", "0") not in ("", "0"):
             items.add(row["EffectItemType"])
+        # Herramienta que es un objeto concreto y no una categoría (SpellTotems.Totem_0/1:
+        # Flint and Tinder para las hogueras de Cocina)
+        for k in range(2):
+            if row.get(f"Totem_{k}", "0") not in ("", "0"):
+                items.add(row[f"Totem_{k}"])
 
 # Pergaminos de receta: objetos de clase "Receta" cuyo efecto enseña (directamente o
 # con un hechizo de "aprender") una receta de las profesiones

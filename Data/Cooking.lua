@@ -7,6 +7,7 @@ ES.Data = ES.Data or {}
 -- (sin fee = se aprende de pergamino: de dónde sale, en Data/Sources.lua; scrollPrice = su precio si lo vende un PNJ)
 -- rep = { facción, nivel } que pide el pergamino para aprenderla (5 amistoso, 6 honorable, 7 venerado, 8 exaltado)
 -- r = { {itemID, cantidad} }; out = { itemID, cantidad }
+-- tool = herramienta que pide (clave de ES.Data.Tools: categoría de tótem, o el objeto si pide uno concreto)
 -- sq / oq = calidad del pergamino / de lo fabricado (0 pobre, 1 común, 2 poco común, 3 raro, 4 épico)
 -- faction = bando que puede aprenderla, si solo es de uno
 -- bop = lo fabricado se liga al recogerlo: no se puede vender en la AH (sí al vendedor)
@@ -25,7 +26,7 @@ ES.Data.Cooking = {
   -- { PNJ instructor, rangos que enseña: 1 aprendiz (75), 2 oficial (150), 4 experto (225), 8 artesano (300) }
   trainers = { { 1355, 3 }, { 1382, 3 }, { 1430, 3 }, { 1699, 3 }, { 3026, 3 }, { 3067, 3 }, { 3087, 3 }, { 3399, 3 }, { 4210, 3 }, { 4552, 3 }, { 5159, 3 }, { 5482, 3 }, { 6286, 3 }, { 8306, 3 }, { 251905, 3 }, { 252084, 3 }, { 256655, 3 }, { 257006, 3 }, { 265944, 3 } },
   recipes = {
-    [818] = { name = "Basic Campfire", t = { 1, 25, 50, 75 }, cooldown = 300, basic = true, r = { { 4470, 1 } } },
+    [818] = { name = "Basic Campfire", t = { 1, 25, 50, 75 }, cooldown = 300, basic = true, r = { { 4470, 1 } }, tool = 4471 },
     [2538] = { name = "Charred Wolf Meat", t = { 1, 45, 65, 85 }, basic = true, r = { { 2672, 1 } }, out = { 2679, 1 }, oq = 1 },
     [2539] = { name = "Spiced Wolf Meat", t = { 1, 50, 70, 90 }, fee = 50, train = 10, r = { { 2672, 1 }, { 2678, 1 } }, out = { 2680, 1 }, oq = 1 },
     [2540] = { name = "Roasted Boar Meat", t = { 1, 45, 65, 85 }, basic = true, r = { { 769, 1 } }, out = { 2681, 1 }, oq = 1 },
@@ -113,7 +114,7 @@ ES.Data.Cooking = {
     [1225760] = { name = "Sunrise Omelette", t = { 1, 260, 270, 280 }, scroll = 238647, train = 250, sq = 1, r = { { 12207, 2 }, { 239016, 1 } }, out = { 238639, 2 }, oq = 1 },
     [1225762] = { name = "Specklefin Feast", t = { 1, 290, 300, 310 }, scroll = 238649, train = 280, sq = 1, r = { { 4603, 12 }, { 12184, 4 }, { 6362, 3 }, { 239017, 1 } }, out = { 238641, 1 }, oq = 2 },
     [1225763] = { name = "Grand Lobster Banquet", t = { 1, 290, 300, 310 }, scroll = 239021, train = 280, sq = 1, r = { { 13888, 12 }, { 3712, 4 }, { 3404, 3 }, { 239017, 1 } }, out = { 238642, 1 }, oq = 2 },
-    [1229737] = { name = "Basic Campfire", t = { 1, 1, 3, 5 }, basic = true, r = { { 4470, 1 } }, out = { 279981, 1 }, oq = 1 },
+    [1229737] = { name = "Basic Campfire", t = { 1, 1, 3, 5 }, basic = true, r = { { 4470, 1 } }, tool = 4471, out = { 279981, 1 }, oq = 1 },
     [1247741] = { name = "Spinefin Halibut", t = { 1, 210, 215, 220 }, r = { { 8959, 1 } }, out = { 8957, 1 }, oq = 1 },
     [1249957] = { name = "Peace Tea", t = { 1, 30, 37, 45 }, scroll = 249879, train = 25, sq = 1, r = { { 159, 1 }, { 2447, 2 } }, out = { 249865, 1 }, oq = 1 },
     [1249958] = { name = "Royal Tea", t = { 1, 105, 115, 125 }, scroll = 249880, train = 100, sq = 1, r = { { 1179, 1 }, { 785, 2 } }, out = { 249866, 1 }, oq = 1 },
@@ -149,8 +150,8 @@ ES.Data.Cooking = {
     [1270632] = { name = "Critter Cookie", t = { 1, 80, 82, 85 }, scroll = 263505, train = 70, sq = 1, r = { { 10284, 5 } }, out = { 263507, 1 }, oq = 1 },
     [1270633] = { name = "Skywall Souffle", t = { 1, 30, 37, 45 }, scroll = 263511, train = 25, sq = 1, r = { { 6889, 2 }, { 10284, 1 } }, out = { 263509, 1 }, oq = 1 },
     [1270635] = { name = "Pincer Bites", t = { 1, 40, 47, 55 }, scroll = 263513, train = 35, sq = 1, r = { { 2675, 1 }, { 10284, 1 } }, out = { 263512, 1 }, oq = 1 },
-    [1283400] = { name = "Journeyman Campfire", t = { 1, 95, 100, 105 }, scroll = 273087, train = 90, sq = 2, r = { { 11291, 1 } }, out = { 279961, 1 }, oq = 1 },
-    [1291341] = { name = "Expert Campfire", t = { 1, 205, 212, 220 }, scroll = 273101, train = 200, sq = 2, r = { { 272941, 1 } }, out = { 279974, 1 }, oq = 1 },
+    [1283400] = { name = "Journeyman Campfire", t = { 1, 95, 100, 105 }, scroll = 273087, train = 90, sq = 2, r = { { 11291, 1 } }, tool = 4471, out = { 279961, 1 }, oq = 1 },
+    [1291341] = { name = "Expert Campfire", t = { 1, 205, 212, 220 }, scroll = 273101, train = 200, sq = 2, r = { { 272941, 1 } }, tool = 4471, out = { 279974, 1 }, oq = 1 },
     [1294014] = { name = "Sweetpaw Jam", t = { 1, 280, 282, 285 }, scroll = 274415, train = 275, sq = 1, r = { { 249796, 3 }, { 3713, 1 } }, out = { 267341, 1 }, oq = 1 },
     [1295805] = { name = "Briny Seafood Stew", t = { 1, 220, 230, 240 }, scroll = 274972, train = 200, sq = 1, r = { { 730, 2 }, { 12206, 1 }, { 2692, 1 } }, out = { 274971, 1 }, oq = 1 },
     [1295834] = { name = "Plain Ol' Paletusk", t = { 1, 200, 215, 230 }, scroll = 274977, train = 185, scrollPrice = 2000, sq = 1, r = { { 769, 2 }, { 2678, 1 } }, out = { 274976, 1 }, oq = 1 },
@@ -158,7 +159,8 @@ ES.Data.Cooking = {
   },
 }
 
--- Herramientas: [categoría] = { objeto, máscara } (un bastón superior cubre a los inferiores)
+-- Herramientas: [categoría de tótem, o el propio objeto si la receta pide uno concreto (Flint and Tinder)]
+--   = { objeto, máscara, familia }: dentro de una familia, una superior cubre a las inferiores (bastones rúnicos)
 ES.Data.Tools = ES.Data.Tools or {}
 ES.Data.Tools[12] = { item = 9149, mask = 1, family = "stone" }
 ES.Data.Tools[14] = { item = 6219, mask = 1, family = "spanner" }
@@ -169,6 +171,7 @@ ES.Data.Tools[374] = { item = 6339, mask = 3, family = "rod" }
 ES.Data.Tools[375] = { item = 11130, mask = 7, family = "rod" }
 ES.Data.Tools[376] = { item = 11145, mask = 15, family = "rod" }
 ES.Data.Tools[377] = { item = 16207, mask = 31, family = "rod" }
+ES.Data.Tools[4471] = { item = 4471, mask = 1, family = "tinder" }
 
 ES.Data.VendorPrices = ES.Data.VendorPrices or {}
 ES.Data.SellPrices = ES.Data.SellPrices or {}
@@ -183,6 +186,7 @@ ES.Data.VendorPrices[2692] = 40
 ES.Data.VendorPrices[2894] = 50
 ES.Data.VendorPrices[3713] = 160
 ES.Data.VendorPrices[4470] = 38
+ES.Data.VendorPrices[4471] = 135
 ES.Data.VendorPrices[4536] = 5
 ES.Data.VendorPrices[8766] = 800
 ES.Data.VendorPrices[10284] = 200
@@ -259,6 +263,7 @@ ES.Data.SellPrices[3821] = 150
 ES.Data.SellPrices[4402] = 250
 ES.Data.SellPrices[4457] = 300
 ES.Data.SellPrices[4470] = 9
+ES.Data.SellPrices[4471] = 33
 ES.Data.SellPrices[4536] = 1
 ES.Data.SellPrices[4592] = 1
 ES.Data.SellPrices[4593] = 4
@@ -493,6 +498,7 @@ ES.Data.ItemNames[3821] = "Goldthorn"
 ES.Data.ItemNames[4402] = "Small Flame Sac"
 ES.Data.ItemNames[4457] = "Barbecued Buzzard Wing"
 ES.Data.ItemNames[4470] = "Simple Wood"
+ES.Data.ItemNames[4471] = "Flint and Tinder"
 ES.Data.ItemNames[4536] = "Shiny Red Apple"
 ES.Data.ItemNames[4592] = "Longjaw Mud Snapper"
 ES.Data.ItemNames[4593] = "Bristle Whisker Catfish"
