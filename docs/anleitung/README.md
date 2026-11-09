@@ -6,7 +6,7 @@ Crafter's Journal ist ein AddOn für World of Warcraft: Forever. Es beantwortet 
 2. **Was verdiene ich mit meinen Rezepten?** Gewinn pro Herstellung, was du an den Händler oder ins Auktionshaus verkaufst, und ein Rechner zum Durchspielen.
 3. **Welche Rezepte fehlen mir und wo bekomme ich sie?** Eine Rezeptsammlung im Stil des Dungeonkompendiums mit Fundort (Lehrer, Händler, Quest, Beute, Ruf, Merchant's Favor) und Wegpunkt.
 
-> **Hinweis zu den Bildern:** Die Abbildungen sind keine Aufnahmen aus dem Spiel. Sie wurden aus dem Code des AddOns nachgebaut (Maße, Farben, Aufbau) und mit den echten deutschen Texten gefüllt, die das AddOn in der Testumgebung mit Beispielpreisen ausgibt. Gegenstandssymbole sind Platzhalter. Im Spiel sieht die Oberfläche in den Details anders aus (Schrift, Symbole, Hintergründe von Blizzard).
+> **Hinweis zu den Bildern:** Die Abbildungen sind keine Aufnahmen aus dem Spiel. Der Kaufen-Knopf und der Regler im Auktionshaus-Bild sind noch nicht im Spiel getestet. Sie wurden aus dem Code des AddOns nachgebaut (Maße, Farben, Aufbau) und mit den echten deutschen Texten gefüllt, die das AddOn in der Testumgebung mit Beispielpreisen ausgibt. Gegenstandssymbole sind Platzhalter. Im Spiel sieht die Oberfläche in den Details anders aus (Schrift, Symbole, Hintergründe von Blizzard).
 
 ## Erste Schritte
 
@@ -80,8 +80,10 @@ Ein Klick auf einen Schritt öffnet das Rezept im Berufsfenster und stellt die f
 
 1. **Crafter's Journal: Scannen** liest alle Auktionen ein (ein vollständiger Scan alle 15 Minuten pro Account; andere Addons verbrauchen dieses Limit mit, das AddOn liest deren Scan dann mit). Der Knopf **Einkaufsliste** blendet das Fenster daneben ein oder aus.
 2. **Einkaufsfenster:** wählt mit den Pfeilen zwischen deinen begonnenen Routen und dem Tagespaket von „Gold verdienen“; darunter steht, wie viel schon gekauft ist.
-3. **Zeilen:** fehlende Menge, geplanter Preis; wenn der aktuelle Preis deutlich höher ist als geplant, wird das orange angezeigt. Gekauftes wird abgehakt.
-4. **Nächstes suchen** springt zum nächsten fehlenden Material und öffnet den Kauf mit der passenden Menge; du bestätigst selbst bei Blizzard. Das AddOn kauft nie von allein.
+3. **Spielraum-Regler:** „Kaufen: bis zu X mehr als geplant“ legt fest, wie viel Gold der Knopf Kaufen für die ganze Route über den geplanten Preis hinaus ausgeben darf. Daneben steht, was du mit dem Knopf bisher mehr oder weniger als geplant ausgegeben hast. Der Regler wird pro Beruf gespeichert. Stellung 0 heißt: nur zum geplanten Preis oder günstiger.
+4. **Zeilen:** fehlende Menge, geplanter Preis und der aktuelle Preis. Kostet die fehlende Menge gerade mehr, als Plan plus Spielraum erlauben, wird die Zeile orange und zeigt, um wie viel. Gekauftes wird abgehakt, auch wenn das Spiel es per Post liefert.
+5. **Kaufen** kauft mit deinem Klick die fehlende Menge des nächsten Materials, sofern die aktuellen Angebote in Plan plus Spielraum passen. Die Kosten werden über die ganze Menge gerechnet, vom günstigsten Angebot aufwärts, ein einzelnes billiges Angebot vor vielen teuren täuscht also nicht. Der Knopf sagt vorher, was er kaufen würde („831× Unverwüstliches Leder kaufen für 94 G 6 S 92 K“) oder warum nicht („1 G über Plan: Regler erhöhen“). Pro Klick ein Material: Das Spiel erlaubt Käufe im Auktionshaus nur als Antwort auf einen Klick, nie aus einem Timer. Der Kauf läuft in zwei Schritten, der Server nennt den echten Preis, dann wird bestätigt. Passt der Preis noch in den Spielraum, bestätigt das AddOn selbst; verlangt das Spiel dafür einen weiteren Klick, wird der Knopf zu „Bestätigen“. Das AddOn kauft nie ohne deinen Klick.
+6. **Nächstes suchen** öffnet wie bisher die Kaufseite von Blizzard mit der passenden Menge, falls du selbst kaufen willst. **Neu berechnen** plant die Liste mit den aktuellen Taschen und Scan-Preisen neu.
 
 Auch beim Händler erscheint ein kleines Fenster, sobald er etwas von deiner Einkaufsliste führt: „Alles kaufen“ kauft die fehlenden Mengen, „Alles verkaufen“ verkauft, was die Gewinn-Ansicht für den Händler vorsieht.
 

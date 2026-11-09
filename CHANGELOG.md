@@ -1,5 +1,10 @@
 # Crafter's Journal
 
+## 0.41.0
+
+- **Buy from the shopping panel at the Auction House, with a margin you set.** The panel next to the Auction House has a new **Buy** button and a slider "Buy: up to X more than planned". The button buys, with your click, what's missing of the next material on your list if what's for sale right now doesn't cost more than the route planned plus the margin (the cost is worked out over the whole quantity, from the cheapest offer up, so a single cheap listing in front of expensive ones doesn't fool it). At the planned price or less it always buys. The margin is in gold, for the whole route, saved per profession; what you've spent over (or under) the plan with the button shows next to it, and a route remembers it until you release it. Materials over the margin turn orange with how much they exceed it, and the button says so instead of buying. Each purchase needs one click: the game only allows buying on the Auction House in response to a click, never from a timer. The purchase goes in two steps (the server quotes the real price, then it's confirmed): if the quote still fits the margin it's confirmed on its own; if the game asks for another click to confirm, the button turns into "Confirm". Only with the Forever Auction House. Purchases made with the button count as bought even when the game delivers them by mail.
+- **The panel reads the current offers** of the material it's working on (the Forever Auction House never showed the "now X" live price, only the Classic one did) and asks for the next material's offers after each purchase.
+
 ## 0.40.0
 
 - **The addon speaks German.** Pick Deutsch from the language menu in the header, or it is used automatically on a German client. Recipe and item names in German come from the Forever client tables (2,167 recipes and 3,805 items whose name differs from English), so they are also right when the game runs in another language.

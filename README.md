@@ -4,6 +4,7 @@ A World of Warcraft: Forever addon to **level every profession the cheapest way*
 
 - Cheapest route from your current skill to the cap, step by step, with real Auction House prices.
 - Trainers by rank, with a waypoint to the nearest one.
+- Shopping list next to the Auction House: one click per material buys it when the price is within the plan plus a margin you set.
 - Every recipe of each profession: which you know, which you can learn now, and where to get the rest.
 - English, Spanish and German.
 

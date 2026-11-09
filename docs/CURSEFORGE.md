@@ -55,7 +55,7 @@ Crafter's Journal tells you exactly what to craft, what to buy and where to go t
 ## 🛒 At the Auction House
 
 - **Scan the Auction House** from the addon (the server allows one full scan every 15 minutes; a countdown shows when you can scan again).
-- A **shopping panel** next to the Auction House searches the materials your route needs, one by one.
+- A **shopping panel** next to the Auction House searches the materials your route needs, one by one, and **buys them with one click each** when the current offers don't exceed the route's plan plus a margin you set with a slider ("up to X gold more than planned", per route).
 
 ## 🌍 English, Español and Deutsch
 

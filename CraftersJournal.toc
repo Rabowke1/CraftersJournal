@@ -4,7 +4,7 @@
 ## Notes-esES: La forma más barata de subir cada profesión y tu colección de recetas, con dónde conseguir cada una.
 ## Notes-deDE: Der günstigste Weg, jeden Beruf zu leveln, und deine komplette Rezeptsammlung mit dem Fundort jedes Rezepts.
 ## Author: Bruno
-## Version: 0.40.0
+## Version: 0.41.0
 ## Category: Professions
 ## SavedVariables: CraftersJournalDB
 ## IconTexture: Interface\Icons\Trade_BlackSmithing

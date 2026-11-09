@@ -316,6 +316,113 @@ step("lista de compra en la AH", function()
   ES.ItemCount = real
   ES.GetItemData = realData
 end)
+step("comprar en la AH con margen", function()
+  -- AH de Forever simulada: ofertas, compra en dos pasos (precio real y confirmación) y sus eventos
+  local savedCAH, savedAHF, savedMoney = C_AuctionHouse, AuctionHouseFrame, GetMoney
+  local searched, started, confirmed, cancelled = {}, nil, nil, nil
+  local OFFERS = {}
+  C_AuctionHouse = {
+    MakeItemKey = function(id) return { itemID = id } end,
+    IsThrottledMessageSystemReady = function() return true end,
+    SendSearchQuery = function(key) searched[#searched + 1] = key.itemID end,
+    GetNumCommoditySearchResults = function(id) return #(OFFERS[id] or {}) end,
+    GetCommoditySearchResultInfo = function(id, i) local o = OFFERS[id][i] return { unitPrice = o[1], quantity = o[2], containsOwnerItem = o[3] } end,
+    StartCommoditiesPurchase = function(id, q) started = { id, q } end,
+    ConfirmCommoditiesPurchase = function(id, q) confirmed = { id, q } end,
+    CancelCommoditiesPurchase = function() cancelled = true end,
+  }
+  AuctionHouseFrame = nil
+  GetMoney = function() return 100000000 end
+  local realData = ES.GetItemData
+  ES.GetItemData = function(self, id) return "Item" .. id, 1, 134400 end
+  -- Ruta de Peletería empezada (como en "lista de compra en la AH"): la ruta fijada
+  -- guarda lo gastado de más y lo comprado con el botón
+  local lock = {}
+  local realLock, realLocked, realOpen = ES.RouteLock, ES.LockedPlan, ES.IsAuctionHouseOpen
+  ES.RouteLock = function(self, key) if key == "Leatherworking" then return lock end return realLock(self, key) end
+  ES.LockedPlan = function(self, key) if key == "Leatherworking" then return nil end return realLocked(self, key) end
+  ES.IsAuctionHouseOpen = function() return true end
+  ES.db.prof = ES.db.prof or {}
+  ES.db.prof.Leatherworking = ES.db.prof.Leatherworking or {}
+  ES.db.prof.Leatherworking.lock = lock
+  local st = ES.AuctionPanelState
+  local function Cleanup()
+    ES.db.prof.Leatherworking.lock, ES.db.prof.Leatherworking.ahOverspend = nil, nil
+    ES.RouteLock, ES.LockedPlan, ES.IsAuctionHouseOpen, ES.GetItemData = realLock, realLocked, realOpen, realData
+    C_AuctionHouse, AuctionHouseFrame, GetMoney = savedCAH, savedAHF, savedMoney
+    st.profKey, st.buying = nil, nil
+  end
+  local ok, err = pcall(function()
+    if not st.panel then ES:SetupAuctionPanel(AuctionFrame) end
+    st.profKey = nil
+    ES.db.lastProf = "Leatherworking"
+    ES:RefreshAuctionPlan(true)
+    assert(st.profKey == "Leatherworking", "profesión: " .. tostring(st.profKey))
+    local first, buys = nil, 0
+    for _, l in ipairs(st.lines) do if l.buy then buys = buys + 1 first = first or l end end
+    assert(first, "sin materiales de la AH")
+    local id, rem, unit = first.itemID, st.need[first.itemID], first.it.unit
+    -- Al abrir, pide las ofertas del primer material pendiente
+    assert(searched[#searched] == id, "no pidió las ofertas: " .. tostring(searched[#searched]))
+    local panel = st.panel
+    local OnEvent = panel:GetScript("OnEvent")
+    -- Ofertas: una tuya barata (no cuenta), la mitad al precio previsto y el resto al doble
+    local half = math.ceil(rem / 2)
+    local base = math.floor(unit)
+    OFFERS[id] = { { math.floor(unit / 2) + 1, rem, true }, { base, half }, { base * 2 + 1, rem } }
+    OnEvent(panel, "COMMODITY_SEARCH_RESULTS_UPDATED", id)
+    local cost = base * half + (base * 2 + 1) * (rem - half)
+    local over = cost - unit * rem
+    assert(over > 0, "las ofertas deberían pasarse del plan")
+    -- Margen 0: el botón no compra
+    assert(st.buy and st.buy.action == "over", "con margen 0 debería rechazar: " .. tostring(st.buy and st.buy.action))
+    ES:AuctionBuyClick()
+    assert(started == nil, "no debería comprar sin margen")
+    -- Margen por encima del exceso (regulador en oro): el botón ofrece comprar
+    local gold = math.ceil(over / 10000) + 1
+    panel.slider:GetScript("OnValueChanged")(panel.slider, gold, true)
+    assert(ES.db.prof.Leatherworking.ahOverspend == gold * 10000, "margen guardado con la profesión")
+    assert(st.buy.action == "buy", "con margen debería comprar: " .. tostring(st.buy.action))
+    -- Pero el servidor dice un precio por encima del margen: se cancela, nada se apunta y el botón avisa
+    ES:AuctionBuyClick()
+    assert(started and started[1] == id and started[2] == rem, "no pidió la compra")
+    assert(st.buying and st.buying.step == "price", "esperando el precio real")
+    local tooMuch = unit * rem + gold * 10000 + 10000
+    OnEvent(panel, "COMMODITY_PRICE_UPDATED", tooMuch / rem, tooMuch)
+    assert(cancelled and st.buying == nil, "debería cancelar la compra cara")
+    assert(st.buy.action == "over", "el botón avisa: " .. tostring(st.buy.action))
+    assert(lock.ahBought == nil and (lock.ahOverspent or 0) == 0, "nada apuntado de la compra cancelada")
+    assert(searched[#searched] == id and #searched >= 2, "pide ofertas nuevas tras cancelar")
+    -- Con ofertas nuevas vuelve a valer lo leído y la compra sale: el servidor da el precio calculado
+    OnEvent(panel, "COMMODITY_SEARCH_RESULTS_UPDATED", id)
+    assert(st.buy.action == "buy", "ofertas nuevas: " .. tostring(st.buy.action))
+    started = nil
+    ES:AuctionBuyClick()
+    assert(started and started[2] == rem, "segunda compra")
+    OnEvent(panel, "COMMODITY_PRICE_UPDATED", cost / rem, cost)
+    assert(confirmed and confirmed[1] == id and confirmed[2] == rem, "no confirmó")
+    assert(st.buy.action == "confirm", "botón Confirmar: " .. tostring(st.buy.action))
+    OnEvent(panel, "COMMODITY_PURCHASE_SUCCEEDED")
+    assert(st.buying == nil, "compra cerrada")
+    assert(math.abs(lock.ahOverspent - over) < 1, "gastado de más: " .. tostring(lock.ahOverspent))
+    assert(lock.ahBought[id] == rem, "comprado apuntado en la ruta")
+    -- Lo comprado ya no falta (aunque llegue por correo): la fila sale como comprada y el
+    -- botón pasa al siguiente material (aquí no hay más: se apaga)
+    local row
+    for i, l in ipairs(st.lines) do if l.itemID == id then row = panel.rows[i] end end
+    assert(row and row.sub:GetText():find("comprado"), "la fila debería salir comprada: " .. tostring(row and row.sub:GetText()))
+    if buys == 1 then
+      assert(st.buy.action == "none", "sin más materiales, el botón se apaga: " .. tostring(st.buy.action))
+    else
+      assert(searched[#searched] ~= id, "debería pedir las ofertas del siguiente material")
+    end
+    assert(panel.summary:GetText():find("^1 de " .. buys), "resumen: " .. tostring(panel.summary:GetText()))
+    log[#log+1] = string.format("     comprado %d× %d por %s (%s de más, margen %dg); antes, una compra cancelada por el precio del servidor",
+      rem, id, ES.Money(cost), ES.Money(over), gold)
+  end)
+  Cleanup()
+  assert(ok, err)
+end)
 step("ganar dinero (sin correo)", function()
   -- Peletería al 150 sabiendo todas sus recetas de instructor
   local realSkill, realKnown = ES.GetProfessionSkill, ES.IsRecipeKnown

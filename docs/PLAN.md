@@ -7,7 +7,7 @@ Principios que se mantienen en todo:
 - **Nada de estimar ventas** con los escaneos. Para decidir qué vender se usan las alertas de mercado (estancado, precio clavado, más oferta) y tus ventas reales del buzón.
 - **Costes en rojo con "-" y beneficios en verde con "+".**
 - **Ruta = la más barata y óptima.**
-- **El addon nunca compra ni vende solo:** solo prepara búsquedas, listas y consejos.
+- **El addon nunca compra ni vende sin un clic tuyo que diga qué hace:** prepara búsquedas, listas y consejos; el botón Comprar del panel de la AH compra un material por clic, solo dentro del margen que fijas (0.41.0).
 - **Todo texto visible va como `L["texto en español"]`**, con su traducción en `Locales/enUS.lua`. La prueba "idioma inglés" falla si falta alguna. Las tablas que se crean al cargar un archivo se registran con `ES.Localize(tabla[, campo])`.
 
 ---
@@ -64,6 +64,7 @@ Archivos: `Earn.lua` (ideas y lote), `EarnUI.lua` (página "Ganar dinero", con t
 ## C. Tanda anterior: hecho en 0.27
 
 - [x] **Lista de la compra en la AH:** panel junto a la AH, "Buscar siguiente", sección "Vender".
+- [x] **Comprar desde el panel (0.41.0):** botón Comprar y regulador "hasta X de oro más de lo previsto" (por ruta, guardado con la profesión). Compra con el clic lo que falta del siguiente material si las ofertas de ahora (coste de toda la cantidad, de la más barata arriba) no pasan de lo previsto más el margen; apunta lo gastado de más y lo comprado (llega por correo). Dos pasos con C_AuctionHouse (StartCommoditiesPurchase → COMMODITY_PRICE_UPDATED → ConfirmCommoditiesPurchase); si el juego exige otra pulsación para confirmar, el botón pasa a "Confirmar". **Por probar en el juego:** si la confirmación automática pasa, si lo comprado llega a las bolsas o por correo, y objetos no apilables (PlaceBid).
 - [x] **Consejo de venta de lo fabricado** (`Planner.SaleAdvice`).
 - [x] **Escaneo:** getAll y procesado por tiempo por fotograma.
 - [x] ~~**Filtro "Lo que recolectas tú".**~~ Quitado en 0.32.0 a petición del jugador (botón, opción y su código en el planificador). Los datos de qué se recolecta (`ES.Data.GatheredBy`) se siguen generando para la vía "Vender en bruto".
@@ -234,7 +235,7 @@ Reglas que se mantienen: no se estiman ventas, el addon no compra ni vende solo,
 - El jugador puede **cambiar la cantidad** de cada fila.
 
 ### G4. Flujo de hoy: comprar → fabricar → (desencantar) → anunciar → balance
-- [ ] **Comprar:** la lista que ya busca el panel de la AH, con progreso ("3 de 5 materiales").
+- [x] **Comprar:** la lista que ya busca el panel de la AH, con progreso ("3 de 5 materiales") y el botón Comprar con margen (0.41.0).
 - [ ] **Fabricar:** botón que abre la receta en el libro de profesiones con la cantidad puesta. Fabricas tú.
 - [ ] **Desencantar:** lista de lo que llevas encima que conviene desencantar.
 - [ ] **Anunciar:** al abrir la pestaña de vender de la AH con un objeto del lote, se rellenan precio y cantidad. El clic de anunciar es tuyo.
