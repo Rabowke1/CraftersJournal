@@ -9,6 +9,8 @@ A World of Warcraft: Forever addon to **level every profession the cheapest way*
 
 Download it from CurseForge (link coming soon).
 
+Illustrated guide in German: [docs/anleitung/README.md](docs/anleitung/README.md).
+
 ## Development
 
 - The addon code is this folder. In WoW, `Interface\AddOns\CraftersJournal` can be a directory junction to it.
