@@ -6,7 +6,7 @@
 - **Numbers use a decimal comma in German too** ("2,5"), as in Spanish.
 - **Two texts that stayed in Spanish in the English addon are translated.** The price range in the market tooltip read "5s a 7s" (now "5s to 7s"), and the per-unit label in route, shopping list and Make money rows read "/u" (now "/ea").
 - **Trainer recipes are recognized by name in any addon language** when reading a trainer's prices (only the Spanish names were tried besides English).
-- **Data checked against the Forever client tables.** All 2,175 recipes (names, materials, crafted items, skill thresholds, recipe scrolls, reputation) and 2,641 item names and prices match the client; `tools/check_data.py` repeats the check. 180 recipes added by Season of Discovery or Forever craft an item the client export doesn't include, so those show the item's name only once the game has loaded it.
+- **Data checked against Wowhead (Forever) and the client tables.** Every recipe (2,172) and item (3,882) was compared with Wowhead's Forever database: all English and German names and all materials match. Three fixes came out of it: Flying Tiger Goggles, Green Tinted Goggles and Repair Bot now require the Arclight Spanner like every other spanner recipe (the generator only read the first tool slot); Smoking Heart of the Mountain is marked bind-on-pickup (it can't be sold on the AH); and 36 crafted items (mostly new Forever gear like Radiant Staff or Ironwood Blade) take the vendor sell price Wowhead reports for the live game instead of the launch client's value (the game's own price still wins once the item is loaded). `tools/check_data.py` and `tools/check_wowhead.py` repeat both checks. Known gap: the campfire recipes need Flint and Tinder, which the data doesn't list as a tool.
 
 ## 0.39.0
 

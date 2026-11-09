@@ -883,7 +883,7 @@ ES.Data.SellPrices[254115] = 11870
 ES.Data.SellPrices[254117] = 10816
 ES.Data.SellPrices[254119] = 10205
 ES.Data.SellPrices[254121] = 15262
-ES.Data.SellPrices[254123] = 7688
+ES.Data.SellPrices[254123] = 6908
 ES.Data.SellPrices[254125] = 14756
 ES.Data.SellPrices[254127] = 12020
 ES.Data.SellPrices[254129] = 12714
@@ -898,11 +898,11 @@ ES.Data.SellPrices[275606] = 13626
 ES.Data.SellPrices[275607] = 9117
 ES.Data.SellPrices[275608] = 9149
 ES.Data.SellPrices[275609] = 13774
-ES.Data.SellPrices[279266] = 21117
-ES.Data.SellPrices[279267] = 3262
-ES.Data.SellPrices[279268] = 17158
-ES.Data.SellPrices[279269] = 9999
-ES.Data.SellPrices[279270] = 9999
+ES.Data.SellPrices[279266] = 32978
+ES.Data.SellPrices[279267] = 16551
+ES.Data.SellPrices[279268] = 24918
+ES.Data.SellPrices[279269] = 25012
+ES.Data.SellPrices[279270] = 25106
 ES.Data.SellPrices[279271] = 80000
 
 -- Nombre de cada objeto (inglés, del cliente): se muestra mientras el juego no lo ha cargado

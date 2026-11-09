@@ -27,8 +27,6 @@ ROOT = HERE.parent
 PROFS = ["Leatherworking", "Enchanting", "Tailoring", "Blacksmithing", "Alchemy", "Engineering", "Cooking", "FirstAid"]
 BASE = "https://nether.wowhead.com/forever/tooltip/{kind}/{id}?locale={locale}"
 LOCALES = {"en": 0, "de": 3}
-# Categoría de herramienta de los datos -> objeto (como en gen_profession.py)
-TOOL_ITEMS = {373: 6218, 374: 6339, 375: 11130, 376: 11145, 377: 16207, 162: 5956, 12: 9149, 14: 6219, 15: 10498}
 UA = "Mozilla/5.0 (CraftersJournal data check; +https://github.com/brunobasas/CraftersJournal)"
 
 
@@ -79,6 +77,13 @@ def items_in(block):
     return out
 
 
+def tools_in(block):
+    """Herramientas de un bloque: categorías (enlace items?filter=91;CAT;0, como el martillo de
+    herrero o los bastones) y objetos concretos (enlace item=ID, como Flint and Tinder)."""
+    cats = {int(c) for c in re.findall(r'href="/forever/items\?filter=91;(\d+);0"', block)}
+    return cats, set(items_in(block))
+
+
 def parse_spell(d):
     t = d.get("tooltip", "")
     reagents = re.search(r'Reagents:<br />\s*<div class="indent q1">(.*?)</div>', t)
@@ -88,8 +93,9 @@ def parse_spell(d):
         if m:
             rest = rest.replace(m.group(0), "")
     created = re.search(r'<span class="q\d"><a href="/forever/item=(\d+)/', rest)
+    cats, tool_items = tools_in(tools.group(1)) if tools else (set(), set())
     return {"name": d.get("name"), "reagents": items_in(reagents.group(1)) if reagents else {},
-            "tools": set(items_in(tools.group(1))) if tools else set(),
+            "toolCats": cats, "toolItems": tool_items,
             "created": int(created.group(1)) if created else None}
 
 
@@ -116,7 +122,7 @@ def load_data():
             o = re.search(r'out = \{ (\d+), ([\d.]+) \}', body)
             d["out"] = int(o.group(1)) if o else None
             tl = re.search(r'\btool = (\d+)', body)
-            d["tool"] = TOOL_ITEMS.get(int(tl.group(1))) if tl else None
+            d["tool"] = int(tl.group(1)) if tl else None  # categoría de herramienta (TotemCategory)
             sc = re.search(r'\bscroll = (\d+)', body)
             d["scroll"] = int(sc.group(1)) if sc else None
             d["bop"] = "bop = true" in body
@@ -208,9 +214,14 @@ def main():
                 return ", ".join(f"{item_label(k)} x{v}" for k, v in sorted(m.items()))
             problems.append(("materiales", f"{tag}: datos [{show(d['r'])}], Wowhead [{show(w['reagents'])}]"))
         if w["created"] != d["out"]:
-            problems.append(("objeto fabricado", f"{tag}: datos {d['out']}, Wowhead {w['created']}"))
-        if d["tool"] and d["tool"] not in w["tools"] or (w["tools"] and not d["tool"]):
-            problems.append(("herramienta", f"{tag}: datos {d['tool']}, Wowhead {sorted(w['tools'])}"))
+            # Sin enlace al objeto en Wowhead: casi siempre un objeto que el cliente no trae
+            # (lo manda el servidor) y Wowhead tampoco tiene; se cuenta aparte
+            known = d["out"] and ("item", d["out"], 0) in results and "error" not in results[("item", d["out"], 0)]
+            kind = "objeto fabricado" if (w["created"] or known) else "objeto fabricado (sin ficha en Wowhead)"
+            problems.append((kind, f"{tag}: datos {d['out']}, Wowhead {w['created']}"))
+        if (d["tool"] and d["tool"] not in w["toolCats"]) or (w["toolCats"] and not d["tool"]) or w["toolItems"]:
+            problems.append(("herramienta", f"{tag}: datos categoría {d['tool']}, Wowhead categorías {sorted(w['toolCats'])}"
+                             + (f" y objetos {sorted(w['toolItems'])}" if w["toolItems"] else "")))
         if d["out"] and ("item", d["out"], 0) in results and "error" not in results[("item", d["out"], 0)]:
             bop = parse_item(results[("item", d["out"], 0)])["bop"]
             if bop != d["bop"]:
@@ -228,7 +239,7 @@ def main():
             print("  objetos sin ficha en Wowhead: " + ", ".join(str(i) for i in missing_items))
         if missing_spells:
             print("  recetas sin ficha en Wowhead: " + ", ".join(str(s) for s in missing_spells))
-    return 1 if problems else 0
+    return 1 if any(k != "objeto fabricado (sin ficha en Wowhead)" for k, _ in problems) else 0
 
 
 if __name__ == "__main__":

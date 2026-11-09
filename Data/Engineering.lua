@@ -38,7 +38,7 @@ ES.Data.Engineering = {
     [3931] = { name = "Coarse Dynamite", t = { 1, 90, 97, 105 }, fee = 250, train = 75, r = { { 4364, 3 }, { 2589, 1 } }, out = { 4365, 2 }, oq = 1 },
     [3932] = { name = "Target Dummy", t = { 1, 115, 130, 145 }, fee = 270, train = 85, r = { { 4363, 1 }, { 4359, 2 }, { 2841, 1 }, { 2592, 1 } }, tool = 162, out = { 4366, 1 }, oq = 1 },
     [3933] = { name = "Small Seaforium Charge", t = { 1, 130, 145, 160 }, scroll = 4409, train = 100, sq = 2, r = { { 4364, 2 }, { 4363, 1 }, { 2318, 1 }, { 159, 1 } }, out = { 4367, 1 }, oq = 1 },
-    [3934] = { name = "Flying Tiger Goggles", t = { 1, 130, 145, 160 }, fee = 360, train = 100, r = { { 2318, 6 }, { 818, 2 } }, out = { 4368, 1 }, oq = 2 },
+    [3934] = { name = "Flying Tiger Goggles", t = { 1, 130, 145, 160 }, fee = 360, train = 100, r = { { 2318, 6 }, { 818, 2 } }, tool = 14, out = { 4368, 1 }, oq = 2 },
     [3936] = { name = "Deadly Blunderbuss", t = { 1, 130, 142, 155 }, fee = 378, train = 105, r = { { 4361, 2 }, { 4359, 4 }, { 4399, 1 }, { 2319, 2 } }, tool = 162, out = { 4369, 1 }, oq = 2 },
     [3937] = { name = "Large Copper Bomb", t = { 1, 105, 130, 155 }, fee = 405, train = 105, r = { { 2840, 3 }, { 4364, 4 }, { 4404, 1 } }, tool = 162, out = { 4370, 3 }, oq = 1 },
     [3938] = { name = "Bronze Tube", t = { 1, 105, 130, 155 }, fee = 405, train = 105, r = { { 2841, 2 }, { 2880, 1 } }, tool = 162, out = { 4371, 1 }, oq = 1 },
@@ -56,7 +56,7 @@ ES.Data.Engineering = {
     [3953] = { name = "Bronze Framework", t = { 1, 145, 170, 195 }, fee = 540, train = 145, r = { { 2841, 2 }, { 2319, 1 }, { 2592, 1 } }, out = { 4382, 1 }, oq = 1 },
     [3954] = { name = "Moonsight Rifle", t = { 1, 170, 182, 195 }, scroll = 4412, train = 145, sq = 2, r = { { 4371, 3 }, { 4375, 3 }, { 4400, 1 }, { 1705, 2 } }, tool = 162, out = { 4383, 1 }, oq = 2 },
     [3955] = { name = "Explosive Sheep", t = { 1, 175, 187, 200 }, fee = 675, train = 150, r = { { 4382, 1 }, { 4375, 1 }, { 4377, 2 }, { 2592, 2 } }, tool = 162, out = { 4384, 1 }, oq = 1 },
-    [3956] = { name = "Green Tinted Goggles", t = { 1, 175, 187, 200 }, fee = 675, train = 150, r = { { 2319, 4 }, { 1206, 2 }, { 4368, 1 } }, out = { 4385, 1 }, oq = 2 },
+    [3956] = { name = "Green Tinted Goggles", t = { 1, 175, 187, 200 }, fee = 675, train = 150, r = { { 2319, 4 }, { 1206, 2 }, { 4368, 1 } }, tool = 14, out = { 4385, 1 }, oq = 2 },
     [3957] = { name = "Ice Deflector", t = { 1, 175, 185, 195 }, scroll = 13308, train = 155, scrollPrice = 1800, sq = 1, r = { { 4375, 1 }, { 3829, 1 } }, tool = 162, out = { 4386, 1 }, oq = 1 },
     [3958] = { name = "Iron Strut", t = { 1, 160, 170, 180 }, fee = 720, train = 160, r = { { 3575, 2 } }, tool = 162, out = { 4387, 1 }, oq = 1 },
     [3959] = { name = "Discombobulator Ray", t = { 1, 180, 190, 200 }, scroll = 4413, train = 160, sq = 2, r = { { 4375, 3 }, { 4306, 2 }, { 1529, 1 }, { 4371, 1 } }, tool = 162, out = { 4388, 1 }, oq = 1 },
@@ -204,7 +204,7 @@ ES.Data.Engineering = {
     [1228088] = { name = "Pop-Up Shrub", t = { 1, 255, 257, 260 }, scroll = 239222, train = 250, sq = 3, r = { { 15994, 1 }, { 10560, 1 }, { 4382, 1 } }, tool = 14, out = { 237023, 1 }, oq = 1 },
     [1230656] = { name = "Reagent Bot", t = { 1, 20, 22, 25 }, fee = 0, train = 20, r = { { 4359, 1 }, { 4361, 1 } }, out = { 279950, 1 }, oq = 1 },
     [1249634] = { name = "Sandpaper", t = { 1, 130, 142, 155 }, r = { { 249425, 2 }, { 2996, 1 } }, out = { 249432, 1 }, oq = 2 },
-    [1263034] = { name = "Repair Bot", t = { 1, 140, 142, 145 }, scroll = 273092, train = 140, sq = 2, r = { { 4375, 2 }, { 4371, 1 }, { 4234, 1 } }, out = { 279949, 1 }, oq = 1 },
+    [1263034] = { name = "Repair Bot", t = { 1, 140, 142, 145 }, scroll = 273092, train = 140, sq = 2, r = { { 4375, 2 }, { 4371, 1 }, { 4234, 1 } }, tool = 14, out = { 279949, 1 }, oq = 1 },
     [1266893] = { name = "SAF-T Tabs", t = { 1, 25, 27, 30 }, scroll = 264201, train = 25, sq = 1, favor = 45, r = { { 2570, 1 }, { 249409, 1 } }, out = { 260784, 1 }, oq = 1 },
     [1266905] = { name = "SAF-T Dynamite", t = { 1, 25, 30, 35 }, scroll = 264202, train = 25, sq = 1, favor = 45, r = { { 4357, 2 }, { 2589, 1 } }, out = { 260792, 1 }, oq = 1 },
     [1266906] = { name = "SAF-T Copper Bomb", t = { 1, 55, 60, 65 }, scroll = 264203, train = 55, sq = 1, favor = 45, r = { { 2840, 1 }, { 4359, 1 }, { 4357, 2 }, { 2570, 1 }, { 260784, 2 } }, tool = 162, out = { 260793, 1 }, oq = 1 },
@@ -628,8 +628,8 @@ ES.Data.SellPrices[269902] = 100
 ES.Data.SellPrices[277132] = 200
 ES.Data.SellPrices[279272] = 25000
 ES.Data.SellPrices[279273] = 66347
-ES.Data.SellPrices[280306] = 1710
-ES.Data.SellPrices[280307] = 1716
+ES.Data.SellPrices[280306] = 1425
+ES.Data.SellPrices[280307] = 1802
 ES.Data.SellPrices[280308] = 1033
 ES.Data.SellPrices[280310] = 4987
 ES.Data.SellPrices[280311] = 3764

@@ -36,6 +36,9 @@ RANK_CAP = {1: 75, 2: 150, 3: 225, 4: 300}  # paso de rango -> tope de habilidad
 
 # Materiales de vendedor que QuestieDB no conoce (Mote of Magic es nuevo de Forever)
 EXTRA_VENDOR = {247786, 6217, 5956, 6219}  # + Copper Rod, Blacksmith Hammer, Arclight Spanner
+# Objetos fabricados que se ligan al recogerlo y no están en el ItemSparse exportado (los
+# manda el servidor): Smoking Heart of the Mountain (Wowhead, Forever)
+EXTRA_BOP = {11811}
 
 # Conversión de esencias de encantamiento (clic derecho): 3 menores <-> 1 mayor
 ESSENCES = [(10938, 10939), (10998, 11082), (11134, 11135), (11174, 11175), (16202, 16203)]
@@ -162,7 +165,7 @@ def load_common():
             qty = float(r["EffectBasePointsF"] or 1)
             creates[int(r["SpellID"])] = (int(r["EffectItemType"]), qty if qty > 0 else 1.0)
 
-    item_info, item_rep, item_skill, item_quality, item_bop = {}, {}, {}, {}, set()
+    item_info, item_rep, item_skill, item_quality, item_bop = {}, {}, {}, {}, set(EXTRA_BOP)
     for r in rows("ItemSparse_forever"):
         iid = int(r["ID"])
         # Calidad: 0 pobre, 1 común, 2 poco común, 3 raro, 4 épico
@@ -190,9 +193,12 @@ def load_common():
 
     tools, tool_masks = {}, {}
     for r in rows("SpellTotems_forever"):
-        cat = int(r["RequiredTotemCategoryID_0"] or 0)
-        if cat in TOOL_ITEMS:
-            tools[int(r["SpellID"])] = cat
+        # La herramienta puede ir en cualquiera de las dos casillas (Flying Tiger Goggles
+        # lleva la llave inglesa en la segunda)
+        for slot in ("RequiredTotemCategoryID_0", "RequiredTotemCategoryID_1"):
+            cat = int(r[slot] or 0)
+            if cat in TOOL_ITEMS:
+                tools[int(r["SpellID"])] = cat
     for r in rows("TotemCategory_forever"):
         if int(r["ID"]) in TOOL_ITEMS:
             tool_masks[int(r["ID"])] = int(r["TotemCategoryMask"])

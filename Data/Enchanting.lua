@@ -119,7 +119,7 @@ ES.Data.Enchanting = {
     [14807] = { name = "Greater Magic Wand", t = { 1, 110, 130, 150 }, fee = 200, train = 70, r = { { 4470, 1 }, { 10938, 2 } }, tool = 373, out = { 11288, 1 }, oq = 2 },
     [14809] = { name = "Lesser Mystic Wand", t = { 1, 175, 195, 215 }, fee = 2600, train = 155, r = { { 11291, 1 }, { 11134, 1 } }, tool = 375, out = { 11289, 1 }, oq = 2 },
     [14810] = { name = "Greater Mystic Wand", t = { 1, 195, 215, 235 }, fee = 2700, train = 175, r = { { 11291, 1 }, { 11134, 1 }, { 11137, 1 } }, tool = 375, out = { 217287, 1 }, oq = 2 },
-    [15596] = { name = "Smoking Heart of the Mountain", t = { 1, 285, 305, 325 }, scroll = 11813, train = 265, sq = 2, r = { { 11382, 1 }, { 7078, 1 }, { 14343, 3 } }, out = { 11811, 1 }, oq = 1 },
+    [15596] = { name = "Smoking Heart of the Mountain", t = { 1, 285, 305, 325 }, scroll = 11813, train = 265, sq = 2, r = { { 11382, 1 }, { 7078, 1 }, { 14343, 3 } }, out = { 11811, 1 }, oq = 1, bop = true },
     [17180] = { name = "Enchanted Thorium", t = { 1, 250, 255, 260 }, fee = 10000, train = 250, r = { { 12359, 1 }, { 11176, 3 } }, tool = 376, out = { 12655, 1 }, oq = 1 },
     [17181] = { name = "Enchanted Leather", t = { 1, 250, 255, 260 }, fee = 10000, train = 250, r = { { 8170, 1 }, { 16202, 1 } }, tool = 376, out = { 12810, 1 }, oq = 1 },
     [20008] = { name = "Enchant Bracer - Greater Intellect", t = { 1, 275, 295, 315 }, scroll = 16214, train = 255, sq = 2, r = { { 16202, 2 } }, tool = 376 },
@@ -446,20 +446,20 @@ ES.Data.SellPrices[249432] = 250
 ES.Data.SellPrices[249441] = 2001
 ES.Data.SellPrices[249442] = 2655
 ES.Data.SellPrices[249443] = 4752
-ES.Data.SellPrices[249453] = 601
-ES.Data.SellPrices[249454] = 601
-ES.Data.SellPrices[249455] = 2156
-ES.Data.SellPrices[249456] = 2156
+ES.Data.SellPrices[249453] = 33605
+ES.Data.SellPrices[249454] = 33731
+ES.Data.SellPrices[249455] = 10835
+ES.Data.SellPrices[249456] = 10877
 ES.Data.SellPrices[249469] = 1500
 ES.Data.SellPrices[249470] = 1500
 ES.Data.SellPrices[249473] = 1500
 ES.Data.SellPrices[249726] = 3000
-ES.Data.SellPrices[279246] = 13687
-ES.Data.SellPrices[279247] = 18929
-ES.Data.SellPrices[279248] = 18929
-ES.Data.SellPrices[279249] = 18929
-ES.Data.SellPrices[279250] = 18929
-ES.Data.SellPrices[279251] = 18929
+ES.Data.SellPrices[279246] = 66513
+ES.Data.SellPrices[279247] = 24157
+ES.Data.SellPrices[279248] = 24924
+ES.Data.SellPrices[279249] = 25015
+ES.Data.SellPrices[279250] = 25109
+ES.Data.SellPrices[279251] = 25203
 
 -- Nombre de cada objeto (inglés, del cliente): se muestra mientras el juego no lo ha cargado
 ES.Data.ItemNames = ES.Data.ItemNames or {}
