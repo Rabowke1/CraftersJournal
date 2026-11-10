@@ -423,6 +423,96 @@ step("comprar en la AH con margen", function()
   Cleanup()
   assert(ok, err)
 end)
+step("recetas que te faltan en la AH", function()
+  -- Modo "Recetas en la AH" del panel: las que te faltan de tus profesiones y están en el
+  -- último escaneo, primero las que puedes aprender ya; clic abre su compra y "Comprar"
+  -- compra la subasta más barata que no sea tuya (PlaceBid, una por clic)
+  local savedCAH, savedAHF, savedMoney = C_AuctionHouse, AuctionHouseFrame, GetMoney
+  local realSkill, realKnown, realOpen, realData = ES.GetProfessionSkill, ES.IsRecipeKnown, ES.IsAuctionHouseOpen, ES.GetItemData
+  local searched, bid, ITEMS = {}, nil, {}
+  C_AuctionHouse = {
+    MakeItemKey = function(id) return { itemID = id } end,
+    IsThrottledMessageSystemReady = function() return true end,
+    SendSearchQuery = function(key) searched[#searched + 1] = key.itemID end,
+    GetNumCommoditySearchResults = function() return 0 end,
+    GetNumItemSearchResults = function(key) return #(ITEMS[key.itemID] or {}) end,
+    GetItemSearchResultInfo = function(key, i) local o = ITEMS[key.itemID][i]
+      return { buyoutAmount = o[1], auctionID = o[2], quantity = 1, containsOwnerItem = o[3] } end,
+    StartCommoditiesPurchase = function() error("las recetas no son materiales") end,
+    PlaceBid = function(a, p) bid = { a, p } end,
+  }
+  AuctionHouseFrame = nil
+  GetMoney = function() return 100000000 end
+  ES.GetItemData = function(self, id) return "Item" .. id, 1, 134400 end
+  ES.IsAuctionHouseOpen = function() return true end
+  ES.GetProfessionSkill = function(self, line) if line == ES.Data.Leatherworking.skillLine then return 150, 225 end end
+  ES.IsRecipeKnown = function(self, id) local r = ES.Data.Leatherworking.recipes[id] return r ~= nil and r.fee ~= nil and (r.train or 1) <= 100 end
+  -- Dos recetas de pergamino que no sabes: una que ya puedes aprender y otra de nivel más alto
+  local LW = ES.Data.Leatherworking.recipes
+  local ids = {}
+  for id in pairs(LW) do ids[#ids + 1] = id end
+  table.sort(ids)
+  local now, later
+  for _, id in ipairs(ids) do
+    local r = LW[id]
+    local level = r.train or r.t[1]
+    if r.scroll and not r.fee and not r.basic and not r.favor and not r.rep then
+      if not now and level <= 150 then now = r elseif not later and level > 200 then later = r end
+    end
+  end
+  assert(now and later, "recetas de pergamino de prueba")
+  local realm = ES:RealmKey()
+  ES.db.scans = ES.db.scans or {}
+  local created = ES.db.scans[realm] == nil
+  ES.db.scans[realm] = ES.db.scans[realm] or { time = NOW, items = {} }
+  local items = ES.db.scans[realm].items
+  items[now.scroll] = { minUnit = 2500, listings = 3, quantity = 3 }
+  items[later.scroll] = { minUnit = 90000, listings = 1, quantity = 1 }
+  local st = ES.AuctionPanelState
+  local function Cleanup()
+    items[now.scroll], items[later.scroll] = nil, nil
+    if created then ES.db.scans[realm] = nil end
+    C_AuctionHouse, AuctionHouseFrame, GetMoney = savedCAH, savedAHF, savedMoney
+    ES.GetProfessionSkill, ES.IsRecipeKnown, ES.IsAuctionHouseOpen, ES.GetItemData = realSkill, realKnown, realOpen, realData
+    st.profKey, st.buying, st.recipes = nil, nil, nil
+  end
+  local ok, err = pcall(function()
+    if not st.panel then ES:SetupAuctionPanel(AuctionFrame) end
+    -- El modo está en el selector y, sin ruta empezada, es el primero
+    local keys = {}
+    st.profKey = nil
+    ES.db.lastProf = nil
+    ES:RefreshAuctionPlan(true)
+    assert(st.profKey == "recipes", "sin ruta, el panel abre con las recetas: " .. tostring(st.profKey))
+    assert(st.recipes and #st.recipes >= 2, "recetas en la AH: " .. tostring(st.recipes and #st.recipes))
+    local pos = {}
+    for i, l in ipairs(st.lines) do if l.rec then pos[l.itemID] = i end end
+    assert(pos[now.scroll] and pos[later.scroll] and pos[now.scroll] < pos[later.scroll], "las que puedes aprender ya van primero")
+    assert(st.lines[1].section and st.lines[1].section:find("Peletería"), "sección por profesión: " .. tostring(st.lines[1].section))
+    assert(searched[#searched] == now.scroll, "pide las subastas de la primera receta")
+    assert(st.panel.slider._shown == false, "sin margen en las recetas")
+    log[#log+1] = "     " .. tostring(st.panel.summary:GetText())
+    local panel = st.panel
+    local OnEvent = panel:GetScript("OnEvent")
+    -- Subastas: una tuya más barata (no cuenta) y otra a 24s
+    ITEMS[now.scroll] = { { 2000, 77, true }, { 2400, 78 }, { 2600, 79 } }
+    OnEvent(panel, "ITEM_SEARCH_RESULTS_UPDATED", { itemID = now.scroll })
+    assert(st.buy and st.buy.action == "buy" and st.buy.text:find("24"), "botón de comprar la receta: " .. tostring(st.buy and st.buy.text))
+    local row = panel.rows[pos[now.scroll]]
+    log[#log+1] = "     fila: " .. tostring(row.title:GetText()) .. " | " .. tostring(row.sub:GetText())
+    assert(tostring(row.sub:GetText()):find("150", 1, true) or tostring(row.sub:GetText()):find("nivel"), "la fila dice el nivel")
+    ES:AuctionBuyClick()
+    assert(bid and bid[1] == 78 and bid[2] == 2400, "puja por la más barata que no es tuya: " .. tostring(bid and bid[1]))
+    assert(st.buying and st.buying.step == "bid", "esperando la compra")
+    OnEvent(panel, "AUCTION_HOUSE_PURCHASE_COMPLETED", 78)
+    assert(st.buying == nil, "compra cerrada")
+    assert(tostring(panel.rows[pos[now.scroll]].sub:GetText()):find("comprado"), "la receta sale comprada")
+    assert(tostring(panel.summary:GetText()):find("1 "), "resumen con la comprada: " .. tostring(panel.summary:GetText()))
+    assert(searched[#searched] == later.scroll, "pasa a la siguiente receta")
+  end)
+  Cleanup()
+  assert(ok, err)
+end)
 step("ganar dinero (sin correo)", function()
   -- Peletería al 150 sabiendo todas sus recetas de instructor
   local realSkill, realKnown = ES.GetProfessionSkill, ES.IsRecipeKnown

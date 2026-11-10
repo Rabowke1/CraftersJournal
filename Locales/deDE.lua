@@ -176,6 +176,19 @@ ES.Locales.de = {
   ["La Casa de Subastas no confirmó la compra de %s: mira tus bolsas o el correo antes de volver a comprar."] = "Das Auktionshaus hat den Kauf von %s nicht bestätigt: sieh in deine Taschen oder deine Post, bevor du noch einmal kaufst.",
   ["La compra de %s no se hizo."] = "Der Kauf von %s ist nicht zustande gekommen.",
   ["Ya no hay %s a la venta."] = "Kein %s mehr im Angebot.",
+  -- Recetas que te faltan y están en la AH (modo del panel)
+  ["Recetas en la AH"] = "Rezepte im AH",
+  ["%d recetas que te faltan están en la AH · %d puedes aprender ya"] = "%d fehlende Rezepte sind im AH · %d kannst du jetzt lernen",
+  [" · %d compradas"] = " · %d gekauft",
+  ["Ninguna receta que te falte está en la AH (según el último escaneo).|r"] = "Keines deiner fehlenden Rezepte ist im AH (Stand: letzter Scan).|r",
+  ["Escanea la AH para ver qué recetas que te faltan están a la venta.|r"] = "Scanne das AH, um zu sehen, welche deiner fehlenden Rezepte im Angebot sind.|r",
+  ["nivel %d"] = "Stufe %d",
+  ["A partir de nivel %d"] = "Ab Stufe %d",
+  [" · %s/fabricación"] = " · %s/Herst.",
+  [" · más barata en el instructor (%s)"] = " · beim Lehrer günstiger (%s)",
+  [" · más barata en el vendedor (%s)"] = " · beim Händler günstiger (%s)",
+  ["%sahora %s (en el escaneo %s)|r"] = "%sjetzt %s (im Scan %s)|r",
+  ["Comprar receta: %s por %s"] = "Rezept kaufen: %s für %s",
 
   -- Core
   ["Casa de Subastas neutral: sus datos se guardan aparte de los de tu facción."] = "Neutrales Auktionshaus: seine Daten werden getrennt von denen deiner Fraktion gespeichert.",

@@ -85,6 +85,10 @@ Ein Klick auf einen Schritt öffnet das Rezept im Berufsfenster und stellt die f
 5. **Kaufen** kauft mit deinem Klick die fehlende Menge des nächsten Materials, sofern die aktuellen Angebote in Plan plus Spielraum passen. Die Kosten werden über die ganze Menge gerechnet, vom günstigsten Angebot aufwärts, ein einzelnes billiges Angebot vor vielen teuren täuscht also nicht. Der Knopf sagt vorher, was er kaufen würde („831× Unverwüstliches Leder kaufen für 94 G 6 S 92 K“) oder warum nicht („1 G über Plan: Regler erhöhen“). Pro Klick ein Material: Das Spiel erlaubt Käufe im Auktionshaus nur als Antwort auf einen Klick, nie aus einem Timer. Der Kauf läuft in zwei Schritten, der Server nennt den echten Preis, dann wird bestätigt. Passt der Preis noch in den Spielraum, bestätigt das AddOn selbst; verlangt das Spiel dafür einen weiteren Klick, wird der Knopf zu „Bestätigen“. Das AddOn kauft nie ohne deinen Klick.
 6. **Nächstes suchen** öffnet wie bisher die Kaufseite von Blizzard mit der passenden Menge, falls du selbst kaufen willst. **Neu berechnen** plant die Liste mit den aktuellen Taschen und Scan-Preisen neu.
 
+![Rezepte im AH](07b_rezepte_im_ah.png)
+
+**Rezepte im AH.** Mit den Pfeilen (1) erreichst du neben deinen Routen die Liste „Rezepte im AH“: für jeden deiner Berufe die Rezepte, die du nicht kennst und deren Rezeptrolle laut letztem Scan im Auktionshaus angeboten wird. Jede Zeile zeigt die Stufe (grün, wenn du es jetzt lernen kannst), den günstigsten Preis und die Anzahl der Angebote, den Gewinn pro Herstellung und einen Hinweis, wenn Lehrer oder Händler es günstiger verkaufen. Lernbare Rezepte stehen zuerst (2). Ein Klick auf eine Zeile öffnet die Auktionen im Blizzard-Fenster, der Knopf **Kaufen** (3) kauft mit deinem Klick die günstigste fremde Auktion, der genaue Preis steht auf dem Knopf. Ohne begonnene Route öffnet das Fenster mit dieser Liste.
+
 Auch beim Händler erscheint ein kleines Fenster, sobald er etwas von deiner Einkaufsliste führt: „Alles kaufen“ kauft die fehlenden Mengen, „Alles verkaufen“ verkauft, was die Gewinn-Ansicht für den Händler vorsieht.
 
 ## 8. Inventar

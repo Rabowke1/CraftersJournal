@@ -10,6 +10,9 @@ local L = ES.L
 --             previsto", para toda la ruta). Solo con la AH de Forever
 --             (C_AuctionHouse); con la clásica, el botón no sale.
 --   Vender:   lo fabricado que llevas encima y conviene anunciar (Planner.SaleAdvice)
+--   Recetas:  modo aparte del selector: las recetas que te faltan de tus profesiones
+--             y están a la venta en la AH (último escaneo), con su precio; clic abre
+--             su compra y "Comprar" compra la subasta más barata con tu clic.
 -- El addon nunca compra sin un clic tuyo que diga qué compra: el juego solo deja
 -- comprar en la AH como respuesta a una pulsación (no desde un temporizador), así
 -- que es un material por clic. La compra va en dos pasos (pedir el precio real al
@@ -36,6 +39,7 @@ end
 -- empezada ("Empezar ruta"): es lo que vas a comprar. Sin ninguna, el panel dice
 -- cómo empezar una.
 local MONEY = "money"
+local RECIPES = "recipes" -- recetas que te faltan y están en la AH
 -- (la Pesca no compra nada: fuera)
 local function ProfessionKeys()
   local keys = {}
@@ -43,7 +47,8 @@ local function ProfessionKeys()
     local data = ES.Data[p.key]
     if data and not data.guide and ES:RouteLock(p.key) then keys[#keys + 1] = p.key end
   end
-  keys[#keys + 1] = MONEY -- al final: por defecto sale una ruta
+  keys[#keys + 1] = RECIPES -- sin ruta empezada, lo primero que sale
+  keys[#keys + 1] = MONEY
   return keys
 end
 
@@ -61,6 +66,7 @@ end
 -- soltarla). En el lote de Ganar dinero, el margen es de la cuenta y lo gastado
 -- dura hasta recalcular.
 local function BudgetStore()
+  if state.profKey == RECIPES then return nil, nil end -- las recetas se compran al precio que digas con el clic: sin margen
   if state.profKey == MONEY then return ES.db, state end
   local settings = state.profKey and ES.db.prof and ES.db.prof[state.profKey]
   return settings, settings and settings.lock
@@ -184,16 +190,21 @@ function ES:OpenAuctionBuy(itemID, qty)
   local ok = pcall(function()
     f:SelectBrowseResult({ itemKey = A.MakeItemKey(itemID), minPrice = 0, totalQuantity = 0, containsOwnerItem = false })
   end)
-  if not ok or not f.CommoditiesBuyFrame:IsShown() then
+  -- Materiales: la página de compra con cantidad; objetos no apilables (recetas): la lista de subastas
+  local commodities = ok and f.CommoditiesBuyFrame:IsShown()
+  local items = ok and f.ItemBuyFrame and f.ItemBuyFrame:IsShown()
+  if not commodities and not items then
     self:SearchAuction(itemID)
     RequestOffers(itemID)
     return
   end
   state.searching = itemID
-  -- Los resultados llegan un momento después: se pone la cantidad en cuanto se pueda
-  SetBuyQuantity(qty)
-  C_Timer.After(0.4, function() SetBuyQuantity(qty) end)
-  C_Timer.After(1.2, function() SetBuyQuantity(qty) end)
+  if commodities then
+    -- Los resultados llegan un momento después: se pone la cantidad en cuanto se pueda
+    SetBuyQuantity(qty)
+    C_Timer.After(0.4, function() SetBuyQuantity(qty) end)
+    C_Timer.After(1.2, function() SetBuyQuantity(qty) end)
+  end
   ES:RenderAuctionPanel()
 end
 
@@ -264,9 +275,58 @@ local function NextToBuy()
 end
 
 -- Líneas: sección Comprar (AH) y sección Vender (lo fabricado que llevas encima)
+-- Recetas que te faltan de tus profesiones y están en la AH (último escaneo), por
+-- profesión: { profKey, e (Collection), scroll, unit = la más barata del escaneo,
+-- listings, level, learnable, cheaper = { kind, cost } si sale más barata en el
+-- instructor o un vendedor a mano }. Primero las que puedes aprender ya
+local function BuildRecipes()
+  local list = {}
+  for _, p in ipairs(ES.PROFESSIONS) do
+    local data = ES.Data[p.key]
+    if data and not data.guide and ES:ProfessionVisible(p) and ES:GetProfessionSkill(data.skillLine) then
+      local res = ES.Collection:Build(p.key)
+      local rows = {}
+      for _, e in ipairs(res.entries) do
+        local r = e.recipe
+        if not e.known and r.scroll and e.scrollAH then
+          local cheaper
+          for _, src in ipairs(e.sources) do
+            local here = src.kind == "trainer" or ((src.kind == "vendor" or src.kind == "rep") and src.usable)
+            if here and src.cost and src.cost < e.scrollAH and (not cheaper or src.cost < cheaper.cost) then
+              cheaper = { kind = src.kind, cost = src.cost }
+            end
+          end
+          rows[#rows + 1] = { profKey = p.key, e = e, scroll = r.scroll, unit = e.scrollAH, listings = e.scrollListings, level = e.level,
+            learnable = e.learnableNow and true or false, cheaper = cheaper }
+        end
+      end
+      table.sort(rows, function(a, b)
+        if a.learnable ~= b.learnable then return a.learnable end
+        if a.level ~= b.level then return a.level < b.level end
+        return a.unit < b.unit
+      end)
+      for _, row in ipairs(rows) do list[#list + 1] = row end
+    end
+  end
+  return list
+end
+
 local function BuildLines()
   local lines = {}
   local plan, earn = state.plan, state.earn
+  if state.recipes then
+    local prof
+    for _, rec in ipairs(state.recipes) do
+      if rec.profKey ~= prof then
+        prof = rec.profKey
+        local n = 0
+        for _, other in ipairs(state.recipes) do if other.profKey == prof then n = n + 1 end end
+        lines[#lines + 1] = { section = ES:ProfLabel(prof) .. " · " .. n }
+      end
+      lines[#lines + 1] = { buy = true, itemID = rec.scroll, it = { unit = rec.unit, quantity = 1 }, rec = rec }
+    end
+    return lines
+  end
   if not plan and not earn then return lines end
   local buy = {}
   for _, it in ipairs(plan and plan.shopping or earn.shopping) do
@@ -318,10 +378,19 @@ function ES:RefreshAuctionPlan(force)
     state.profKey = Valid(self.db.lastProf) and self.db.lastProf or keys[1]
   end
   state.need, state.baseline, state.live, state.bought = {}, {}, {}, {}
-  state.plan, state.earn = nil, nil
+  state.plan, state.earn, state.recipes = nil, nil, nil
   state.ahOverspent = nil -- lo gastado de más del lote de Ganar dinero: hasta recalcular
   if not state.profKey then
     -- Ninguna ruta empezada: nada que comprar (RenderAuctionPanel lo explica)
+  elseif state.profKey == RECIPES then
+    -- Recetas que te faltan y están en la AH: una de cada (el pergamino)
+    local scan = ES.db.scans and ES.db.scans[ES:RealmKey()]
+    state.scanned = scan ~= nil
+    state.recipes = scan and BuildRecipes() or {}
+    for _, rec in ipairs(state.recipes) do
+      state.need[rec.scroll] = 1
+      state.baseline[rec.scroll] = ES:ItemCount(rec.scroll)
+    end
   elseif state.profKey == MONEY then
     -- Lote de Ganar dinero: lo que ya llevas cuenta (no hay que comprarlo)
     state.earn = ES.Earn:Ideas()
@@ -399,6 +468,7 @@ end
 
 -- ¿Entra en el margen lo que falta por gastar de más?
 local function Affordable(over)
+  if state.profKey == RECIPES then return true end -- el botón enseña el precio exacto: tu clic es el consentimiento
   return over <= Tolerance() - Overspent() + 0.5
 end
 
@@ -507,7 +577,9 @@ local function Purchased(buying)
   local total = buying.total or buying.unit * buying.qty
   NotePurchase(buying.itemID, buying.qty, total, buying.unit)
   local over = total - buying.unit * buying.qty
-  if over >= 0.5 then
+  if state.profKey == RECIPES then
+    ES:Print(string.format(L["Comprados %d× %s por %s."], buying.qty, name, ES.Money(total)))
+  elseif over >= 0.5 then
     ES:Print(string.format(L["Comprados %d× %s por %s (%s más de lo previsto)."], buying.qty, name, ES.Money(total), ES.Money(over)))
   elseif over <= -0.5 then
     ES:Print(string.format(L["Comprados %d× %s por %s (%s menos de lo previsto)."], buying.qty, name, ES.Money(total), ES.Money(-over)))
@@ -814,6 +886,8 @@ local function RenderBuyButton()
     Set("empty", string.format(L["Ahora no hay %s a la venta"], name), false)
   elseif GetMoney and q.cost > GetMoney() then
     Set("poor", string.format(L["%d× %s: %s, no llevas tanto oro"], q.qty, name, ES.Money(q.cost)), false)
+  elseif state.profKey == RECIPES then
+    Set("buy", string.format(L["Comprar receta: %s por %s"], name, ES.Money(q.cost)), true)
   elseif Affordable(q.over) then
     Set("buy", string.format(L["Comprar %d× %s por %s"], q.qty, name, ES.Money(q.cost)), true)
   else
@@ -849,6 +923,8 @@ function ES:RenderAuctionPanel()
   panel.nextProfButton:SetShown(several)
   if not state.profKey then
     panel.prof:SetText(GREY .. L["Ninguna ruta empezada"] .. "|r")
+  elseif state.recipes then
+    panel.prof:SetText(L["Recetas en la AH"])
   elseif earn then
     panel.prof:SetText(L["Ganar dinero"] .. " " .. GREY .. L["(lote de hoy)"] .. "|r")
   else
@@ -868,6 +944,17 @@ function ES:RenderAuctionPanel()
   end
   if not state.profKey then
     panel.summary:SetText(GREY .. L["Aquí sale lo que comprar para tus rutas empezadas.|r"])
+  elseif state.recipes then
+    if not state.scanned then
+      panel.summary:SetText(GREY .. L["Escanea la AH para ver qué recetas que te faltan están a la venta.|r"])
+    elseif total == 0 then
+      panel.summary:SetText(GREY .. L["Ninguna receta que te falte está en la AH (según el último escaneo).|r"])
+    else
+      local learnable = 0
+      for _, rec in ipairs(state.recipes) do if rec.learnable then learnable = learnable + 1 end end
+      panel.summary:SetText(string.format(L["%d recetas que te faltan están en la AH · %d puedes aprender ya"], total, learnable)
+        .. (done > 0 and string.format(L[" · %d compradas"], done) or ""))
+    end
   elseif earn and #earn.batch == 0 then
     panel.summary:SetText(GREY .. L["Ninguna receta tuya da beneficio ahora.|r"])
   elseif not plan and not earn then
@@ -881,9 +968,9 @@ function ES:RenderAuctionPanel()
     and L["En Crafter's Journal, abre una profesión y pulsa Empezar ruta: su lista de la compra saldrá aquí."]
     or (plan or earn) and L["Nada que comprar ni vender aquí."] or "") or "")
   panel.nextButton:SetEnabled(total > done)
-  -- Margen y botón Comprar solo con algo que comprar en la AH
-  panel.budget:SetShown(total > 0)
-  panel.slider:SetShown(total > 0)
+  -- Margen y botón Comprar solo con algo que comprar en la AH (las recetas van sin margen)
+  panel.budget:SetShown(total > 0 and not state.recipes)
+  panel.slider:SetShown(total > 0 and not state.recipes)
   RenderBudget(plannedAH)
   RenderBuyButton()
   if total == 0 then panel.buyButton:Hide() end
@@ -910,7 +997,31 @@ function ES:RenderAuctionPanel()
       local label = (name and color and color.hex) and (color.hex .. name .. "|r") or name or (L["Objeto "] .. l.itemID)
       local live = state.live[l.itemID]
       local liveText = live and (live.min and string.format(L[" · ahora %s"], ES.Money(live.min)) or L[" · ahora: no hay"]) or ""
-      if l.buy then
+      if l.rec then
+        -- Receta que te falta: nivel (verde si ya puedes aprenderla), precio del escaneo
+        -- y cuántas hay, beneficio por fabricación y si sale más barata en otro sitio
+        local rec, rem = l.rec, Remaining(l.itemID)
+        row.check:SetShown(rem == 0)
+        row.title:SetText(rem == 0 and (GREY .. (name or rec.e.recipe.name) .. "|r") or (name and label or rec.e.recipe.name))
+        local q = rem > 0 and Quote(l) or nil
+        local price = string.format(L["%s · %d a la venta"], ES.Money(rec.unit), rec.listings)
+        if q and q.none then
+          price = ES.Money(rec.unit) .. L[" · ahora: no hay"]
+        elseif q and q.cost > rec.unit * 1.25 then
+          price = string.format(L["%sahora %s (en el escaneo %s)|r"], ORANGE, ES.Money(q.cost), ES.Money(rec.unit))
+        elseif q then
+          price = ES.Money(q.cost) -- lo leído ahora en la AH
+        end
+        local sub = (rec.learnable and GREEN or GREY) .. string.format(L["nivel %d"], rec.level) .. "|r · " .. price
+        local profit = rec.e.profit
+        if profit and profit >= 0.5 then sub = sub .. string.format(L[" · %s/fabricación"], GREEN .. "+" .. ES.Money(profit) .. "|r") end
+        if rec.cheaper then
+          sub = sub .. ORANGE .. string.format(rec.cheaper.kind == "trainer" and L[" · más barata en el instructor (%s)"]
+            or L[" · más barata en el vendedor (%s)"], ES.Money(rec.cheaper.cost)) .. "|r"
+        end
+        row.sub:SetText(rem == 0 and (GREEN .. L["comprado|r"]) or sub)
+        row.hint = ES:ProfLabel(rec.profKey) .. " · " .. (rec.learnable and L["Puedes aprenderla ya"] or string.format(L["A partir de nivel %d"], rec.level))
+      elseif l.buy then
         local rem = Remaining(l.itemID)
         row.check:SetShown(rem == 0)
         row.title:SetText(rem == 0 and (GREY .. label .. "|r") or (rem .. "× " .. label))

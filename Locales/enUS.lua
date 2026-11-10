@@ -176,6 +176,19 @@ ES.Locales.en = {
   ["La Casa de Subastas no confirmó la compra de %s: mira tus bolsas o el correo antes de volver a comprar."] = "The Auction House didn't confirm the purchase of %s: check your bags or your mail before buying again.",
   ["La compra de %s no se hizo."] = "The purchase of %s didn't go through.",
   ["Ya no hay %s a la venta."] = "No %s for sale any more.",
+  -- Recetas que te faltan y están en la AH (modo del panel)
+  ["Recetas en la AH"] = "Recipes on the AH",
+  ["%d recetas que te faltan están en la AH · %d puedes aprender ya"] = "%d recipes you're missing are on the AH · %d you can learn now",
+  [" · %d compradas"] = " · %d bought",
+  ["Ninguna receta que te falte está en la AH (según el último escaneo).|r"] = "None of the recipes you're missing is on the AH (as of the last scan).|r",
+  ["Escanea la AH para ver qué recetas que te faltan están a la venta.|r"] = "Scan the AH to see which recipes you're missing are for sale.|r",
+  ["nivel %d"] = "level %d",
+  ["A partir de nivel %d"] = "From level %d",
+  [" · %s/fabricación"] = " · %s/craft",
+  [" · más barata en el instructor (%s)"] = " · cheaper at the trainer (%s)",
+  [" · más barata en el vendedor (%s)"] = " · cheaper at the vendor (%s)",
+  ["%sahora %s (en el escaneo %s)|r"] = "%snow %s (scan: %s)|r",
+  ["Comprar receta: %s por %s"] = "Buy recipe: %s for %s",
 
   -- Core
   ["Casa de Subastas neutral: sus datos se guardan aparte de los de tu facción."] = "Neutral Auction House: its data is stored apart from your faction's.",
