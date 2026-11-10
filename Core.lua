@@ -746,6 +746,9 @@ SlashCmdList.CRAFTERSJOURNAL = function(msg)
   elseif msg == "minimap" then
     ES.db.minimap.hide = not ES.db.minimap.hide
     ES.minimapButton:SetShown(not ES.db.minimap.hide)
+  elseif msg == "ah" then
+    -- Qué API de subastas tiene el cliente y qué devuelve (ver AuctionUI.lua)
+    if ES.AuctionDebug then ES:AuctionDebug() end
   elseif msg == "icono" or msg == "icon" then
     -- Texturas del marco bajo el ratón (p. ej. una pestaña del libro de profesiones).
     -- Se mira a los 3 s: al escribir el comando el ratón no suele estar encima

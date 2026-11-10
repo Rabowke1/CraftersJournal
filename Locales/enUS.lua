@@ -189,6 +189,10 @@ ES.Locales.en = {
   [" · más barata en el vendedor (%s)"] = " · cheaper at the vendor (%s)",
   ["%sahora %s (en el escaneo %s)|r"] = "%snow %s (scan: %s)|r",
   ["Comprar receta: %s por %s"] = "Buy recipe: %s for %s",
+  ["La lista de la Casa de Subastas ha cambiado: se vuelven a leer las ofertas."] = "The Auction House list has changed: reading the offers again.",
+  ["Ofertas leídas: %d (%s)"] = "Offers read: %d (%s)",
+  ["lista clásica, una pila por clic"] = "Classic list, one stack per click",
+  ["búsqueda moderna"] = "modern search",
 
   -- Core
   ["Casa de Subastas neutral: sus datos se guardan aparte de los de tu facción."] = "Neutral Auction House: its data is stored apart from your faction's.",

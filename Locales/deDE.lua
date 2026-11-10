@@ -189,6 +189,10 @@ ES.Locales.de = {
   [" · más barata en el vendedor (%s)"] = " · beim Händler günstiger (%s)",
   ["%sahora %s (en el escaneo %s)|r"] = "%sjetzt %s (im Scan %s)|r",
   ["Comprar receta: %s por %s"] = "Rezept kaufen: %s für %s",
+  ["La lista de la Casa de Subastas ha cambiado: se vuelven a leer las ofertas."] = "Die Liste des Auktionshauses hat sich geändert: Angebote werden neu gelesen.",
+  ["Ofertas leídas: %d (%s)"] = "Gelesene Angebote: %d (%s)",
+  ["lista clásica, una pila por clic"] = "klassische Liste, ein Stapel pro Klick",
+  ["búsqueda moderna"] = "moderne Suche",
 
   -- Core
   ["Casa de Subastas neutral: sus datos se guardan aparte de los de tu facción."] = "Neutrales Auktionshaus: seine Daten werden getrennt von denen deiner Fraktion gespeichert.",

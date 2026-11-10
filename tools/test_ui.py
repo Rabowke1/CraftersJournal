@@ -513,6 +513,106 @@ step("recetas que te faltan en la AH", function()
   Cleanup()
   assert(ok, err)
 end)
+step("comprar con la AH clásica (una pila por clic)", function()
+  -- Con la API clásica (la de Forever para buscar y escanear) manda su lista: escalera
+  -- de subastas con índice, y Comprar puja por la pila más barata que no sea tuya,
+  -- comprobando antes que la fila sigue siendo la misma. El juego confirma con el
+  -- mensaje de "has ganado una subasta" o se da por hecha si no hay error
+  local savedCAH, savedAHF, savedMoney = C_AuctionHouse, AuctionHouseFrame, GetMoney
+  local queried, bids, sorted = {}, {}, {}
+  local ROWS = {}
+  QueryAuctionItems = function(name, _, _, _, _, _, getAll, exact) queried[#queried + 1] = { name = name, exact = exact, getAll = getAll } end
+  GetNumAuctionItems = function() return #ROWS, #ROWS end
+  GetAuctionItemInfo = function(_, i) local r = ROWS[i] if not r then return end
+    return r.name, nil, r.count, 1, true, 1, nil, 0, 0, r.buyout, 0, nil, nil, r.owner, r.owner, 0, r.item, true end
+  PlaceAuctionBid = function(kind, index, price) bids[#bids + 1] = { kind, index, price } end
+  SortAuctionClearSort, SortAuctionApplySort = function() end, function() end
+  SortAuctionSetSort = function(_, key) sorted[#sorted + 1] = key end
+  ERR_AUCTION_WON_S = "You won an auction for %s"
+  ERR_NOT_ENOUGH_MONEY = "You don't have enough money"
+  C_AuctionHouse = { MakeItemKey = function(id) return { itemID = id } end, SendSearchQuery = function() error("no debería usar la moderna") end,
+    StartCommoditiesPurchase = function() error("no debería usar la moderna") end }
+  AuctionHouseFrame = nil
+  GetMoney = function() return 100000000 end
+  local realData = ES.GetItemData
+  ES.GetItemData = function(self, id) return "Item" .. id, 1, 134400 end
+  local lock = {}
+  local realLock, realLocked, realOpen = ES.RouteLock, ES.LockedPlan, ES.IsAuctionHouseOpen
+  ES.RouteLock = function(self, key) if key == "Leatherworking" then return lock end return realLock(self, key) end
+  ES.LockedPlan = function(self, key) if key == "Leatherworking" then return nil end return realLocked(self, key) end
+  ES.IsAuctionHouseOpen = function() return true end
+  ES.db.prof = ES.db.prof or {}
+  ES.db.prof.Leatherworking = ES.db.prof.Leatherworking or {}
+  ES.db.prof.Leatherworking.lock = lock
+  local st = ES.AuctionPanelState
+  local function Cleanup()
+    QueryAuctionItems, GetNumAuctionItems, GetAuctionItemInfo, PlaceAuctionBid = nil, nil, nil, nil
+    SortAuctionClearSort, SortAuctionApplySort, SortAuctionSetSort = nil, nil, nil
+    ERR_AUCTION_WON_S, ERR_NOT_ENOUGH_MONEY = nil, nil
+    ES.db.prof.Leatherworking.lock, ES.db.prof.Leatherworking.ahOverspend = nil, nil
+    ES.RouteLock, ES.LockedPlan, ES.IsAuctionHouseOpen, ES.GetItemData = realLock, realLocked, realOpen, realData
+    C_AuctionHouse, AuctionHouseFrame, GetMoney = savedCAH, savedAHF, savedMoney
+    st.profKey, st.buying, st.legacyQuery = nil, nil, nil
+  end
+  local ok, err = pcall(function()
+    if not st.panel then ES:SetupAuctionPanel(AuctionFrame) end
+    st.profKey = nil
+    ES.db.lastProf = "Leatherworking"
+    ES:RefreshAuctionPlan(true)
+    assert(st.profKey == "Leatherworking", "profesión: " .. tostring(st.profKey))
+    local first
+    for _, l in ipairs(st.lines) do if l.buy then first = l break end end
+    assert(first, "sin materiales de la AH")
+    local id, rem, unit = first.itemID, st.need[first.itemID], first.it.unit
+    -- Al abrir pide la lista clásica: búsqueda exacta por nombre, ordenada por precio
+    assert(queried[#queried] and queried[#queried].name == "Item" .. id and queried[#queried].exact == true and not queried[#queried].getAll,
+      "consulta clásica exacta: " .. tostring(queried[#queried] and queried[#queried].name))
+    assert(sorted[1] == "unitprice", "ordenada por precio unitario")
+    local panel = st.panel
+    local OnEvent = panel:GetScript("OnEvent")
+    -- Lista: una pila tuya barata (no cuenta), una de 20 a 96s y una de 50 a 3g; y otro objeto
+    ROWS = { { name = "Item" .. id, count = 20, buyout = 2000, owner = "Bruno", item = id },
+             { name = "Otro", count = 5, buyout = 100, owner = "X", item = 9999999 },
+             { name = "Item" .. id, count = 50, buyout = 30000, owner = "Y", item = id },
+             { name = "Item" .. id, count = 20, buyout = 9600, owner = "Z", item = id } }
+    OnEvent(panel, "AUCTION_ITEM_LIST_UPDATE")
+    local live = st.live[id]
+    assert(live and live.legacy and #live.ladder == 3 and live.ladder[1].own and live.ladder[2].index == 4, "escalera clásica con índices")
+    -- Margen 0: la pila más barata (20 a 96s) se pasa del plan
+    assert(st.buy and st.buy.action == "over", "con margen 0 rechaza: " .. tostring(st.buy and st.buy.action))
+    local gold = math.ceil((9600 - unit * 20) / 10000) + 1
+    panel.slider:GetScript("OnValueChanged")(panel.slider, gold, true)
+    assert(st.buy.action == "buy" and st.buy.text:find("20×"), "ofrece la pila de 20: " .. tostring(st.buy.text))
+    ES:AuctionBuyClick()
+    assert(#bids == 1 and bids[1][1] == "list" and bids[1][2] == 4 and bids[1][3] == 9600, "puja por la pila de 20 a 96s")
+    assert(st.buying and st.buying.legacy and st.buying.step == "bid", "compra clásica en curso")
+    -- El juego dice que has ganado la subasta: comprada, apuntada, y se sigue con el mismo material
+    local before = #queried
+    OnEvent(panel, "CHAT_MSG_SYSTEM", string.format(ERR_AUCTION_WON_S, "Item" .. id))
+    assert(st.buying == nil and lock.ahBought[id] == 20, "comprada y apuntada: " .. tostring(lock.ahBought and lock.ahBought[id]))
+    assert(math.abs(lock.ahOverspent - (9600 - unit * 20)) < 1, "gastado de más: " .. tostring(lock.ahOverspent))
+    assert(#queried == before + 1 and queried[#queried].name == "Item" .. id, "vuelve a pedir la lista del mismo material")
+    -- La fila cambió (otra subasta en ese índice): no puja, vuelve a leer
+    OnEvent(panel, "AUCTION_ITEM_LIST_UPDATE")
+    assert(st.buy.action == "buy", "con la lista nueva, vuelve a ofrecer")
+    ROWS[4] = { name = "Item" .. id, count = 20, buyout = 9700, owner = "Z", item = id }
+    before = #queried
+    ES:AuctionBuyClick()
+    assert(#bids == 1 and st.buying == nil and #queried == before + 1, "fila cambiada: no puja y vuelve a leer")
+    -- Error del juego (sin oro): la compra no cuenta
+    OnEvent(panel, "AUCTION_ITEM_LIST_UPDATE")
+    ES:AuctionBuyClick()
+    assert(#bids == 2 and st.buying, "segunda puja")
+    OnEvent(panel, "UI_ERROR_MESSAGE", 1, ERR_NOT_ENOUGH_MONEY)
+    assert(st.buying == nil and lock.ahBought[id] == 20, "error del juego: nada apuntado")
+    -- Diagnóstico /cj ah
+    local lines = ES:AuctionDebug()
+    assert(#lines >= 5 and ES.db.ahDebug == lines, "diagnóstico de la AH")
+    log[#log+1] = "     clásica: " .. st.buy.text:gsub("|T[^|]*|t", "") .. " · " .. lines[1]
+  end)
+  Cleanup()
+  assert(ok, err)
+end)
 step("ganar dinero (sin correo)", function()
   -- Peletería al 150 sabiendo todas sus recetas de instructor
   local realSkill, realKnown = ES.GetProfessionSkill, ES.IsRecipeKnown
