@@ -121,8 +121,9 @@ def load_data():
             d["r"] = {int(a): int(b) for a, b in re.findall(r'\{ (\d+), (\d+) \}', rm.group(1))} if rm else {}
             o = re.search(r'out = \{ (\d+), ([\d.]+) \}', body)
             d["out"] = int(o.group(1)) if o else None
-            tl = re.search(r'\btool = (\d+)', body)
-            d["tool"] = int(tl.group(1)) if tl else None  # categoría de herramienta (TotemCategory) u objeto concreto
+            tl = re.search(r'\btool = (\d+|\{ [\d, ]+ \})', body)
+            # herramientas: categorías de tótem u objetos concretos (una o varias)
+            d["tools"] = set(map(int, re.findall(r'\d+', tl.group(1)))) if tl else set()
             sc = re.search(r'\bscroll = (\d+)', body)
             d["scroll"] = int(sc.group(1)) if sc else None
             d["bop"] = "bop = true" in body
@@ -219,11 +220,11 @@ def main():
             known = d["out"] and ("item", d["out"], 0) in results and "error" not in results[("item", d["out"], 0)]
             kind = "objeto fabricado" if (w["created"] or known) else "objeto fabricado (sin ficha en Wowhead)"
             problems.append((kind, f"{tag}: datos {d['out']}, Wowhead {w['created']}"))
-        # En los datos la herramienta es la categoría de tótem o, si la receta pide un objeto
-        # concreto (Flint and Tinder), el propio objeto: Wowhead enlaza una u otro
+        # En los datos las herramientas son categorías de tótem o, si la receta pide un objeto
+        # concreto (Flint and Tinder), el propio objeto: Wowhead enlaza una u otro. Todas
         wh_tools = w["toolCats"] | w["toolItems"]
-        if (d["tool"] and d["tool"] not in wh_tools) or (wh_tools and not d["tool"]):
-            problems.append(("herramienta", f"{tag}: datos {d['tool']}, Wowhead categorías {sorted(w['toolCats'])}"
+        if d["tools"] != wh_tools:
+            problems.append(("herramienta", f"{tag}: datos {sorted(d['tools'])}, Wowhead categorías {sorted(w['toolCats'])}"
                              + (f" y objetos {sorted(w['toolItems'])}" if w["toolItems"] else "")))
         if d["out"] and ("item", d["out"], 0) in results and "error" not in results[("item", d["out"], 0)]:
             bop = parse_item(results[("item", d["out"], 0)])["bop"]

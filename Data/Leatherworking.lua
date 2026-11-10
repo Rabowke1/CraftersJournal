@@ -7,7 +7,8 @@ ES.Data = ES.Data or {}
 -- (sin fee = se aprende de pergamino: de dónde sale, en Data/Sources.lua; scrollPrice = su precio si lo vende un PNJ)
 -- rep = { facción, nivel } que pide el pergamino para aprenderla (5 amistoso, 6 honorable, 7 venerado, 8 exaltado)
 -- r = { {itemID, cantidad} }; out = { itemID, cantidad }
--- tool = herramienta que pide (clave de ES.Data.Tools: categoría de tótem, o el objeto si pide uno concreto)
+-- tool = herramienta que pide (clave de ES.Data.Tools: categoría de tótem, o el objeto si pide uno concreto);
+--   { a, b } si pide varias a la vez (martillo de herrero y llave inglesa)
 -- sq / oq = calidad del pergamino / de lo fabricado (0 pobre, 1 común, 2 poco común, 3 raro, 4 épico)
 -- faction = bando que puede aprenderla, si solo es de uno
 -- bop = lo fabricado se liga al recogerlo: no se puede vender en la AH (sí al vendedor)

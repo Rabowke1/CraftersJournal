@@ -139,6 +139,20 @@ local function Routable(recipe)
 end
 Planner.Routable = Routable
 
+-- Herramientas que pide una receta: r.tool es una clave de ES.Data.Tools (categoría de
+-- tótem, o el objeto si pide uno concreto) o una lista de claves cuando pide varias
+-- (martillo de herrero y llave inglesa en Ingeniería). Devuelve sus entradas, en orden
+function Planner.RecipeTools(r)
+  local list = {}
+  local keys = r and r.tool
+  if type(keys) ~= "table" then keys = keys and { keys } or {} end
+  for _, key in ipairs(keys) do
+    local tool = ES.Data.Tools and ES.Data.Tools[key]
+    if tool then list[#list + 1] = tool end
+  end
+  return list
+end
+
 -- Probabilidad clásica de subir punto
 function Planner.Chance(t, skill)
   local yellow, grey = t[2], t[4]
@@ -727,10 +741,11 @@ local function GPSRecipes(data, opts, ctx)
         -- Empezarla paga el instructor y, si pide una herramienta que no tienes
         -- (Arclight Spanner para Crude Scope), la herramienta. Sin precio: no vale
         local fee = Planner.LearnCost(ctx, r)
-        local tool = r.tool and ES.Data.Tools and ES.Data.Tools[r.tool]
-        if tool and (ctx.toolMask[tool.family or "rod"] or 0) < tool.mask then
-          local cost = Acquire(ctx, tool.item, 1, 0, {}, {}, {})
-          fee = cost and fee + cost or nil
+        for _, tool in ipairs(Planner.RecipeTools(r)) do
+          if fee and (ctx.toolMask[tool.family or "rod"] or 0) < tool.mask then
+            local cost = Acquire(ctx, tool.item, 1, 0, {}, {}, {})
+            fee = cost and fee + cost or nil
+          end
         end
         if fee then
           list[#list + 1] = { id = id, r = r, learn = learn, fee = fee, sale = Planner.SaleInfo(ctx, r) }
@@ -1477,15 +1492,18 @@ function Planner:Plan(data, opts)
           local crafts = 1 / chance
           local whyR = {}
           local cost, reagents, extra, actions = RecipeCost(ctx, r, crafts, whyR)
-          -- Herramienta que pide (se consigue una sola vez, la primera vez que hace falta)
-          local toolCost, tool
-          if cost and r.tool then
-            tool = ES.Data.Tools[r.tool]
-            if tool and (ctx.toolMask[tool.family or "rod"] or 0) < tool.mask then
-              toolCost = Acquire(ctx, tool.item, 1, 0, extra, actions, whyR)
-              if not toolCost then cost = nil end
-            else
-              tool = nil
+          -- Herramientas que pide y no tienes (se consiguen una sola vez, la primera
+          -- vez que hacen falta): cada una con su coste
+          local toolCost, tools
+          if cost then
+            for _, tool in ipairs(Planner.RecipeTools(r)) do
+              if (ctx.toolMask[tool.family or "rod"] or 0) < tool.mask then
+                local c = Acquire(ctx, tool.item, 1, 0, extra, actions, whyR)
+                if not c then cost = nil break end
+                toolCost = (toolCost or 0) + c
+                tools = tools or {}
+                tools[#tools + 1] = { tool = tool, cost = c }
+              end
             end
           end
           for itemID, reason in pairs(whyR) do why[itemID] = why[itemID] or reason end
@@ -1516,7 +1534,7 @@ function Planner:Plan(data, opts)
               best = {
                 id = id, score = score, crafts = crafts, chance = chance, cost = cost, value = value,
                 reagents = reagents, extra = extra, actions = actions,
-                tool = tool, toolCost = toolCost or 0, feeSpan = feeSpan,
+                tools = tools, toolCost = toolCost or 0, feeSpan = feeSpan,
               }
             end
           end
@@ -1530,11 +1548,13 @@ function Planner:Plan(data, opts)
       break
     end
 
-    -- Herramienta conseguida: ya cubre esta categoría y las inferiores
-    if best.tool then
-      local fam = best.tool.family or "rod"
-      ctx.toolMask[fam] = math.max(ctx.toolMask[fam] or 0, best.tool.mask)
-      plan.tools[#plan.tools + 1] = { item = best.tool.item, cost = best.toolCost, skill = s }
+    -- Herramientas conseguidas: cada una cubre ya su categoría y las inferiores
+    if best.tools then
+      for _, t in ipairs(best.tools) do
+        local fam = t.tool.family or "rod"
+        ctx.toolMask[fam] = math.max(ctx.toolMask[fam] or 0, t.tool.mask)
+        plan.tools[#plan.tools + 1] = { item = t.tool.item, cost = t.cost, skill = s }
+      end
       plan.toolsCost = plan.toolsCost + best.toolCost
     end
 

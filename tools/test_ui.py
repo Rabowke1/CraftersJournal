@@ -769,6 +769,60 @@ step("herramienta que es un objeto concreto (Flint and Tinder)", function()
   p = ES.Planner:Plan(ES.Data.Cooking, { from = 1, to = 5, hours = 24, ignoreSupply = true, forced = forced, owned = { [4471] = 1 } })
   assert(#p.tools == 0 and p.toolsCost == 0, "con Flint and Tinder en las bolsas no la compra")
 end)
+step("recetas que piden dos herramientas (Ingeniería)", function()
+  -- Copper Modulator pide martillo de herrero y llave inglesa; Accurate Scope, llave y
+  -- microajustador giromático (que se fabrica). Los datos llevan las dos y la ruta
+  -- consigue cada una la primera vez que hace falta, una sola vez
+  local E = ES.Data.Engineering.recipes
+  assert(type(E[3926].tool) == "table" and E[3926].tool[1] == 162 and E[3926].tool[2] == 14, "Copper Modulator: martillo y llave")
+  assert(type(E[3979].tool) == "table" and E[3979].tool[1] == 14 and E[3979].tool[2] == 15, "Accurate Scope: llave y microajustador")
+  assert(E[3922].tool == 162, "Handful of Copper Bolts: solo el martillo")
+  local tl = ES.Planner.RecipeTools(E[3926])
+  assert(#tl == 2 and tl[1].item == 5956 and tl[2].item == 6219, "RecipeTools: martillo y llave")
+  assert(#ES.Planner.RecipeTools(E[3918]) == 0, "RecipeTools sin herramienta")
+  local function Items(p)
+    local t = {}
+    for _, x in ipairs(p.tools) do t[#t + 1] = x.item end
+    table.sort(t)
+    return table.concat(t, ",")
+  end
+  -- Los materiales de la prueba, a precio de vendedor (sin escaneo no habría precios)
+  local saved = {}
+  for _, item in ipairs({ 2840, 2589, 4371, 1529, 3864, 3859 }) do
+    saved[item] = ES.Data.VendorPrices[item]
+    ES.Data.VendorPrices[item] = ES.Data.VendorPrices[item] or 100
+  end
+  local ok, err = pcall(function()
+    -- Ruta forzada por Copper Modulator (65-95): compra martillo (18c) y llave (7s 21c) una vez
+    local forced = {}
+    for s = 65, 94 do forced[s] = 3926 end
+    local p = ES.Planner:Plan(ES.Data.Engineering, { from = 65, to = 95, hours = 24, ignoreSupply = true, forced = forced })
+    assert(p.steps[1] and p.steps[1].id == 3926, "la ruta forzada usa Copper Modulator (se para en " .. tostring(p.stoppedAt) .. ")")
+    assert(Items(p) == "5956,6219", "compra martillo y llave una vez: " .. Items(p))
+    assert(#p.tools == 2 and p.tools[1].skill == 65 and p.tools[2].skill == 65, "las dos en el primer paso")
+    assert(p.tools[1].cost > 0 and p.tools[2].cost > 0 and math.abs(p.toolsCost - (p.tools[1].cost + p.tools[2].cost)) < 0.5,
+      "el coste de herramientas suma las dos: " .. tostring(p.toolsCost))
+    local spanner = p.tools[1].item == 6219 and p.tools[1].cost or p.tools[2].cost
+    -- Con el martillo en las bolsas, solo la llave
+    p = ES.Planner:Plan(ES.Data.Engineering, { from = 65, to = 95, hours = 24, ignoreSupply = true, forced = forced, owned = { [5956] = 1 } })
+    assert(Items(p) == "6219" and math.abs(p.toolsCost - spanner) < 0.5, "con martillo: solo la llave: " .. Items(p) .. " " .. tostring(p.toolsCost))
+    -- Accurate Scope (180-200) con llave y martillo en las bolsas: fabrica el microajustador
+    -- (herramienta que se fabrica, Gyromatic Micro-Adjustor, 4 barras de acero)
+    forced = {}
+    for s = 180, 199 do forced[s] = 3979 end
+    -- (Accurate Scope se aprende de un pergamino de vendedor: con includeScrolls)
+    p = ES.Planner:Plan(ES.Data.Engineering, { from = 180, to = 200, hours = 24, ignoreSupply = true, includeScrolls = true, forced = forced, owned = { [6219] = 1, [5956] = 1 } })
+    assert(p.steps[1] and p.steps[1].id == 3979, "la ruta forzada usa Accurate Scope (se para en " .. tostring(p.stoppedAt) .. ")")
+    assert(Items(p) == "10498", "microajustador como herramienta: " .. Items(p))
+    local crafted
+    for _, c in ipairs(p.crafted or {}) do if c.itemID == 10498 then crafted = c end end
+    assert(crafted and crafted.quantity == 1, "el microajustador se fabrica (1)")
+    log[#log+1] = string.format("     Copper Modulator: martillo y llave (llave %s) · Accurate Scope: microajustador fabricado (%s)", ES.Money(spanner), ES.Money(p.toolsCost))
+  end)
+  for item, v in pairs(saved) do ES.Data.VendorPrices[item] = v end
+  for _, item in ipairs({ 2840, 2589, 4371, 1529, 3864, 3859 }) do if saved[item] == nil then ES.Data.VendorPrices[item] = nil end end
+  assert(ok, err)
+end)
 step("idioma inglés", function()
   -- Todas las claves L[...] del código tienen traducción al inglés
   local missing = {}

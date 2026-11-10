@@ -216,25 +216,32 @@ def load_common():
             if cd >= MIN_COOLDOWN:
                 cooldowns[int(r["SpellID"])] = max(cooldowns.get(int(r["SpellID"]), 0), cd)
 
-    tools, tool_masks = {}, {}
+    tools, tool_masks = {}, {}  # receta -> claves de ES.Data.Tools que pide, en el orden del cliente
+
+    def add_tool(spell, key):
+        lst = tools.setdefault(spell, [])
+        if key not in lst:
+            lst.append(key)
+
     for r in rows("SpellTotems_forever"):
         spell = int(r["SpellID"])
         # La herramienta puede ir en cualquiera de las dos casillas (Flying Tiger Goggles
-        # lleva la llave inglesa en la segunda). Los datos guardan una herramienta por
-        # receta: si pide dos (martillo y llave inglesa, Copper Modulator), la primera
+        # lleva la llave inglesa en la segunda) y una receta puede pedir dos (martillo
+        # de herrero y llave inglesa: Copper Modulator; llave y microajustador): todas
         for slot in ("RequiredTotemCategoryID_0", "RequiredTotemCategoryID_1"):
             cat = int(r[slot] or 0)
             if cat in TOOL_ITEMS:
-                tools.setdefault(spell, cat)
+                add_tool(spell, cat)
         # O un objeto concreto en vez de una categoría (Flint and Tinder para la hoguera):
         # la clave de la herramienta es el propio objeto
         for slot in ("Totem_0", "Totem_1"):
             item = int(r[slot] or 0)
             if item in TOTEM_ITEMS:
-                tools.setdefault(spell, item)
+                add_tool(spell, item)
             elif item:
                 print(f"aviso: la receta {spell} pide el objeto {item} como herramienta y no está en TOTEM_ITEMS",
                       file=sys.stderr)
+    tools = {s: t for s, t in tools.items() if t}
     for r in rows("TotemCategory_forever"):
         assert int(r["ID"]) not in TOTEM_ITEMS, f"la categoría de tótem {r['ID']} choca con un objeto de TOTEM_ITEMS"
         if int(r["ID"]) in TOOL_ITEMS:
@@ -397,7 +404,7 @@ def main():
     trainers = sorted(quest_trainers()[prof].items())
 
     tools = c["tools"]
-    used_tools = {tool_item(t) for s, t in tools.items() if s in recipes}
+    used_tools = {tool_item(t) for s, ts in tools.items() if s in recipes for t in ts}
 
     # Recetas que no dan puntos (amarilla == gris) pero fabrican un material que
     # otra receta necesita, p. ej. Cured Thick Hide (Thick Hide + Deeprock Salt)
@@ -463,7 +470,8 @@ def main():
         "-- (sin fee = se aprende de pergamino: de dónde sale, en Data/Sources.lua; scrollPrice = su precio si lo vende un PNJ)",
         "-- rep = { facción, nivel } que pide el pergamino para aprenderla (5 amistoso, 6 honorable, 7 venerado, 8 exaltado)",
         "-- r = { {itemID, cantidad} }; out = { itemID, cantidad }",
-        "-- tool = herramienta que pide (clave de ES.Data.Tools: categoría de tótem, o el objeto si pide uno concreto)",
+        "-- tool = herramienta que pide (clave de ES.Data.Tools: categoría de tótem, o el objeto si pide uno concreto);",
+        "--   { a, b } si pide varias a la vez (martillo de herrero y llave inglesa)",
         "-- sq / oq = calidad del pergamino / de lo fabricado (0 pobre, 1 común, 2 poco común, 3 raro, 4 épico)",
         "-- faction = bando que puede aprenderla, si solo es de uno",
         "-- bop = lo fabricado se liga al recogerlo: no se puede vender en la AH (sí al vendedor)",
@@ -541,7 +549,8 @@ def main():
             parts.append(f'faction = "{faction}"')
         parts.append("r = { " + ", ".join("{ %d, %d }" % rq for rq in reagents) + " }")
         if sid in tools:
-            parts.append(f"tool = {tools[sid]}")
+            ts = tools[sid]
+            parts.append(f"tool = {ts[0]}" if len(ts) == 1 else "tool = { " + ", ".join(map(str, ts)) + " }")
         if output:
             parts.append(f"out = {{ {output[0]}, {num(output[1])} }}")
             parts.append(f"oq = {c['item_quality'].get(output[0], 1)}")
@@ -571,7 +580,7 @@ def main():
     out.append("--   = { objeto, máscara, familia }: dentro de una familia, una superior cubre a las inferiores (bastones rúnicos)")
     out.append("ES.Data.Tools = ES.Data.Tools or {}")
     tool_masks = c["tool_masks"]
-    for cat in sorted(cc for cc in tool_masks if tool_item(cc) in used_tools or any(t == cc for t in tools.values())):
+    for cat in sorted(cc for cc in tool_masks if tool_item(cc) in used_tools or any(cc in ts for ts in tools.values())):
         out.append(f"ES.Data.Tools[{cat}] = {{ item = {tool_item(cat)}, mask = {tool_masks[cat]}, family = \"{tool_family(cat)}\" }}")
     out.append("")
     out.append("ES.Data.VendorPrices = ES.Data.VendorPrices or {}")

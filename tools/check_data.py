@@ -48,6 +48,20 @@ def client_tables():
             name=r["Display_lang"], buy=int(r["BuyPrice"] or 0) / stack, sell=int(r["SellPrice"] or 0),
             rep=(int(r["MinFactionID"] or 0), int(r["MinReputation"] or 0)),
             quality=int(r.get("OverallQualityID") or 1), bop=r.get("Bonding") == "1")
+    # Herramientas que pide cada receta (SpellTotems): categorías de tótem de las
+    # herramientas conocidas u objetos concretos (Flint and Tinder), en el orden del cliente
+    c["tools"] = {}
+    for r in rows("SpellTotems_forever"):
+        lst = c["tools"].setdefault(int(r["SpellID"]), [])
+        for slot in ("RequiredTotemCategoryID_0", "RequiredTotemCategoryID_1"):
+            cat = int(r[slot] or 0)
+            if cat in TOOL_CATEGORIES and cat not in lst:
+                lst.append(cat)
+        for slot in ("Totem_0", "Totem_1"):
+            item = int(r[slot] or 0)
+            if item in TOOL_OBJECTS and item not in lst:
+                lst.append(item)
+    c["tools"] = {k: v for k, v in c["tools"].items() if v}
     c["scrolls"] = {}
     for r in rows("RecipeScrolls_forever"):
         c["scrolls"].setdefault(int(r["Spell"]), set()).add(int(r["ItemID"]))
@@ -57,6 +71,10 @@ def client_tables():
             c["sell_override"][int(r["item"])] = int(r["sell"])
     return c
 
+
+# Herramientas que conocen los datos (tools/gen_profession.py: TOOL_ITEMS y TOTEM_ITEMS)
+TOOL_CATEGORIES = {373, 374, 375, 376, 377, 162, 12, 14, 15}
+TOOL_OBJECTS = {4471}
 
 RECIPE = re.compile(r'^\s*\[(-?\d+)\] = \{ (.*) \},', re.M)
 
@@ -80,6 +98,8 @@ def lua_recipes(text):
             d[key] = int(v.group(1)) if v else None
         rp = re.search(r'rep = \{ (\d+), (\d+) \}', body)
         d["rep"] = (int(rp.group(1)), int(rp.group(2))) if rp else None
+        tl = re.search(r'\btool = (\d+|\{ [\d, ]+ \})', body)
+        d["tools"] = list(map(int, re.findall(r'\d+', tl.group(1)))) if tl else []
         d["intermediate"] = "intermediate = true" in body
         d["bop"] = "bop = true" in body
         out[sid] = d
@@ -111,6 +131,8 @@ def main():
                 bad("nombre de receta", f"{d['name']!r} != cliente {c['names'].get(sid)!r}")
             if c["reagents"].get(sid) != d["r"]:
                 bad("materiales", f"{d['r']} != cliente {c['reagents'].get(sid)}")
+            if c["tools"].get(sid, []) != d["tools"]:
+                bad("herramientas", f"{d['tools']} != cliente {c['tools'].get(sid, [])}")
             made = c["creates"].get(sid)
             if (made is None) != (d["out"] is None) or (made and (made[0] != d["out"][0] or abs(made[1] - d["out"][1]) > 1e-6)):
                 bad("lo fabricado", f"{d['out']} != cliente {made}")

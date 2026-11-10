@@ -60,13 +60,15 @@ function CANDIDATES(prof, from, to, noAH)
         local fee = Planner.LearnCost(ctx, r)
         local cost = Planner.RecipeCost(ctx, r, 1, {})
         local sale = Planner.SaleInfo(ctx, r)
-        local toolCost, toolItem = 0, 0
-        if r.tool and ES.Data.Tools[r.tool] then
-          toolItem = ES.Data.Tools[r.tool].item
-          toolCost = ES.Data.VendorPrices[toolItem] or Planner.CraftUnitCost(ctx, toolItem) or 0
+        -- Herramientas que pide (puede ser más de una): "item:coste;item:coste"
+        local toolCost, toolList = 0, {}
+        for _, tool in ipairs(Planner.RecipeTools(r)) do
+          local c = ES.Data.VendorPrices[tool.item] or Planner.CraftUnitCost(ctx, tool.item) or 0
+          toolCost = toolCost + c
+          toolList[#toolList + 1] = tool.item .. ":" .. c
         end
         out[#out + 1] = { id = id, name = r.name, learn = learn, fee = fee or 0, cost = cost or -1,
-          value = sale and sale.qty * sale.vendor or 0, t2 = r.t[2], t4 = r.t[4], tool = toolItem, toolCost = toolCost }
+          value = sale and sale.qty * sale.vendor or 0, t2 = r.t[2], t4 = r.t[4], tools = table.concat(toolList, ";"), toolCost = toolCost }
       end
     end
   end
@@ -106,6 +108,10 @@ SEED = int(sys.argv[sys.argv.index("--seed") + 1]) if "--seed" in sys.argv else 
 if AH:
     lua.globals().SYNTH_AH(SEED)
 noAH = not AH
+
+def tools_of(c):
+    """Herramientas de un candidato: [(objeto, coste)] (ver CANDIDATES en Lua)."""
+    return [(int(a), float(b)) for a, b in (x.split(":") for x in str(c["tools"]).split(";") if x)]
 
 def chance(c, s):
     if s < c["t2"]: return 1.0
@@ -158,7 +164,7 @@ def dp_switch(cands, frm, to, fee_factor=1.0, per_point_fee=None):
 def dp_exact(cands, frm, to, max_bits=12):
     """Óptimo exacto del modelo fraccionario pagando cada instructor/herramienta una vez
     (estado: nivel + conjunto de lo ya pagado); solo si hay pocas cosas que pagar."""
-    once = sorted({("f", c["id"]) for c in cands if c["fee"] > 0} | {("t", c["tool"]) for c in cands if c["toolCost"] > 0})
+    once = sorted({("f", c["id"]) for c in cands if c["fee"] > 0} | {("t", item) for c in cands for item, cost in tools_of(c) if cost > 0})
     if len(once) > max_bits: return None
     bit = {k: 1 << i for i, k in enumerate(once)}
     INF = float("inf")
@@ -172,8 +178,9 @@ def dp_exact(cands, frm, to, max_bits=12):
                 add, m = point_cost(c, s), mask
                 fb = bit.get(("f", c["id"]))
                 if fb and not m & fb: add += c["fee"]; m |= fb
-                tb = bit.get(("t", c["tool"]))
-                if tb and not m & tb: add += c["toolCost"]; m |= tb
+                for item, cost in tools_of(c):
+                    tb = bit.get(("t", item))
+                    if tb and not m & tb: add += cost; m |= tb
                 v = cost + add
                 if v < nxt.get(m, (INF,))[0]: nxt[m] = (v, (mask, c["id"]))
         if not nxt: break
