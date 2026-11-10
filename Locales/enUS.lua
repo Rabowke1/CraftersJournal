@@ -193,6 +193,19 @@ ES.Locales.en = {
   ["Ofertas leídas: %d (%s)"] = "Offers read: %d (%s)",
   ["lista clásica, una pila por clic"] = "Classic list, one stack per click",
   ["búsqueda moderna"] = "modern search",
+  -- /cj ah (diagnóstico de la AH)
+  ["sí"] = "yes",
+  ["no"] = "no",
+  ["API clásica: QueryAuctionItems %s · GetAuctionItemInfo %s · PlaceAuctionBid %s · CanSendAuctionQuery %s"] = "Classic API: QueryAuctionItems %s · GetAuctionItemInfo %s · PlaceAuctionBid %s · CanSendAuctionQuery %s",
+  ["objeto del panel: %s %s · escaneo: más barata %s, %s subastas"] = "panel item: %s %s · scan: cheapest %s, %s auctions",
+  ["lista clásica: %d filas (primeras 5)"] = "Classic list: %d rows (first 5)",
+  ["búsqueda moderna (objetos): %d resultados (primeros 5)"] = "modern search (items): %d results (first 5)",
+  ["búsqueda moderna (materiales): %d resultados (primeros 5)"] = "modern search (commodities): %d results (first 5)",
+  ["panel: %s"] = "panel: %s",
+  ["%d ofertas (%s), más barata %s"] = "%d offers (%s), cheapest %s",
+  ["clásica"] = "Classic",
+  ["moderna"] = "modern",
+  ["sin ofertas leídas"] = "no offers read",
 
   -- Core
   ["Casa de Subastas neutral: sus datos se guardan aparte de los de tu facción."] = "Neutral Auction House: its data is stored apart from your faction's.",

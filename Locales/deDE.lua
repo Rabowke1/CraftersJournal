@@ -193,6 +193,19 @@ ES.Locales.de = {
   ["Ofertas leídas: %d (%s)"] = "Gelesene Angebote: %d (%s)",
   ["lista clásica, una pila por clic"] = "klassische Liste, ein Stapel pro Klick",
   ["búsqueda moderna"] = "moderne Suche",
+  -- /cj ah (diagnóstico de la AH)
+  ["sí"] = "ja",
+  ["no"] = "nein",
+  ["API clásica: QueryAuctionItems %s · GetAuctionItemInfo %s · PlaceAuctionBid %s · CanSendAuctionQuery %s"] = "Klassische API: QueryAuctionItems %s · GetAuctionItemInfo %s · PlaceAuctionBid %s · CanSendAuctionQuery %s",
+  ["objeto del panel: %s %s · escaneo: más barata %s, %s subastas"] = "Gegenstand im Fenster: %s %s · Scan: günstigste %s, %s Auktionen",
+  ["lista clásica: %d filas (primeras 5)"] = "klassische Liste: %d Zeilen (die ersten 5)",
+  ["búsqueda moderna (objetos): %d resultados (primeros 5)"] = "moderne Suche (Gegenstände): %d Ergebnisse (die ersten 5)",
+  ["búsqueda moderna (materiales): %d resultados (primeros 5)"] = "moderne Suche (Materialien): %d Ergebnisse (die ersten 5)",
+  ["panel: %s"] = "Fenster: %s",
+  ["%d ofertas (%s), más barata %s"] = "%d Angebote (%s), günstigstes %s",
+  ["clásica"] = "klassisch",
+  ["moderna"] = "modern",
+  ["sin ofertas leídas"] = "keine Angebote gelesen",
 
   -- Core
   ["Casa de Subastas neutral: sus datos se guardan aparte de los de tu facción."] = "Neutrales Auktionshaus: seine Daten werden getrennt von denen deiner Fraktion gespeichert.",

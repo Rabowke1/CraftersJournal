@@ -437,7 +437,7 @@ step("recetas que te faltan en la AH", function()
     GetNumCommoditySearchResults = function() return 0 end,
     GetNumItemSearchResults = function(key) return #(ITEMS[key.itemID] or {}) end,
     GetItemSearchResultInfo = function(key, i) local o = ITEMS[key.itemID][i]
-      return { buyoutAmount = o[1], auctionID = o[2], quantity = 1, containsOwnerItem = o[3] } end,
+      return { buyoutAmount = o[1], auctionID = o[2], quantity = o[4] or 1, containsOwnerItem = o[3] } end,
     StartCommoditiesPurchase = function() error("las recetas no son materiales") end,
     PlaceBid = function(a, p) bid = { a, p } end,
   }
@@ -494,16 +494,18 @@ step("recetas que te faltan en la AH", function()
     log[#log+1] = "     " .. tostring(st.panel.summary:GetText())
     local panel = st.panel
     local OnEvent = panel:GetScript("OnEvent")
-    -- Subastas: una tuya más barata (no cuenta) y otra a 24s
-    ITEMS[now.scroll] = { { 2000, 77, true }, { 2400, 78 }, { 2600, 79 } }
+    -- Subastas: una tuya más barata (no cuenta) y dos iguales a 24s (Forever las agrupa:
+    -- quantity 2, buyoutAmount por unidad). Se compra una a 24s, no "dos por 24s"
+    ITEMS[now.scroll] = { { 2000, 77, true }, { 2400, 78, false, 2 }, { 2600, 79 } }
     OnEvent(panel, "ITEM_SEARCH_RESULTS_UPDATED", { itemID = now.scroll })
-    assert(st.buy and st.buy.action == "buy" and st.buy.text:find("24"), "botón de comprar la receta: " .. tostring(st.buy and st.buy.text))
+    assert(st.live[now.scroll].ladder[2].price == 2400 and st.live[now.scroll].ladder[2].qty == 2, "precio por unidad de la agrupada")
+    assert(st.buy and st.buy.action == "buy" and st.buy.text:find("24") and not st.buy.text:find("12"), "botón de comprar la receta: " .. tostring(st.buy and st.buy.text))
     local row = panel.rows[pos[now.scroll]]
     log[#log+1] = "     fila: " .. tostring(row.title:GetText()) .. " | " .. tostring(row.sub:GetText())
     assert(tostring(row.sub:GetText()):find("150", 1, true) or tostring(row.sub:GetText()):find("nivel"), "la fila dice el nivel")
     ES:AuctionBuyClick()
     assert(bid and bid[1] == 78 and bid[2] == 2400, "puja por la más barata que no es tuya: " .. tostring(bid and bid[1]))
-    assert(st.buying and st.buying.step == "bid", "esperando la compra")
+    assert(st.buying and st.buying.step == "bid" and st.buying.qty == 1 and st.buying.total == 2400, "esperando la compra de una unidad")
     OnEvent(panel, "AUCTION_HOUSE_PURCHASE_COMPLETED", 78)
     assert(st.buying == nil, "compra cerrada")
     assert(tostring(panel.rows[pos[now.scroll]].sub:GetText()):find("comprado"), "la receta sale comprada")

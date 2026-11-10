@@ -59,9 +59,8 @@ local function Modern()
   return A ~= nil and A.MakeItemKey ~= nil and A.SendSearchQuery ~= nil and A.StartCommoditiesPurchase ~= nil
 end
 
--- ¿La AH clásica (QueryAuctionItems / GetAuctionItemInfo)? Es la que usa el escaneo en
--- Forever y la que da los precios buenos: si está, manda sobre la moderna (en el juego,
--- la búsqueda moderna devolvía 2c por una receta que costaba 2s)
+-- ¿La AH clásica (QueryAuctionItems / GetAuctionItemInfo)? Forever no la tiene (solo
+-- C_AuctionHouse; comprobado con /cj ah); en un cliente que sí, manda sobre la moderna
 local function Legacy()
   return QueryAuctionItems ~= nil and GetAuctionItemInfo ~= nil and GetNumAuctionItems ~= nil
 end
@@ -312,8 +311,11 @@ local function ReadOffers(itemID, commodity)
     for i = 1, n do
       local r = A.GetItemSearchResultInfo(key, i)
       if r and (r.buyoutAmount or 0) > 0 then
+        -- buyoutAmount es el precio de UNA unidad y quantity cuántas hay a ese precio: Forever
+        -- agrupa las subastas iguales (visto con /cj ah: "×2 buyoutAmount=8000" eran dos a 80s).
+        -- PlaceBid compra una de ellas
         local q = r.quantity or 1
-        ladder[#ladder + 1] = { price = r.buyoutAmount / q, qty = q, own = r.containsOwnerItem, auctionID = r.auctionID, buyout = r.buyoutAmount }
+        ladder[#ladder + 1] = { price = r.buyoutAmount, qty = q, own = r.containsOwnerItem, auctionID = r.auctionID, buyout = r.buyoutAmount }
         units = units + q
       end
     end
@@ -533,7 +535,11 @@ local function Quote(l)
   local first
   for _, o in ipairs(live.ladder or {}) do
     if not o.own then
-      first = { qty = o.qty, cost = o.buyout or o.price * o.qty, index = o.index, auctionID = o.auctionID }
+      if o.index then -- clásica: la pila entera
+        first = { qty = o.qty, cost = o.buyout or o.price * o.qty, index = o.index }
+      else -- moderna (objetos no apilables): una unidad por clic
+        first = { qty = 1, cost = o.price, auctionID = o.auctionID }
+      end
       break
     end
   end
@@ -631,7 +637,7 @@ function ES:AuctionBuyClick()
     local offer
     for _, o in ipairs(live.ladder) do if not o.own and o.auctionID then offer = o break end end
     if not offer or not A.PlaceBid then return end
-    buying = { itemID = id, qty = offer.qty, unit = l.it.unit, step = "bid", auctionID = offer.auctionID, total = offer.buyout }
+    buying = { itemID = id, qty = 1, unit = l.it.unit, step = "bid", auctionID = offer.auctionID, total = offer.buyout }
     state.buying = buying
     local ok, err = pcall(A.PlaceBid, offer.auctionID, offer.buyout)
     if not ok then
@@ -1010,7 +1016,8 @@ local function RenderBuyButton()
   end
   -- En la AH clásica cada clic compra una pila: la más barata que no sea tuya
   local qty, cost = q and q.qty, q and q.cost
-  if q and live and live.legacy and q.first then qty, cost = q.first.qty, q.first.cost end
+  -- (y en la moderna, con objetos no apilables, una unidad: lo que compra PlaceBid)
+  if q and live and not live.commodity and q.first then qty, cost = q.first.qty, q.first.cost end
   local over = q and not q.none and (cost - l.it.unit * qty)
   if not q then
     Set("offers", string.format(L["Ver precios: %s"], name), true, L["Aún no se han leído las ofertas de este material."])
@@ -1224,8 +1231,8 @@ function ES:AuctionDebug()
   local lines = {}
   local function Add(fmt, ...) lines[#lines + 1] = string.format(fmt, ...) end
   local A = C_AuctionHouse
-  local function has(f) return f ~= nil and "sí" or "no" end
-  Add("API clásica: QueryAuctionItems %s · GetAuctionItemInfo %s · PlaceAuctionBid %s · CanSendAuctionQuery %s",
+  local function has(f) return f ~= nil and L["sí"] or L["no"] end
+  Add(L["API clásica: QueryAuctionItems %s · GetAuctionItemInfo %s · PlaceAuctionBid %s · CanSendAuctionQuery %s"],
     has(QueryAuctionItems), has(GetAuctionItemInfo), has(PlaceAuctionBid), CanSendAuctionQuery and tostring((CanSendAuctionQuery())) or "-")
   Add("C_AuctionHouse: %s · SendSearchQuery %s · GetItemSearchResultInfo %s · GetCommoditySearchResultInfo %s · StartCommoditiesPurchase %s · PlaceBid %s · ReplicateItems %s",
     has(A), has(A and A.SendSearchQuery), has(A and A.GetItemSearchResultInfo), has(A and A.GetCommoditySearchResultInfo),
@@ -1233,11 +1240,11 @@ function ES:AuctionDebug()
   local id = state.searching
   local scan = ES.db.scans and ES.db.scans[ES:RealmKey()]
   local it = id and scan and scan.items and scan.items[id]
-  Add("objeto del panel: %s %s · escaneo: minUnit %s, %s subastas", tostring(id), tostring(id and ES:DataItemName(id)),
+  Add(L["objeto del panel: %s %s · escaneo: más barata %s, %s subastas"], tostring(id), tostring(id and ES:DataItemName(id)),
     tostring(it and it.minUnit), tostring(it and it.listings))
   if GetNumAuctionItems and GetAuctionItemInfo then
     local n = GetNumAuctionItems("list") or 0
-    Add("lista clásica: %d filas (primeras 5)", n)
+    Add(L["lista clásica: %d filas (primeras 5)"], n)
     for i = 1, math.min(n, 5) do
       local name, _, count, _, _, _, _, minBid, _, buyout, bid, _, _, owner, _, _, itemID = GetAuctionItemInfo("list", i)
       Add("  %d: %s ×%s id=%s minBid=%s buyout=%s bid=%s owner=%s", i, tostring(name), tostring(count), tostring(itemID),
@@ -1247,21 +1254,22 @@ function ES:AuctionDebug()
   if A and id and A.MakeItemKey then
     local key = A.MakeItemKey(id)
     local n = A.GetNumItemSearchResults and A.GetNumItemSearchResults(key) or 0
-    Add("búsqueda moderna (objetos): %d resultados (primeros 5)", n)
+    Add(L["búsqueda moderna (objetos): %d resultados (primeros 5)"], n)
     for i = 1, math.min(n, 5) do
       local r = A.GetItemSearchResultInfo(key, i) or {}
       Add("  %d: ×%s buyoutAmount=%s minBid=%s bidAmount=%s auctionID=%s", i, tostring(r.quantity), tostring(r.buyoutAmount),
         tostring(r.minBid), tostring(r.bidAmount), tostring(r.auctionID))
     end
     local m = A.GetNumCommoditySearchResults and A.GetNumCommoditySearchResults(id) or 0
-    Add("búsqueda moderna (materiales): %d resultados (primeros 5)", m)
+    Add(L["búsqueda moderna (materiales): %d resultados (primeros 5)"], m)
     for i = 1, math.min(m, 5) do
       local r = A.GetCommoditySearchResultInfo(id, i) or {}
       Add("  %d: ×%s unitPrice=%s", i, tostring(r.quantity), tostring(r.unitPrice))
     end
   end
   local live = id and state.live[id]
-  Add("panel: %s", live and string.format("%d ofertas (%s), más barata %s", #(live.ladder or {}), live.legacy and "clásica" or "moderna", tostring(live.min)) or "sin ofertas leídas")
+  Add(L["panel: %s"], live and string.format(L["%d ofertas (%s), más barata %s"], #(live.ladder or {}), live.legacy and L["clásica"] or L["moderna"],
+    tostring(live.min)) or L["sin ofertas leídas"])
   for _, l in ipairs(lines) do print("|cff33ccffCJ|r " .. l) end
   ES.db.ahDebug = lines
   return lines
