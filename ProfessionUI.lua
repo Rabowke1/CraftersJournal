@@ -97,7 +97,8 @@ local function Panel(parent, r, g, b, a)
   return p
 end
 
--- ¿La AH activa es la neutral? (más depósito y 15% de comisión)
+-- ¿La AH activa es la neutral? (más depósito y 15% de comisión). Ahora siempre no: la
+-- neutral no tiene soporte (Core.lua, DetectAuctionHouse). Se deja para el día que lo tenga
 function ES:IsNeutralAH()
   return self:RealmKey():match("%-Neutral$") ~= nil
 end
@@ -498,12 +499,9 @@ local function StopReason(plan)
   if #short > 0 then
     return L["no quedan suficientes en la AH de: "] .. table.concat(short, ", ")
   elseif missing > 0 and not plan.scanTime then
-    -- Sin escaneo de la AH que usas, lo que solo se compra allí no tiene precio: lo
-    -- que hay que hacer es escanear (antes solo decía "N materiales sin precio"). La
-    -- AH neutral guarda sus precios aparte
-    return ES:IsNeutralAH()
-      and string.format(L["%d materiales sin precio: no tienes escaneo de la Casa de Subastas neutral. Escanéala, o abre la de tu facción para usar sus precios"], missing)
-      or string.format(L["%d materiales sin precio: aún no tienes escaneo de la Casa de Subastas. Ábrela y pulsa Escanear"], missing)
+    -- Sin escaneo de la AH, lo que solo se compra allí no tiene precio: lo que hay que
+    -- hacer es escanear (antes solo decía "N materiales sin precio")
+    return string.format(L["%d materiales sin precio: aún no tienes escaneo de la Casa de Subastas. Ábrela y pulsa Escanear"], missing)
   elseif missing > 0 then
     return string.format(L["%d materiales sin precio (no están en la AH)"], missing)
   end
@@ -1417,7 +1415,7 @@ function ES:CreateProfessionPage(page, profKey)
       function() return settings.useQuests ~= false end,
       function() settings.useQuests = settings.useQuests == false end,
       function()
-        return { settings.useQuests ~= false and L["Si una misión de tu bando da la receta, cuenta como gratis."]
+        return { settings.useQuests ~= false and L["Si una misión de tu bando da la receta, no cuesta oro. Lo que pida entregar no tiene precio: se ve en el tooltip de la receta."]
           or L["Las recetas solo se consiguen comprándolas (vendedor o Casa de Subastas)."] }
       end)
   end
@@ -1891,7 +1889,13 @@ local function SourcedLearnLine(r, st, profName, plan)
     useItem = r.scroll -- clic: usa el pergamino (botón seguro, ver SetUseItem)
   elseif best.kind == "quest" then
     icon, label = QUEST_ICON, L["Da la misión"]
-    sub = L["Misión: "] .. best.quest.name .. also
+    -- Gratis en oro, pero puede pedir objetos o misiones antes (CurseForge): se dice
+    -- aquí y el texto exacto va en el tooltip; la ruta no les pone precio (casi todo
+    -- es botín de criaturas). Si no compensa, la X de la fila
+    local q = best.quest
+    local cost = (q.asks and L[" · pide objetos"] or "")
+      .. ((q.chain or 0) > 0 and string.format(L[" · cadena de %d misiones"], q.chain + 1) or "")
+    sub = L["Misión: "] .. q.name .. (cost ~= "" and (ORANGE .. cost .. "|r" .. skipHint) or also)
     pick = function() return WP.Nearest(best.quest.starters) end
   elseif best.kind == "vendor" then
     icon, label = RECIPE_ICON, L["Vendedor más cercano"]
@@ -1918,12 +1922,25 @@ local function SourcedLearnLine(r, st, profName, plan)
       if src.questsOff then
         GameTooltip:AddDoubleLine(ES.Market.ICON_BAD .. L["Misión"], q.name .. L[" · desactivada"], 0.6, 0.6, 0.6, 0.6, 0.6, 0.6)
       else
-        GameTooltip:AddDoubleLine(Mark("quest") .. L["Misión"], q.name .. L[" · gratis"], 1, 0.82, 0, 1, 1, 1)
+        -- ("gratis" solo si no pide nada: si pide objetos, cuesta lo que cueste conseguirlos)
+        GameTooltip:AddDoubleLine(Mark("quest") .. L["Misión"], q.name .. ((q.asks or (q.chain or 0) > 0) and "" or L[" · gratis"]),
+          1, 0.82, 0, 1, 1, 1)
       end
       local starter = WP.Nearest(q.starters)
       local npc = starter and WP.NPC(starter)
       if npc then GameTooltip:AddDoubleLine(" ", npc.name .. " · " .. WP.LocationText(npc), 1, 1, 1, 0.6, 0.6, 0.6) end
       if q.level > 0 then GameTooltip:AddDoubleLine(" ", L["nivel "] .. q.level, 1, 1, 1, 0.6, 0.6, 0.6) end
+      -- Lo que pide entregar, con el texto de la misión (en inglés: es el del juego)
+      if q.asks then
+        GameTooltip:AddLine(L["Pide: "] .. q.asks, 1, 0.6, 0.2, true)
+      end
+      if (q.chain or 0) > 0 then
+        GameTooltip:AddLine(q.chain == 1 and L["Antes hay que hacer 1 misión de su cadena, que también puede pedir objetos."]
+          or string.format(L["Antes hay que hacer %d misiones de su cadena, que también pueden pedir objetos."], q.chain), 1, 0.6, 0.2, true)
+      end
+      if q.asks or (q.chain or 0) > 0 then
+        GameTooltip:AddLine(L["La ruta no le pone precio a lo que pide (casi todo se consigue matando criaturas). Si no te compensa, quítala con la X de la fila."], 0.6, 0.6, 0.6, true)
+      end
     end
     if src.vendors[1] then
       local opt
@@ -2681,7 +2698,22 @@ local function ShopLines(plan, page)
     -- acciones del addon), lo que hace pulsar
     local title, sub
     local ACT = "|cff80c0ff"
-    if phase then
+    -- La quitaste de la Lista de compra (su ✕): la fila la vuelve a poner
+    local hidden = ES.Shopping.RouteListHidden(page.profKey)
+    if hidden then
+      Switch = function()
+        ES.Shopping.SetRouteListHidden(page.profKey, false)
+        ES:RenderPlan(page)
+        if ES.RenderShopping then ES:RenderShopping() end
+        local list = ES.Shopping.PhaseList(page.profKey)
+        if list then
+          ES:Print(string.format(L["Añadido a la lista de compra: %s."], list.title))
+          ES:FlashTab("shopping", true)
+        end
+      end
+      title = L["Lista de compra · quitada"]
+      sub = ACT .. L["Pulsa para volver a ponerla"] .. "|r · " .. L["la quitaste con la X de la Lista de compra"]
+    elseif phase then
       local names = {}
       for _, st in ipairs(phase.steps) do names[#names + 1] = st.recipe.name end
       title = string.format(L["Lista de compra · Tramo %d-%d (%s)"], phase.from, phase.batchTo or phase.to, table.concat(names, ", "))

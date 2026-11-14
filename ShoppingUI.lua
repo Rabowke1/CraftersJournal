@@ -169,7 +169,9 @@ local function BuildLines(st, ahOpen)
       lines[#lines + 1] = line
     end
     if list.live then
-      -- Ruta empezada: sin ✕ (se va sola al acabar la ruta; el modo se cambia en la ruta)
+      -- Ruta empezada: se va sola al acabar la ruta (el modo se cambia en la ruta). Su
+      -- ✕ la quita sin dejar la ruta (si no, no había forma de quitarla); vuelve desde
+      -- la vista Materiales de la ruta. El panel pequeño de la AH no enseña los totales
       local sub
       if list.whole then
         sub = s.done == s.total and (GREEN .. L["Tienes todo lo que queda de ruta."] .. "|r")
@@ -180,7 +182,15 @@ local function BuildLines(st, ahOpen)
       end
       lines[#lines + 1] = { total = true, icon = KIND_ICON.route,
         title = string.format(L["%d de %d listos"], s.done, s.total), sub = sub,
-        value = s.cost > 0 and Signed(s.cost) or "" }
+        value = s.cost > 0 and Signed(s.cost) or "",
+        onSkip = function()
+          ES.Shopping.SetRouteListHidden(list.key, true)
+          ES:Print(string.format(L["%s: quitada de la Lista de compra. Tu ruta sigue empezada; vuelve a ponerla desde la vista Materiales de la ruta."], list.title))
+          ES:RenderShopping()
+          if ES.RefreshProfessionPages then ES:RefreshProfessionPages() end
+        end,
+        skipTitle = L["Quitar de la lista"],
+        skipTip = L["Quitar la lista de esta ruta. La ruta sigue empezada; se vuelve a poner desde su vista Materiales."] }
     else
     lines[#lines + 1] = { total = true, icon = KIND_ICON[list.kind],
       title = string.format(L["%d de %d listos"], s.done, s.total),

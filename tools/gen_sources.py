@@ -62,6 +62,35 @@ def main():
         lo, hi = r and field("Npc", npc_id, NPC["minLevel"], r), r and field("Npc", npc_id, NPC["maxLevel"], r)
         return (int(lo), int(hi or lo)) if isinstance(lo, (int, float)) and lo > 0 else None
 
+    # Lo que pide entregar una misión: su texto de objetivos ("Bring 2 Turtle Scale
+    # Helms...") si pide objetos, o None. No se le pone precio: casi todo es botín de
+    # criaturas y las cantidades vienen escritas de mil formas; se enseña tal cual
+    def quest_asks(q, qr):
+        obj = field("Quest", q, QUEST["objectives"], qr) or {}
+        item_obj = obj.get(3) if isinstance(obj, dict) else (obj[2] if len(obj) > 2 else None)
+        if not any(item_obj or []):
+            return None
+        text = field("Quest", q, QUEST["objectivesText"], qr) or []
+        text = " ".join(t.decode("utf-8", "replace") if isinstance(t, bytes) else str(t) for t in text)
+        return " ".join(text.split()) or None
+
+    # Misiones que hay que hacer antes (toda la cadena, no solo la anterior)
+    def quest_chain(q, seen=None):
+        seen = set() if seen is None else seen
+        qr = row("Quest", q)
+        if not qr:
+            return seen
+        def flat(t):  # (a veces viene anidado: [[36]])
+            if isinstance(t, int):
+                return [t]
+            return [x for v in (t if isinstance(t, list) else seq(t)) for x in flat(v)] if t else []
+        pre = flat(field("Quest", q, QUEST["preQuestGroup"], qr)) + flat(field("Quest", q, QUEST["preQuestSingle"], qr))
+        for p in pre:
+            if p not in seen:
+                seen.add(p)
+                quest_chain(p, seen)
+        return seen
+
     items, quests, npcs_needed = {}, {}, set(trainers)
     drops = {}  # pergamino -> (criaturas o None si es del mundo, cuántas criaturas, cuántos objetos, niveles)
     droppers = set()  # criaturas de las que se guarda el nivel
@@ -95,7 +124,8 @@ def main():
             a, h = (races & ALLIANCE_RACES) != 0, (races & HORDE_RACES) != 0
             starters = ids(at(field("Quest", q, QUEST["startedBy"], qr), 1))
             quests[q] = (field("Quest", q, QUEST["name"], qr), "" if a == h else ("A" if a else "H"),
-                         field("Quest", q, QUEST["requiredLevel"], qr) or 0, starters)
+                         field("Quest", q, QUEST["requiredLevel"], qr) or 0, starters,
+                         quest_asks(q, qr), len(quest_chain(q)))
             npcs_needed.update(starters)
 
     # Vendedores de pergaminos de Forever (tools/forever/recipebook_*.csv, ver
@@ -114,10 +144,26 @@ def main():
                     # "Limited (N)": vende N y se repone con el tiempo ("Unlimited": siempre hay)
                     if r["stock"].strip().startswith("Limited"):
                         limited.add((int(r["item"]), int(r["npc"])))
+        # Correcciones a los datos de Wowhead Forever, comprobadas en el juego.
+        # Raptor Hide Harness / Raptor Hide Belt: Wowhead (y el libro) los tienen al revés.
+        # En el juego Tunkk (Horda, Hammerfall) vende el Belt y Androd Fadran (Alianza,
+        # Refuge Pointe) la Harness, como en el Classic original (dos jugadores de la
+        # Horda, Discord y CurseForge, 2026-11)
+        VENDOR_FIXES = {13287: {2816}, 13288: {2819}}
+        for item_id, npcs in VENDOR_FIXES.items():
+            if item_id in book_vendors:
+                was = book_vendors[item_id]
+                for old, new in zip(sorted(was), sorted(npcs)):
+                    if (item_id, old) in limited:
+                        limited.add((item_id, new))
+                book_vendors[item_id] = set(npcs)
         for item_id in scrolls:
             book = book_vendors.get(item_id)
             vendors, qs = items.get(item_id, ([], []))
-            if book:
+            if item_id in VENDOR_FIXES:
+                vendors = sorted(VENDOR_FIXES[item_id]) # (QuestieDB también lo tiene al revés)
+                npcs_needed.update(VENDOR_FIXES[item_id])
+            elif book:
                 vendors = sorted(set(vendors) | book)
                 npcs_needed.update(book)
             elif vendors:
@@ -233,9 +279,11 @@ def main():
             if n_objs:
                 parts.append(f"o = {n_objs}")
         out.append(f"  [{item_id}] = {{ {', '.join(parts)} }},")
-    out += ["}", "", "-- [misión] = { nombre, bando (\"A\", \"H\" o \"\" los dos), nivel mínimo, { quien la da } }", "ES.Data.Quests = {"]
-    for q, (name, side, level, starters) in sorted(quests.items()):
-        out.append(f"  [{q}] = {{ {lua_str(name)}, \"{side}\", {level}, {lua_ids(starters)} }},")
+    out += ["}", "", "-- [misión] = { nombre, bando (\"A\", \"H\" o \"\" los dos), nivel mínimo, { quien la da },",
+            "--   texto de lo que pide entregar (o nil), misiones antes en su cadena }", "ES.Data.Quests = {"]
+    for q, (name, side, level, starters, asks, chain) in sorted(quests.items()):
+        out.append(f"  [{q}] = {{ {lua_str(name)}, \"{side}\", {level}, {lua_ids(starters)}, "
+                   f"{lua_str(asks) if asks else 'nil'}, {chain} }},")
     out += ["}", "",
             "-- [PNJ] = { nombre, bando (\"A\", \"H\", \"\" los dos, \"X\" ninguno), mapa, x, y } (x, y de 0 a 1;",
             "-- en una mazmorra: mapa 0 y la zona como 6.º campo)", "ES.Data.NPCs = {"]

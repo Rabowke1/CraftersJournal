@@ -249,6 +249,7 @@ end
 function ES:SetupAuctionPanel(ahFrame)
   if not listButton then
     listButton = CreateFrame("Button", nil, ahFrame, "UIPanelButtonTemplate")
+    ES.ahListButton = listButton -- (se esconde en la AH neutral: UI.lua, HideAuctionHouseUI)
     listButton:SetSize(150, 24)
     if CraftersJournalAHButton then
       listButton:SetPoint("RIGHT", CraftersJournalAHButton, "LEFT", -4, 0)

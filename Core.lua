@@ -16,6 +16,7 @@ local function AHFrameShown()
 end
 
 function ES:IsAuctionHouseOpen()
+  if self.neutralAH then return false end -- (la neutral no tiene soporte: ver DetectAuctionHouse)
   if self.ahOpen then return true end
   if AHFrameShown() then
     self.ahOpen = true
@@ -128,24 +129,28 @@ local function FactionKey()
   return (GetRealmName() or "?") .. "-" .. (UnitFactionGroup("player") or "?")
 end
 
--- La última AH que abrió este personaje (la de su facción si nunca abrió la neutral)
+-- La AH de tu facción: la neutral no tiene soporte (ver DetectAuctionHouse). Antes era
+-- la última AH que abrió el personaje (ES.db.activeAH): quien pasó por la neutral se
+-- quedaba con sus precios; ya no se lee
 function ES:RealmKey()
-  local saved = self.db and self.db.activeAH and self.db.activeAH[self:CharKey()]
-  return saved or FactionKey()
+  return FactionKey()
 end
 
--- Al abrir la AH: el subastador neutral no es de ninguna de las dos facciones
+-- Al abrir la AH: el subastador neutral (Bahía del Botín, Gadgetzan, Vista Eterna) no
+-- es de ninguna de las dos facciones. La AH neutral no tiene soporte: el addon hace
+-- como si no hubiera ninguna AH abierta (ni escanea, ni lee el escaneo de otro addon,
+-- ni abre sus ventanas) y sigue con los precios de la de tu facción. Antes pasaba a
+-- usar los de la neutral, casi nunca escaneada, y las rutas se quedaban sin precios
+-- hasta volver a abrir la de tu facción. Devuelve true si es la neutral
 local function DetectAuctionHouse()
   local npcFaction = UnitFactionGroup("npc")
   local neutral = UnitExists("npc") and npcFaction ~= "Alliance" and npcFaction ~= "Horde"
-  local key = neutral and ((GetRealmName() or "?") .. "-Neutral") or FactionKey()
-  if type(ES.db.activeAH) ~= "table" then ES.db.activeAH = {} end
-  local char = ES:CharKey()
-  if ES:RealmKey() ~= key then
-    ES:Print(neutral and L["Casa de Subastas neutral: sus datos se guardan aparte de los de tu facción."]
-      or L["Casa de Subastas de tu facción."])
+  ES.neutralAH = neutral or nil
+  if neutral and not ES.neutralWarned then
+    ES.neutralWarned = true -- (una vez por sesión: no en cada visita)
+    ES:Print(L["Casa de Subastas neutral: Crafter's Journal no le da soporte. Aquí no escanea ni abre sus ventanas; sus rutas y precios siguen siendo los de la Casa de Subastas de tu facción."])
   end
-  ES.db.activeAH[char] = key
+  return neutral
 end
 
 -- Personaje actual ("Nombre-Reino"): buzón, recetas sabidas, AH activa
@@ -660,6 +665,8 @@ events:SetScript("OnEvent", function(_, event, arg1)
     ES.db.useGPS = nil -- (/cj gps de las pruebas: el GPS ya es el planificador de todos)
     ES.db.mail = nil   -- (lo que se leía del buzón en versiones anteriores: ya no se guarda nada del correo)
     ES.db.earnBudget = nil -- (presupuesto de Ganar dinero: ya no existe)
+    ES.db.activeAH = nil -- (la última AH abierta: siempre es la de tu facción, ver RealmKey)
+    ES.db.sellGear = nil -- (la opción del equipo es ahora protectGear, desactivada por defecto)
     ES.ApplyLocalization()
     ES:LocalizeRecipeNames()
   elseif event == "PLAYER_LOGOUT" then
@@ -683,11 +690,17 @@ events:SetScript("OnEvent", function(_, event, arg1)
   elseif event == "AUCTION_HOUSE_SHOW" then
     ES:ScanLog("AUCTION_HOUSE_SHOW")
     ES.ahSession = (ES.ahSession or 0) + 1
+    -- La neutral: como si no hubiera AH abierta (sin botones ni ventanas del addon)
+    if DetectAuctionHouse() then
+      ES:ScanLog("AH neutral: sin soporte")
+      if ES.HideAuctionHouseUI then ES:HideAuctionHouseUI() end
+      ES:RefreshScanButtons()
+      return
+    end
     ES.ahOpen = true
     ES:RefreshScanButtons() -- lo primero: si algo de abajo falla, el botón ya está activo
     -- Antes que los addons que escanean solos al abrir (ForeverForge, a los 3 s)
     pcall(ES.Scanner.InstallHooks, ES.Scanner)
-    DetectAuctionHouse()
     ES:OnAuctionHouseShow()
     ES:RefreshAllViews()
   elseif event == "AUCTION_HOUSE_CLOSED" then
@@ -698,6 +711,7 @@ events:SetScript("OnEvent", function(_, event, arg1)
     C_Timer.After(0.2, function()
       if session ~= ES.ahSession or AHFrameShown() then return end -- ya se reabrió, o sigue abierta
       ES.ahOpen = false
+      ES.neutralAH = nil
       -- El servidor ya contó la petición: hay que esperar sus 15 min igualmente
       ES.Scanner:Abort(string.format(L["Has cerrado la Casa de Subastas; escaneo cancelado. Déjala abierta hasta que termine. Podrás volver a escanear en %s."],
         ES.Countdown(ES.Scanner:SecondsUntilNextScan())))

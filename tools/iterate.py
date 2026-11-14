@@ -162,24 +162,34 @@ step("B4. cerrar la AH a mitad de escaneo", function()
 end)
 
 ---------------------------------------------------------------------------
--- C. AH neutral separada
+-- C. AH neutral: sin soporte (el addon hace como si no hubiera AH abierta)
 ---------------------------------------------------------------------------
 step("C. AH neutral", function()
   NOW = NOW + 3600
   local factionKey = ES:RealmKey()
+  local entries = #ES.History:Entries(factionKey)
+  local printsBefore = #PRINTS
   NPC_FACTION = nil
   FireEvent("AUCTION_HOUSE_SHOW")
-  local nk = ES:RealmKey()
-  check(nk ~= factionKey and nk:find("Neutral"), "clave neutral incorrecta: %s", nk)
+  check(ES:RealmKey() == factionKey, "con la AH neutral cambió la AH del addon: %s", ES:RealmKey())
+  check(not ES:IsAuctionHouseOpen(), "con la AH neutral el addon la da por abierta")
+  local warned = 0
+  for i = printsBefore + 1, #PRINTS do if tostring(PRINTS[i]):find("neutral") then warned = warned + 1 end end
+  check(warned == 1, "al abrir la AH neutral, el aviso salió %d veces", warned)
   AUCTIONS = { { item = 2318, count = 5, buyout = 100, owner = "Gob", tl = 4 } }
   SlashCmdList.CRAFTERSJOURNAL("scan")
   RunTimers()
-  check(#ES.History:Entries(nk) == 1, "la AH neutral deberÃ­a tener 1 escaneo")
-  check(ES.History:Entries(nk)[1].elapsed == 0, "la neutral se comparÃ³ con otra AH")
+  check(#ES.History:Entries(factionKey) == entries, "con la AH neutral se escaneó")
+  -- Otra visita en la misma sesión: sin repetir el aviso
+  FireEvent("AUCTION_HOUSE_SHOW")
+  local again = 0
+  for i = printsBefore + 1, #PRINTS do if tostring(PRINTS[i]):find("neutral") then again = again + 1 end end
+  check(again == 1, "el aviso de la AH neutral se repitió")
   NPC_FACTION = "Alliance"
   FireEvent("AUCTION_HOUSE_SHOW")
-  check(ES:RealmKey() == factionKey, "no volviÃ³ a la AH de facciÃ³n")
+  check(ES:RealmKey() == factionKey and ES:IsAuctionHouseOpen(), "la AH de tu facción no vuelve a funcionar")
   FireEvent("AUCTION_HOUSE_CLOSED")
+  RunTimers()
 end)
 
 ---------------------------------------------------------------------------

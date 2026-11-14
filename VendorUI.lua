@@ -28,16 +28,18 @@ local function Ledger() return ES.Ledger end
 -- Rutas de las que sale la lista de la compra: las empezadas; si no hay ninguna,
 -- la de la profesión que estabas mirando (si ya está calculada)
 local function Plans()
-  local plans = {}
+  local plans, started = {}, 0
   for _, prof in ipairs(ES.PROFESSIONS) do
     local plan = ES:RouteLock(prof.key) and ES:LockedPlan(prof.key)
-    if plan then plans[#plans + 1] = { key = prof.key, plan = plan } end
+    if plan then started = started + 1 end
+    -- (la quitaste de la Lista de compra con su ✕: tampoco sale aquí)
+    if plan and not ES.Shopping.RouteListHidden(prof.key) then plans[#plans + 1] = { key = prof.key, plan = plan } end
   end
   -- La última profesión que miraste (si después abriste Ganar dinero, lastProf es
   -- "money": entonces la última profesión de esta sesión)
   local key = ES.db.lastProf
   if not (key and ES.Data[key]) then key = ES.lastRouteProf end
-  if #plans == 0 and key then
+  if started == 0 and key then
     local plan
     for _, page in ipairs(ES.professionPages or {}) do
       if page.profKey == key then plan = page.plan end
@@ -380,7 +382,7 @@ local function CreatePanel()
   f.sellAll:SetScript("OnEnter", function(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:AddLine(L["Vender todo"])
-    GameTooltip:AddLine(L["Vende todo lo de esta lista: lo de tus bolsas que el vendedor compra, salvo lo que necesitan tus rutas empezadas, las herramientas, tu equipo ligado y lo que marques con clic derecho (no venderlo nunca). Mira la lista antes de pulsar."], 0.8, 0.8, 0.8, true)
+    GameTooltip:AddLine(L["Vende todo lo de esta lista: lo de tus bolsas que el vendedor compra, salvo lo que necesitan tus rutas empezadas, las herramientas, tu equipo (si lo activas en las opciones) y lo que marques con clic derecho (no venderlo nunca). Mira la lista antes de pulsar."], 0.8, 0.8, 0.8, true)
     GameTooltip:AddLine(L["Para que esta ventana no salga: /cj opciones (o Opciones > AddOns > Crafter's Journal)."], 0.6, 0.6, 0.6, true)
     GameTooltip:Show()
   end)

@@ -103,10 +103,27 @@ local function SourceOf(plan, itemID)
   return (ES.Data.VendorPrices and ES.Data.VendorPrices[itemID]) and "vendor" or "ah", 0
 end
 
+-- ¿Quitaste de la Lista de compra la de esta ruta empezada (su ✕)? Se guarda con la
+-- ruta (settings.shopHidden = lock.started): una ruta nueva vuelve a tener su lista, y
+-- se recupera desde la fila "Lista de compra" de la vista Materiales de la ruta
+function Shopping.RouteListHidden(profKey)
+  local s = ES.db and ES.db.prof and ES.db.prof[profKey]
+  local lock = ES.RouteLock and ES:RouteLock(profKey)
+  return s ~= nil and lock ~= nil and s.shopHidden ~= nil and s.shopHidden == lock.started
+end
+
+function Shopping.SetRouteListHidden(profKey, hidden)
+  local s = ES.db.prof[profKey]
+  local lock = ES:RouteLock(profKey)
+  if not (s and lock) then return end
+  s.shopHidden = hidden and lock.started or nil
+end
+
 -- Lista de la ruta empezada de una profesión (del tramo o de la ruta entera), o nil
 function Shopping.PhaseList(profKey)
   local lock = ES.RouteLock and ES:RouteLock(profKey)
   if not lock or lock.completed then return nil end
+  if Shopping.RouteListHidden(profKey) then return nil end
   local plan = ES:LockedPlan(profKey)
   local data = ES.Data[profKey]
   if not (plan and data) then return nil end

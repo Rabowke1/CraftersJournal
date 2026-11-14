@@ -27,7 +27,8 @@ ITEM = {"npcDrops": 2, "objectDrops": 3, "vendors": 14, "questRewards": 6}
 NPC = {"name": 1, "minLevel": 4, "maxLevel": 5, "spawns": 7, "zoneID": 9, "friendlyToFaction": 13, "npcFlags": 15}
 # npcFlags de Forever (los de Classic, src/corrections/enum/expansions.lua de QuestieDB)
 NPC_VENDOR, NPC_INNKEEPER, NPC_AUCTIONEER = 4, 128, 4096
-QUEST = {"name": 1, "startedBy": 2, "requiredLevel": 4, "requiredRaces": 6}
+QUEST = {"name": 1, "startedBy": 2, "requiredLevel": 4, "requiredRaces": 6, "objectivesText": 8, "objectives": 10,
+         "preQuestGroup": 12, "preQuestSingle": 13}
 
 
 def cbor(data):

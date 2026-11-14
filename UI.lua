@@ -620,7 +620,19 @@ function ES:OnAuctionHouseShow()
     end)
     ahButton:SetScript("OnLeave", function() GameTooltip:Hide() end)
   end
+  ahButton:Show() -- (escondido si la última AH fue la neutral)
+  if self.ahListButton then self.ahListButton:Show() end
   self.Scanner.statusText = nil
   self:RefreshScanButtons()
   if self.SetupAuctionPanel then self:SetupAuctionPanel(ahFrame) end
+end
+
+-- AH neutral (sin soporte, ver Core.lua): fuera los botones y ventanas del addon que
+-- van con la AH. Si ya estaban creados de otra visita, se verían junto a ella
+function ES:HideAuctionHouseUI()
+  if ahButton then ahButton:Hide() end
+  if self.ahListButton then self.ahListButton:Hide() end
+  local mini = self.ShoppingMini and self.ShoppingMini()
+  if mini then mini:Hide() end
+  if CraftersJournalAuctionSellPanel then CraftersJournalAuctionSellPanel:Hide() end
 end

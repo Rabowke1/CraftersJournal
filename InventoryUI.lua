@@ -106,10 +106,11 @@ end
 -- dieron las misiones) o el que está en un conjunto del gestor de equipo. Vender todo
 -- lo vendía con un clic sin mirar (CurseForge). Los verdes sin ligar de botín sí se
 -- proponen: es de donde sale casi todo el oro. Lo que fabricas y lo gris, también.
--- `bound`: ligado en tus bolsas. Opción ES.db.sellGear = true: nada se protege
+-- `bound`: ligado en tus bolsas. Solo con la opción ES.db.protectGear (Options.lua;
+-- por defecto no: se propone todo, y lo tuyo lo apartas con clic derecho)
 local craftedItems
 function Inventory.IsGear(itemID, bound)
-  if ES.db.sellGear then return false end
+  if not ES.db.protectGear then return false end
   local instant = (C_Item and C_Item.GetItemInfoInstant) or GetItemInfoInstant
   local equipLoc = instant and select(4, instant(itemID))
   if not equipLoc or equipLoc == "" or equipLoc == "INVTYPE_NON_EQUIP_IGNORE" then return false end

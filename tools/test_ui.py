@@ -888,8 +888,16 @@ step("recetas de vendedor con stock limitado (lim)", function()
   -- Opción: por defecto se cuenta con el vendedor (lo más barato); desactivada, no
   local WP = ES.Waypoints
   local harness = ES.Data.Leatherworking.recipes[4096]
-  local savedSide = ES.Data.NPCs[2819][2]
-  ES.Data.NPCs[2819][2] = "" -- (Tunkk es de la Horda: de los dos bandos para la prueba)
+  -- Misiones que dan recetas: qué piden entregar y cuántas hay antes (CurseForge:
+  -- Wild Leather Leggings pide 2 Turtle Scale Helms, 2 Bracers y 2 Wildvines)
+  local wl = ES.Data.Quests[2859]
+  assert(wl and tostring(wl[5]):find("Turtle Scale Helms") and wl[6] == 4, "Wild Leather Leggings: falta lo que pide o su cadena")
+  assert(ES.Waypoints.Quest(2859).asks == wl[5], "la misión no lleva lo que pide")
+  -- Su vendedor es Androd Fadran (Alianza), no Tunkk: Wowhead lo tenía al revés
+  assert(src[13287].v[1] == 2816 and src[13288].v[1] == 2819, "Raptor Hide Harness la vende Androd Fadran y el Belt, Tunkk")
+  local VENDOR = src[13287].v[1]
+  local savedSide = ES.Data.NPCs[VENDOR][2]
+  ES.Data.NPCs[VENDOR][2] = "" -- (de los dos bandos para la prueba)
   local prices = { [13287] = { minUnit = 150000, listings = 2 } }
   local on = WP.RecipeSource(harness, prices, nil, nil)
   if on and on.vendors[1] then
@@ -902,7 +910,7 @@ step("recetas de vendedor con stock limitado (lim)", function()
   else
     log[#log+1] = "     (sin datos de vendedores en la prueba: la opción no se comprueba aquí)"
   end
-  ES.Data.NPCs[2819][2] = savedSide
+  ES.Data.NPCs[VENDOR][2] = savedSide
 end)
 step("sin escaneo de la AH: la ruta dice que escanees", function()
   -- (Discord: "Can't level from...: X materials without price" en casi todas las
@@ -931,13 +939,16 @@ step("equipo que no fabricas: no se propone vender (opción)", function()
   local crafted
   for _, r in pairs(ES.Data.Leatherworking.recipes) do if r.out then crafted = r.out[1] break end end
   local LOOT, GREYGEAR, MAT = 990001, 990002, 2318
-  local savedInstant, savedData, savedNever, savedGear = GetItemInfoInstant, ES.GetItemData, ES.db.neverSell, ES.db.sellGear
+  local savedInstant, savedData, savedNever, savedGear = GetItemInfoInstant, ES.GetItemData, ES.db.neverSell, ES.db.protectGear
   GetItemInfoInstant = function(id)
     if id == LOOT or id == GREYGEAR or id == crafted then return id, "Armor", "Leather", "INVTYPE_CHEST" end
     return id, "Trade Goods", "Leather", ""
   end
   ES.GetItemData = function(_, id) if id == GREYGEAR then return "Grey", 0, 1 end if id == LOOT then return "Green", 2, 1 end return savedData(ES, id) end
-  ES.db.neverSell, ES.db.sellGear = {}, nil
+  ES.db.neverSell, ES.db.protectGear = {}, nil
+  -- Por defecto (opción desactivada) se propone todo, también tu equipo ligado
+  assert(INV.NeverSell(LOOT, true) == nil, "por defecto, el equipo ligado se propone vender")
+  ES.db.protectGear = true -- (la opción, activada)
   -- Tu equipo: ligado o en un conjunto. Los verdes sin ligar se venden (es el oro)
   assert(INV.NeverSell(LOOT, true) == "gear", "el equipo ligado no se propone vender")
   assert(INV.NeverSell(LOOT, nil) == nil, "un verde sin ligar sí se propone vender")
@@ -966,15 +977,15 @@ step("equipo que no fabricas: no se propone vender (opción)", function()
   op._scripts.OnShow(op)
   local gcb, ccb, mcb
   for _, cb in ipairs(op.checks) do
-    if cb.option.key == "sellGear" then gcb = cb elseif cb.option.key == "noChatAlerts" then ccb = cb elseif cb.option.key == "minimap" then mcb = cb end
+    if cb.option.key == "protectGear" then gcb = cb elseif cb.option.key == "noChatAlerts" then ccb = cb elseif cb.option.key == "minimap" then mcb = cb end
   end
-  assert(gcb and gcb:GetChecked(), "la casilla del equipo sale marcada por defecto")
+  assert(gcb and gcb:GetChecked(), "con la opción activada, la casilla sale marcada")
   gcb:SetChecked(false)
   gcb._scripts.OnClick(gcb)
-  assert(ES.db.sellGear == true and INV.NeverSell(LOOT, true) == nil, "desmarcada, tu equipo ligado se propone vender")
+  assert(ES.db.protectGear == nil and INV.NeverSell(LOOT, true) == nil, "desmarcada, tu equipo ligado se propone vender")
   gcb:SetChecked(true)
   gcb._scripts.OnClick(gcb)
-  assert(ES.db.sellGear == nil and INV.NeverSell(LOOT, true) == "gear", "marcada otra vez, el equipo vuelve a protegerse")
+  assert(ES.db.protectGear == true and INV.NeverSell(LOOT, true) == "gear", "marcada otra vez, el equipo vuelve a protegerse")
   -- Avisos del chat: desmarcados, el de recetas de botín no sale
   assert(ccb and ccb:GetChecked(), "los avisos del chat salen activados por defecto")
   ccb:SetChecked(false)
@@ -1003,7 +1014,7 @@ step("equipo que no fabricas: no se propone vender (opción)", function()
   assert(ES.db.minimap.hide == true, "desmarcada, el botón del minimapa se esconde")
   ES.db.minimap.hide = savedHide
   ES.Print = savedPrint
-  GetItemInfoInstant, ES.GetItemData, ES.db.neverSell, ES.db.sellGear = savedInstant, savedData, savedNever, savedGear
+  GetItemInfoInstant, ES.GetItemData, ES.db.neverSell, ES.db.protectGear = savedInstant, savedData, savedNever, savedGear
   log[#log+1] = "     equipo de botín protegido; fabricado, gris y materiales se venden; avisos y minimapa con su casilla"
 end)
 step("botón del minimapa con LibDBIcon", function()
@@ -2139,6 +2150,22 @@ step("comprar por tramos: tramo, margen, lista viva y avisos", function()
   assert(live and live.list.whole and not whole, "ruta entera: lista viva de toda la ruta")
   assert(live.items[1].it.itemID == 100 and live.items[1].it.need == 5, "ruta entera: pide todo lo que queda")
   ES.db.prof.Alchemy.byPhase = nil
+  -- La ✕ de la lista de una ruta empezada la quita (sin dejar la ruta); una ruta nueva
+  -- vuelve a tener la suya (antes no había forma de quitarla de la pestaña)
+  local lockA = { from = 1, to = 7, started = 1000 }
+  ES.RouteLock = function(_, k) return k == "Alchemy" and lockA or nil end
+  local function LiveAlchemy()
+    for _, s in ipairs(ES.Shopping.Status().lists) do if s.list.live and s.list.key == "Alchemy" then return s end end
+  end
+  assert(LiveAlchemy(), "con la ruta empezada sale su lista")
+  ES.Shopping.SetRouteListHidden("Alchemy", true)
+  assert(not LiveAlchemy() and ES.Shopping.RouteListHidden("Alchemy"), "la ✕ no quitó la lista de la ruta")
+  lockA.started = 2000 -- (otra ruta empezada)
+  assert(LiveAlchemy(), "una ruta nueva no vuelve a tener su lista")
+  ES.Shopping.SetRouteListHidden("Alchemy", true)
+  ES.Shopping.SetRouteListHidden("Alchemy", false)
+  assert(LiveAlchemy(), "no se vuelve a poner desde la ruta")
+  ES.RouteLock = function(_, k) return k == "Alchemy" and { from = 1, to = 7 } or nil end
   -- Avisos: el primero solo apunta el tramo; al pasar a C, tramo nuevo; con mala
   -- suerte dentro del tramo (llevas algo, pero no da), "compra un poco más"
   ES.phaseState.Alchemy = nil
