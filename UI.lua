@@ -339,7 +339,7 @@ function ES:FlashTab(key, sound)
         up:SetFromAlpha(0) up:SetToAlpha(0.55) up:SetDuration(0.35) up:SetOrder(1)
         local down = ag:CreateAnimation("Alpha")
         down:SetFromAlpha(0.55) down:SetToAlpha(0) down:SetDuration(0.35) down:SetOrder(2)
-        ag:SetLoopType("REPEAT")
+        ag:SetLooping("REPEAT")
         tab.flashAnim = ag
       end
       tab.flashAnim:Stop()
