@@ -39,9 +39,11 @@ local RANK_NAMES = ES.Localize({ [150] = "Oficial", [225] = "Experto", [300] = "
 local GOLD, GREEN, GREY, RED, ORANGE = "|cffffd100", "|cff40ff40", "|cff999999", "|cffff4040", "|cffff9933"
 
 local VIEWS = ES.Localize({
-  { key = "route",  label = "Ruta",            width = 96,  icon = "Interface\\Icons\\INV_Misc_Map_01" },
-  { key = "shop",   label = "Materiales", width = 136, icon = "Interface\\Icons\\INV_Misc_Note_01" },
-  { key = "profit", label = "Profit",          width = 96,  icon = "Interface\\Icons\\INV_Misc_Coin_02" },
+  -- (anchos justos para su texto: con cinco iconos de filtro a su izquierda, más anchos
+  -- empujaban el primer icono encima de la casilla del objetivo)
+  { key = "route",  label = "Ruta",            width = 84,  icon = "Interface\\Icons\\INV_Misc_Map_01" },
+  { key = "shop",   label = "Materiales", width = 118, icon = "Interface\\Icons\\INV_Misc_Note_01" },
+  { key = "profit", label = "Profit",          width = 84,  icon = "Interface\\Icons\\INV_Misc_Coin_02" },
 }, "label")
 local VIEW_KEYS = { route = true, profit = true, shop = true }
 
@@ -1421,11 +1423,11 @@ function ES:CreateProfessionPage(page, profKey)
   -- isOn() lee el ajuste; toggle() lo cambia; lines() da el texto del tooltip
   local function FilterIcon(anchor, texture, title, isOn, toggle, lines)
     local b = CreateFrame("Button", nil, head, "BackdropTemplate")
-    -- (26 px y 4 de separación: caben los cinco iconos donde antes cabían cuatro de 30)
-    b:SetSize(26, 26)
-    -- Centrados en vertical con los botones de vista (Ruta, Materiales, Profit). Con
-    -- cuatro iconos ya no llegan a la casilla del objetivo
-    b:SetPoint("RIGHT", anchor, "LEFT", anchor == prev and -10 or -4, 0)
+    -- (24 px y 3 de separación: con 26 y 4 el quinto icono, el de vendedores de stock
+    -- limitado, empujaba el primero encima de la casilla del objetivo)
+    b:SetSize(24, 24)
+    -- Centrados en vertical con los botones de vista (Ruta, Materiales, Profit)
+    b:SetPoint("RIGHT", anchor, "LEFT", anchor == prev and -8 or -3, 0)
     b:SetBackdrop({ edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 10 })
     b.icon = b:CreateTexture(nil, "ARTWORK")
     b.icon:SetPoint("TOPLEFT", 3, -3)
