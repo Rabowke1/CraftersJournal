@@ -20,6 +20,9 @@ ES.Planner = Planner
 local AH_CUT, AH_CUT_NEUTRAL = 0.05, 0.15
 local DEPOSIT_RATE, DEPOSIT_RATE_NEUTRAL = 0.05, 0.25
 Planner.DURATIONS = { 2, 8, 24 }
+-- Lo que vende un vendedor solo se compra en la AH si sale al menos un 10% más barato
+-- (si no, ir a la AH por 1 cobre de diferencia: Fine Thread, Crystal Vial)
+Planner.VENDOR_EDGE = 0.9
 
 -- Depósito por unidad y comisión según la AH y la duración elegidas
 function Planner.AuctionCosts(vendorPrice, opts)
@@ -713,7 +716,9 @@ local function Acquire(ctx, itemID, qty, depth, extra, actions, why, skip)
       cost = LadderCost(ladder, used, qty)
     end
     if cost then
-      if not best or cost < best then best, kind = cost, "ah" end
+      -- Si el vendedor lo vende, la AH tiene que salir bastante más barata: por 1 cobre
+      -- (Fine Thread a 99c en la AH, 100c en el vendedor) no compensa ir a comprarlo allí
+      if not best or cost < best * (kind == "vendor" and Planner.VENDOR_EDGE or 1) then best, kind = cost, "ah" end
     elseif not vendor then
       why[itemID] = why[itemID] or "supply"
     end

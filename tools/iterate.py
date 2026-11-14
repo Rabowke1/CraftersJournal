@@ -480,6 +480,7 @@ step("J. colección: la ficha de todas las recetas", function()
   log("      fichas pintadas: %d", n)
 end)
 
+
 ---------------------------------------------------------------------------
 -- E. UI con datos reales
 ---------------------------------------------------------------------------

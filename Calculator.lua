@@ -1,9 +1,10 @@
 local _, ES = ...
 
--- Calculadora de beneficio de una receta, como una hoja de cálculo: materiales en
--- crudo (lo intermedio que sabes fabricar, como el Bolt of Silk Cloth, se desglosa en
--- su tela), el precio de cada uno, la venta y la comisión de la AH (el depósito se
--- enseña aparte: se devuelve si se vende).
+-- Calculadora de beneficio de una receta, como una hoja de cálculo: materiales (lo
+-- intermedio que sabes fabricar, como el Bolt of Silk Cloth, se compra hecho o se
+-- fabrica con su tela: lo más barato, o lo que elijas con un clic en su fila), el
+-- precio de cada uno, la venta y la comisión de la AH (el depósito se enseña aparte:
+-- se devuelve si se vende).
 -- Los precios salen solos (lo más barato entre la AH del último escaneo y el vendedor,
 -- con el descuento de la capital donde tienes más reputación) y cada uno se puede
 -- escribir a mano: se guarda en ese cálculo y no cambia nada más del addon.
@@ -11,7 +12,8 @@ local _, ES = ...
 --
 -- CraftersJournalDB.calcs = { list = { calc, ... }, nextID, selected }
 --   calc = { id, prof, recipe (hechizo), qty (fabricaciones), prices = { [itemID] = cobre },
---            sale (cobre por unidad, a mano), hours (duración de la subasta), time }
+--            sale (cobre por unidad, a mano), hours (duración de la subasta), time,
+--            via = { [itemID] = "craft" | "buy" } (lo intermedio, si no es lo más barato) }
 
 local Calc = {}
 ES.Calc = Calc
@@ -181,20 +183,78 @@ local function Producer(data, itemID)
   end
 end
 
--- Suma a `need` los materiales en crudo de `crafts` fabricaciones; `made` apunta lo
--- intermedio que se fabrica por el camino (para enseñarlo)
-local function Expand(data, recipe, crafts, need, order, made, depth)
+-- Lo intermedio que sabes fabricar (Bolt of Mageweave, Cured Light Hide...): comprarlo
+-- hecho o fabricarlo con sus materiales. Por defecto, lo más barato; en la hoja se
+-- cambia con un clic y se guarda en el cálculo: c.via[itemID] = "craft" | "buy"
+-- ctx = { scan, discount, prices (los escritos a mano), via }
+local function UnitPrice(ctx, id)
+  return ctx.prices[id] or (Calc.AutoPrice(id, ctx.scan, ctx.discount))
+end
+
+local ItemCost
+-- Lo que cuestan los materiales de `crafts` fabricaciones (nil si alguno no tiene precio)
+local function RecipeRaw(ctx, data, recipe, crafts, depth)
+  local total = 0
+  for _, rq in ipairs(recipe.r or {}) do
+    local cost = ItemCost(ctx, data, rq[1], rq[2] * crafts, depth)
+    if not cost then return nil end
+    total = total + cost
+  end
+  return total
+end
+
+-- Comprarlo hecho o fabricarlo: lo elegido, o si no lo más barato (sin precio de
+-- compra, se fabrica; sin poder costear la fabricación, se compra)
+local function Mode(ctx, id, buyCost, craftCost)
+  local chosen = ctx.via[id]
+  if chosen == "craft" or chosen == "buy" then return chosen, true end
+  if buyCost and (not craftCost or buyCost < craftCost) then return "buy", false end
+  return "craft", false
+end
+
+-- Lo que cuesta conseguir `n` de un objeto (a tu manera: comprado o fabricado)
+function ItemCost(ctx, data, id, n, depth)
+  local buy = UnitPrice(ctx, id)
+  local buyCost = buy and buy * n
+  local sub = depth < MAX_DEPTH and Producer(data, id)
+  if not sub then return buyCost end
+  local craftCost = RecipeRaw(ctx, data, sub, n / ((sub.out and sub.out[2]) or 1), depth + 1)
+  return Mode(ctx, id, buyCost, craftCost) == "craft" and craftCost or buyCost
+end
+
+-- Suma a `need` lo que hay que conseguir para `crafts` fabricaciones; `made` apunta
+-- cada intermedio con lo que cuesta de cada forma y cómo se consigue (la hoja lo
+-- enseña y deja cambiarlo)
+local function Expand(ctx, data, recipe, crafts, need, order, made, depth)
   for _, rq in ipairs(recipe.r or {}) do
     local id, n = rq[1], rq[2] * crafts
     local sub = depth < MAX_DEPTH and Producer(data, id)
+    local mode
     if sub then
-      made[#made + 1] = { itemID = id, qty = n }
-      Expand(data, sub, n / ((sub.out and sub.out[2]) or 1), need, order, made, depth + 1)
-    else
+      local buy = UnitPrice(ctx, id)
+      local buyCost = buy and buy * n
+      local subCrafts = n / ((sub.out and sub.out[2]) or 1)
+      local craftCost = RecipeRaw(ctx, data, sub, subCrafts, depth + 1)
+      local chosen
+      mode, chosen = Mode(ctx, id, buyCost, craftCost)
+      made[#made + 1] = { itemID = id, qty = n, mode = mode, chosen = chosen, buyCost = buyCost, craftCost = craftCost,
+        depth = depth }
+      if mode == "craft" then Expand(ctx, data, sub, subCrafts, need, order, made, depth + 1) end
+    end
+    if not sub or mode == "buy" then
       if not need[id] then need[id] = 0 order[#order + 1] = id end
       need[id] = need[id] + n
     end
   end
+end
+
+-- Cambia cómo se consigue un intermedio en un cálculo (clic en su fila de la hoja):
+-- de lo que sale ahora a lo otro. Si lo otro es lo más barato, deja de estar elegido
+function Calc:ToggleVia(c, m)
+  c.via = c.via or {}
+  local other = m.mode == "craft" and "buy" or "craft"
+  local cheapest = (m.buyCost and (not m.craftCost or m.buyCost < m.craftCost)) and "buy" or "craft"
+  c.via[m.itemID] = other ~= cheapest and other or nil
 end
 
 -- Todo el cálculo de una receta guardada:
@@ -208,9 +268,6 @@ function Calc:Compute(c)
   local scan = ES.db.scans and ES.db.scans[ES:RealmKey()]
   local discount, city = Calc.CityDiscount()
   local need, order, made = {}, {}, {}
-  Expand(data, recipe, c.qty or 1, need, order, made, 0)
-
-  local res = { recipe = recipe, rows = {}, made = made, cost = 0, missing = false, discount = discount, city = city }
   -- Un precio escrito a mano vale hasta que llega un escaneo posterior con ese objeto:
   -- entonces manda el escaneo (al escanear se ponen bien los precios de todos los
   -- cálculos guardados). Lo que el escaneo no trae se queda con el tuyo
@@ -229,6 +286,10 @@ function Calc:Compute(c)
     c.saleTime = c.saleTime or time()
     if recipe.out and Stale(recipe.out[1], c.saleTime) then c.sale, c.saleTime = nil, nil end
   end
+  -- (después de quitar los precios a mano caducados: comprar o fabricar se decide con los buenos)
+  Expand({ scan = scan, discount = discount, prices = c.prices, via = c.via or {} }, data, recipe, c.qty or 1,
+    need, order, made, 0)
+  local res = { recipe = recipe, rows = {}, made = made, cost = 0, missing = false, discount = discount, city = city }
   for _, id in ipairs(order) do
     local price, source = c.prices[id], "manual"
     if not price then price, source = Calc.AutoPrice(id, scan, discount) end

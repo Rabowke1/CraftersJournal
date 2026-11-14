@@ -623,9 +623,13 @@ step("ganar dinero (sin correo)", function()
   -- Añadir el lote a la lista de compra (una lista por día)
   local savedChar = ES.charData
   ES.charData = { shopping = {} }
+  local savedFlash, earnFlashed = ES.FlashTab, nil
+  ES.FlashTab = function(_, key, sound) earnFlashed = key == "shopping" and sound end
   ES.earnPage.addButton._scripts.OnClick(ES.earnPage.addButton)
   ES.earnPage.addButton._scripts.OnClick(ES.earnPage.addButton)
+  ES.FlashTab = savedFlash
   local lists = ES.Shopping.Lists()
+  assert(#lists == 0 or earnFlashed, "Ganar dinero añade a la lista sin sonido ni brillo")
   local needed = 0
   for _, it in ipairs(res.shopping) do if it.source ~= "craft" and it.quantity > 0 then needed = needed + 1 end end
   assert((needed == 0 and #lists == 0) or (#lists == 1 and lists[1].kind == "money"), "lote a la lista: " .. #lists)
@@ -911,6 +915,20 @@ step("recetas de vendedor con stock limitado (lim)", function()
     log[#log+1] = "     (sin datos de vendedores en la prueba: la opción no se comprueba aquí)"
   end
   ES.Data.NPCs[VENDOR][2] = savedSide
+end)
+step("añadir a la lista de compra: sonido y la pestaña brilla", function()
+  local savedFlash, savedPrint, savedChar = ES.FlashTab, ES.Print, ES.charData
+  local flashed
+  ES.FlashTab = function(_, key, sound) flashed = { key, sound } end
+  ES.Print = function() end
+  ES.charData = { shopping = {} }
+  ES:AddToShopping("calc", "Prueba", { { itemID = 2318, quantity = 5, unit = 10, source = "ah" } })
+  local added = flashed
+  flashed = nil
+  ES:AddToShopping("calc", "Nada", {})
+  ES.FlashTab, ES.Print, ES.charData = savedFlash, savedPrint, savedChar
+  assert(added and added[1] == "shopping" and added[2], "al añadir no suena ni brilla la pestaña")
+  assert(not flashed, "sin nada que añadir no debería avisar")
 end)
 step("sin escaneo de la AH: la ruta dice que escanees", function()
   -- (Discord: "Can't level from...: X materials without price" en casi todas las
@@ -3382,6 +3400,24 @@ step("calculadora: desglose en crudo, precios a mano y cálculos guardados", fun
   for _, rq in ipairs(data.recipes[boltID].r) do if rq[1] == SILK then silkPerBolt = rq[2] end end
   assert(by[SILK].qty == boltsNeeded * silkPerBolt / (data.recipes[boltID].out[2] or 1), "tela: " .. by[SILK].qty)
   assert(by[SILK].source == "ah" and by[SILK].price == 200, "la seda, del escaneo")
+  assert(res.made[1].mode == "craft" and not res.made[1].chosen, "sin precio del Bolt hecho, se fabrica")
+  -- Comprarlo hecho o fabricarlo: lo más barato; clic en su fila para cambiarlo
+  do
+    c.prices[BOLT] = 1 -- (el Bolt hecho, casi regalado: comprarlo es lo más barato)
+    local rb = Calc:Compute(c)
+    local byB = {}
+    for _, row in ipairs(rb.rows) do byB[row.itemID] = row end
+    assert(rb.made[1].mode == "buy" and byB[BOLT] and not byB[SILK], "con el Bolt barato debería comprarse hecho")
+    Calc:ToggleVia(c, rb.made[1])
+    local rc = Calc:Compute(c)
+    local byC = {}
+    for _, row in ipairs(rc.rows) do byC[row.itemID] = row end
+    assert(c.via[BOLT] == "craft" and rc.made[1].mode == "craft" and rc.made[1].chosen and byC[SILK] and not byC[BOLT],
+      "el clic no lo cambió a fabricarlo")
+    Calc:ToggleVia(c, rc.made[1])
+    assert(c.via[BOLT] == nil and Calc:Compute(c).made[1].mode == "buy", "volver a lo más barato deja de estar elegido")
+    c.prices[BOLT], c.via = nil, nil
+  end
   -- Las cuentas: venta - comisión - materiales. El depósito (24 h: 60% del precio de
   -- vendedor) se devuelve al venderse: se enseña, pero no resta
   assert(math.abs(res.profit - (res.revenue - res.cut - res.cost)) < 0.01, "beneficio mal sumado")
@@ -3435,6 +3471,39 @@ step("calculadora: desglose en crudo, precios a mano y cálculos guardados", fun
   Calc:Select(c.id)
   ES:RenderCalculator()
   assert(page.saved[1]._shown and page.saved[2]._shown, "dos cálculos guardados en la lista")
+  -- Ratón sobre el icono de un cálculo o de un material: el tooltip del objeto
+  do
+    local savedLink, link = GameTooltip.SetHyperlink, nil
+    GameTooltip.SetHyperlink = function(_, l) link = l end
+    local s1 = page.saved[1]
+    s1.iconHover._scripts.OnEnter(s1.iconHover)
+    assert(s1.itemID and link == "item:" .. s1.itemID, "sin tooltip del objeto en el icono del cálculo: " .. tostring(link))
+    link = nil
+    local m1 = page.sheetRows[1]
+    m1.iconHover._scripts.OnEnter(m1.iconHover)
+    assert(link == "item:" .. m1.itemID, "sin tooltip del objeto en el icono del material")
+    GameTooltip.SetHyperlink = savedLink
+  end
+  -- La fila del intermedio en la hoja: clic = cambiar cómo se consigue
+  do
+    local mr = page.madeRows and page.madeRows[1]
+    assert(mr and mr._shown ~= false and mr.m and mr.m.itemID == BOLT, "falta la fila del Bolt en la hoja")
+    mr._scripts.OnClick(mr)
+    assert(Calc:Selected().via and Calc:Selected().via[BOLT] == "buy", "el clic en la fila no cambia a comprarlo hecho")
+    mr = page.madeRows[1]
+    mr._scripts.OnClick(mr)
+    assert(not (Calc:Selected().via and Calc:Selected().via[BOLT]), "el segundo clic no vuelve a lo de antes")
+  end
+  -- "Añadir a la lista de compra" de la calculadora: suena y brilla la pestaña
+  do
+    local savedFlash, savedChar2, savedPrint2, flashed = ES.FlashTab, ES.charData, ES.Print, nil
+    ES.FlashTab = function(_, key, sound) flashed = key == "shopping" and sound end
+    ES.charData, ES.Print = { shopping = {} }, function() end
+    page.addShopping._scripts.OnClick(page.addShopping)
+    local added = #ES.Shopping.Lists() > 0
+    ES.FlashTab, ES.charData, ES.Print = savedFlash, savedChar2, savedPrint2
+    assert(not added or flashed, "la calculadora añade a la lista sin sonido ni brillo")
+  end
   local silkRow
   for _, row in ipairs(page.sheetRows) do if row._shown and row.itemID == SILK then silkRow = row end end
   -- Tres casillas: oro, plata y cobre

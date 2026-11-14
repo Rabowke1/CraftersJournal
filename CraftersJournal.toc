@@ -57,4 +57,5 @@ CollectionUI.lua
 PatternsUI.lua
 VendorUI.lua
 AuctionSellUI.lua
+CraftWindowUI.lua
 Options.lua

@@ -245,6 +245,8 @@ local function SavedRow(page, i)
   row.icon:SetSize(28, 28)
   row.icon:SetPoint("LEFT", 4, 0)
   row.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+  -- Ratón sobre el icono: el tooltip de lo que fabrica (el clic sigue eligiendo el cálculo)
+  row.iconHover = ES.UI.ItemIconTooltip(row, row.icon, function() return row.itemID end)
   row.name = ES.UI.Label(row, "", "GameFontHighlightSmall")
   row.name:SetPoint("TOPLEFT", row.icon, "TOPRIGHT", 6, -1)
   row.name:SetPoint("RIGHT", -24, 0)
@@ -299,6 +301,7 @@ local function SheetRow(page, i)
   row.icon:SetSize(20, 20)
   row.icon:SetPoint("LEFT", 10, 0)
   row.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+  row.iconHover = ES.UI.ItemIconTooltip(row, row.icon, function() return row.itemID end) -- (el material)
   row.name = ES.UI.Label(row, "", "GameFontHighlightSmall")
   row.name:SetPoint("LEFT", COL_NAME, 0)
   row.name:SetWidth(COL_QTY_RIGHT - 42 - COL_NAME)
@@ -327,6 +330,59 @@ local function SheetRow(page, i)
   row.total:SetPoint("RIGHT", -14, 0)
   row.total:SetJustifyH("RIGHT")
   page.sheetRows[i] = row
+  return row
+end
+
+-- Fila de un intermedio (Bolt of Mageweave...): cómo se consigue, lo que cuesta, y clic
+-- para cambiar entre fabricarlo y comprarlo hecho (Calc:ToggleVia). Va encima de los
+-- materiales: si lo fabricas, sus materiales salen debajo; si lo compras, sale él
+local function MadeRow(page, i)
+  page.madeRows = page.madeRows or {}
+  local row = page.madeRows[i]
+  if row then return row end
+  row = CreateFrame("Button", nil, page.sheet)
+  row:SetHeight(ROW_H)
+  row:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+  row.icon = row:CreateTexture(nil, "ARTWORK")
+  row.icon:SetSize(20, 20)
+  row.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+  row.iconHover = ES.UI.ItemIconTooltip(row, row.icon, function() return row.m and row.m.itemID end)
+  row.name = ES.UI.Label(row, "", "GameFontHighlightSmall")
+  row.name:SetPoint("LEFT", row.icon, "RIGHT", 6, 0)
+  row.name:SetPoint("RIGHT", row, "LEFT", COL_SOURCE - 6, 0)
+  row.name:SetJustifyH("LEFT")
+  row.name:SetWordWrap(false)
+  row.source = ES.UI.Label(row, "", "GameFontHighlightSmall")
+  row.source:SetPoint("LEFT", COL_SOURCE, 0)
+  row.source:SetPoint("RIGHT", -TOTAL_W, 0)
+  row.source:SetJustifyH("LEFT")
+  row.source:SetWordWrap(false)
+  row.total = ES.UI.Label(row, "", "GameFontDisableSmall")
+  row.total:SetPoint("RIGHT", -14, 0)
+  row.total:SetJustifyH("RIGHT")
+  row:SetScript("OnClick", function(self)
+    local c = Calc:Selected()
+    if not (c and self.m) then return end
+    Calc:ToggleVia(c, self.m)
+    ES:RenderCalculator()
+    if self:IsMouseOver() then self:GetScript("OnEnter")(self) end
+  end)
+  row:SetScript("OnEnter", function(self)
+    local m = self.m
+    if not m then return end
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:AddLine((ES.UI.ItemLabel(m.itemID, "#" .. m.itemID)))
+    local W = { 1, 1, 1, 1, 1, 1 }
+    GameTooltip:AddDoubleLine(L["Fabricarlo (sus materiales)"], m.craftCost and ES.Money(m.craftCost) or (ORANGE .. L["sin precio"] .. "|r"), unpack(W))
+    GameTooltip:AddDoubleLine(L["Comprarlo hecho"], m.buyCost and ES.Money(m.buyCost) or (ORANGE .. L["sin precio"] .. "|r"), unpack(W))
+    local cheapest = (m.buyCost and (not m.craftCost or m.buyCost < m.craftCost)) and "buy" or "craft"
+    GameTooltip:AddLine(cheapest == "buy" and L["Lo más barato: comprarlo hecho."] or L["Lo más barato: fabricarlo."], 0.8, 0.8, 0.8)
+    GameTooltip:AddLine(" ")
+    GameTooltip:AddLine(m.mode == "craft" and L["Clic: comprarlo hecho en vez de fabricarlo."] or L["Clic: fabricarlo en vez de comprarlo hecho."], 0.5, 0.8, 1, true)
+    GameTooltip:Show()
+  end)
+  row:SetScript("OnLeave", function() GameTooltip:Hide() end)
+  page.madeRows[i] = row
   return row
 end
 
@@ -631,6 +687,9 @@ function ES:RenderCalculator()
     row.calcID = c.id
     local name, texture = RecipeLabel(c)
     row.icon:SetTexture(texture)
+    local data = ES.Data[c.prof]
+    local r = data and data.recipes and data.recipes[c.recipe]
+    row.itemID = r and r.out and r.out[1] or nil -- (lo que fabrica: su tooltip en el icono)
     row.name:SetText(string.format("%s %s×%d|r", name, GREY, c.qty or 1))
     local res = Calc:Compute(c)
     row.profit:SetText(res and (Signed(-res.profit) .. (res.missing and (ORANGE .. " *|r") or "")) or "")
@@ -649,6 +708,7 @@ function ES:RenderCalculator()
   page.auctionator:SetShown(showSheet and ES.Auctionator.Available() and #ES.CalculatorShoppingItems() > 0)
   if not showSheet then
     for _, row in ipairs(page.sheetRows) do row:Hide() end
+    for _, row in ipairs(page.madeRows or {}) do row:Hide() end
     return
   end
 
@@ -659,6 +719,28 @@ function ES:RenderCalculator()
   if page.qty:HasFocus() ~= true then page.qty:SetText(tostring(selected.qty or 1)) end
 
   local y = -78
+  -- Lo intermedio, arriba: cómo se consigue (clic para cambiarlo)
+  for i, m in ipairs(res.made) do
+    local row = MadeRow(page, i)
+    row.m = m
+    row:ClearAllPoints()
+    row:SetPoint("TOPLEFT", 6, y)
+    row:SetPoint("TOPRIGHT", -6, y)
+    y = y - ROW_H
+    row.icon:ClearAllPoints()
+    row.icon:SetPoint("LEFT", 10 + 12 * (m.depth or 0), 0) -- (lo de dentro de otro, un poco más a la derecha)
+    local label, texture, pending = ES.UI.ItemLabel(m.itemID, L["Objeto "] .. m.itemID)
+    if pending then page.pendingItems = true end
+    row.icon:SetTexture(texture or 134400)
+    row.name:SetText(Qty(m.qty) .. "× " .. label)
+    local cheapest = (m.buyCost and (not m.craftCost or m.buyCost < m.craftCost)) and "buy" or "craft"
+    row.source:SetText((m.mode == "craft" and L["lo fabricas"] or L["lo compras hecho"])
+      .. (m.mode ~= cheapest and (ORANGE .. L[" · no es lo más barato"] .. "|r") or (GREY .. L[" · clic para cambiar"] .. "|r")))
+    local cost = m.mode == "craft" and m.craftCost or m.buyCost
+    row.total:SetText(cost and Money(cost) or (ORANGE .. "?|r"))
+    row:Show()
+  end
+  for i = #res.made + 1, #(page.madeRows or {}) do page.madeRows[i]:Hide() end
   for i, r in ipairs(res.rows) do
     local row = SheetRow(page, i)
     row:ClearAllPoints()
@@ -738,11 +820,6 @@ function ES:RenderCalculator()
   local notes = {}
   if res.deposit > 0 then
     notes[#notes + 1] = string.format(L["El depósito (%d subastas) se devuelve si se vende: no resta del beneficio."], res.listings or 0)
-  end
-  if #res.made > 0 then
-    local parts = {}
-    for _, m in ipairs(res.made) do parts[#parts + 1] = Qty(m.qty) .. "× " .. (ES.UI.ItemLabel(m.itemID, "#" .. m.itemID)) end
-    notes[#notes + 1] = string.format(L["Lo fabricas tú (ya desglosado en sus materiales): %s."], table.concat(parts, ", "))
   end
   if res.missing then notes[#notes + 1] = ORANGE .. L["Algún material no tiene precio (ni en el escaneo ni en el vendedor): escríbelo para que cuente."] .. "|r" end
   if res.discount > 0 then

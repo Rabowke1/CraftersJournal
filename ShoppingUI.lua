@@ -228,11 +228,13 @@ function ES:RenderShopping()
   ES.UI.RenderLines(page, lines)
 end
 
--- Añadir y avisar (lo usan los botones de cada fuente)
+-- Añadir y avisar (lo usan los botones de cada fuente): chat, el sonido de las
+-- monedas y la pestaña Lista de compra brilla, como cuando la lista cambia sola
 function ES:AddToShopping(kind, title, items, opts)
   local list = ES.Shopping.Add(kind, title, items, opts)
   if list then
     ES:Print(string.format(L["Añadido a la lista de compra: %s (%d materiales)."], title, #list.items))
+    ES:FlashTab("shopping", true)
   else
     ES:Print(L["No hay nada que comprar: ya tienes todos los materiales."])
   end

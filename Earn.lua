@@ -158,6 +158,44 @@ local function Batch(idea, e)
   return math.max(1, n), why
 end
 
+---------------------------------------------------------------------------
+-- Cantidad elegida por ti en una línea del lote (botones − y + de la fila): manda
+-- sobre la recomendada hasta el siguiente escaneo (con precios nuevos vuelve a la
+-- recomendada; si no, se quedaría una cantidad vieja para siempre).
+--   ES.db.earnQty[itemID] = { n = fabricaciones que quieres tener, scan = escaneo }
+---------------------------------------------------------------------------
+Earn.MAX_CUSTOM = 200
+
+local function ScanTime()
+  local scan = ES.db.scans and ES.db.scans[ES:RealmKey()]
+  return scan and scan.time or 0
+end
+
+function Earn.CustomQuantity(itemID)
+  local o = type(ES.db.earnQty) == "table" and ES.db.earnQty[itemID]
+  if o and o.scan == ScanTime() then return o.n end
+  return nil
+end
+
+-- `idea`: una línea del lote; delta: +1, -1, +5... La cantidad es de fabricaciones a
+-- hacer (lo que ya llevas hecho no cuenta); como mínimo 1. Si vuelve a la
+-- recomendada, deja de estar elegida por ti
+function Earn.StepQuantity(idea, delta)
+  if type(ES.db.earnQty) ~= "table" then ES.db.earnQty = {} end
+  local haveCrafts = math.floor((idea.have or 0) / math.max(1, idea.e.qty))
+  local crafts = math.max(1, math.min(Earn.MAX_CUSTOM, (idea.crafts or 1) + delta))
+  local wanted = crafts + haveCrafts
+  local scanTime = ScanTime()
+  -- (lo que se pasó de escaneos anteriores, fuera)
+  for id, o in pairs(ES.db.earnQty) do if o.scan ~= scanTime then ES.db.earnQty[id] = nil end end
+  if wanted == (idea.recommended or idea.wanted) and idea.custom then
+    ES.db.earnQty[idea.e.itemID] = nil
+  else
+    ES.db.earnQty[idea.e.itemID] = { n = wanted, scan = scanTime }
+  end
+  Earn:Clear()
+end
+
 -- ¿Cabe lo comprado en la AH (en `extra`, con clave itemID) en lo que hay a la venta,
 -- contando lo que ya compran otras líneas (ctx.used)? Con ignoreSupply, lo que pasa
 -- de ahí se pagaría a la mediana: para el vendedor no vale, esas subastas no existen
@@ -238,8 +276,9 @@ function Earn.CostIdea(idea)
   end
   local cost, reagents, extra, actions = ES.Planner.RecipeCost(idea.ctx, e.recipe, n, {})
   local start = n
-  -- (cost es el de las n juntas: el margen se mide sobre él, el mínimo por fabricación)
-  while n > 1 and (not cost or idea.sale * n - cost < math.max(MIN_PROFIT * n, MIN_MARGIN * cost)) do
+  -- (cost es el de las n juntas: el margen se mide sobre él, el mínimo por fabricación).
+  -- La cantidad elegida por ti no se reduce: se enseña lo que deja, aunque sea poco
+  while not idea.custom and n > 1 and (not cost or idea.sale * n - cost < math.max(MIN_PROFIT * n, MIN_MARGIN * cost)) do
     n = math.max(1, math.floor(n / 2))
     cost, reagents, extra, actions = ES.Planner.RecipeCost(idea.ctx, e.recipe, n, {})
   end
@@ -370,6 +409,11 @@ function Earn:Ideas()
           else
             idea.ctx = ctx
             idea.wanted, idea.why = Batch(idea, e)
+            -- La que elegiste tú (botones de la fila), hasta el siguiente escaneo
+            local custom = idea.sellWhere == "ah" and Earn.CustomQuantity(e.itemID)
+            if custom then
+              idea.recommended, idea.wanted, idea.custom = idea.wanted, custom, true
+            end
             idea.sale = (idea.sellWhere == "ah" and e.ahNet or e.vendor) * e.qty -- por fabricación
           end
           if idea.sellWhere == "vendor" then
@@ -377,7 +421,8 @@ function Earn:Ideas()
             res.vendor[#res.vendor + 1] = idea
           elseif idea.verdict ~= "avoid" then
             Earn.CostIdea(idea)
-            if Earn.LineValue(idea) >= minLine then
+            -- (la que elegiste tú se queda aunque baje del mínimo: si no, desaparecía al pulsar −)
+            if idea.custom or Earn.LineValue(idea) >= minLine then
               idea.score = idea.profit * ((idea.verdict == "watch" or idea.verdict == "unknown") and WATCH_WEIGHT or 1)
               res.ideas[#res.ideas + 1] = idea
             else
@@ -388,7 +433,11 @@ function Earn:Ideas()
       end
     end
   end
-  table.sort(res.ideas, function(a, b) return a.score > b.score end)
+  -- (las de cantidad elegida por ti, delante: si no, al pulsar − podían salirse del lote)
+  table.sort(res.ideas, function(a, b)
+    if (a.custom or false) ~= (b.custom or false) then return a.custom == true end
+    return a.score > b.score
+  end)
   table.sort(res.avoided, function(a, b) return a.e.profit > b.e.profit end)
   -- Primero las que ya puedes aprender; luego, de más a menos beneficio por fabricación
   table.sort(res.learnable, function(a, b)
@@ -408,7 +457,7 @@ function Earn:Ideas()
     if #res.batch >= BATCH_SIZE then break end
     Earn.CostIdea(idea)
     -- (con los materiales que ya compran las anteriores puede quedarse por debajo del mínimo)
-    if (idea.crafts == 0 or idea.profit > 0) and Earn.LineValue(idea) >= minLine then
+    if idea.custom or ((idea.crafts == 0 or idea.profit > 0) and Earn.LineValue(idea) >= minLine) then
       res.batch[#res.batch + 1] = idea
       idea.inBatch = true
       res.invest = res.invest + idea.invest

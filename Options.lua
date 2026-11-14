@@ -11,6 +11,8 @@ local L = ES.L
 --                            de botín en la AH, ruta que cuesta más con precios nuevos)
 --   ES.db.minimap.hide     = true: sin botón del minimapa (LibDBIcon)
 --   ES.db.noVendorWindow   = true: no sale la ventana junto al vendedor
+--   ES.db.noCraftWindow    = true: no sale la ventana de Ganar dinero junto a la
+--                            ventana de una profesión (CraftWindowUI.lua)
 --   ES.db.noAuctionWindows = true: no salen solas las de junto a la AH (lista de
 --                            compra y vender en la AH); el botón de la AH sigue
 --                            abriendo la lista de compra a mano
@@ -18,6 +20,7 @@ local L = ES.L
 
 function ES:VendorWindowOn() return not (self.db and self.db.noVendorWindow) end
 function ES:AuctionWindowsOn() return not (self.db and self.db.noAuctionWindows) end
+function ES:CraftWindowOn() return not (self.db and self.db.noCraftWindow) end
 
 -- Cambia una opción (on: la casilla marcada) y lo aplica al momento: la pestaña
 -- Inventario y las ventanas del vendedor y la AH, si están abiertos
@@ -30,6 +33,7 @@ function ES:ApplyOptions(key, on)
   if self.RenderInventory then self:RenderInventory() end
   if self.VendorShop and self.VendorShop.Refresh then self.VendorShop:Refresh() end
   if self.AuctionSell and self.AuctionSell.Refresh then self.AuctionSell:Refresh() end
+  if self.CraftWindow and self.CraftWindow.Refresh then self.CraftWindow:Refresh() end
   -- (la lista de compra: desactivada se quita; activada sale la próxima vez que
   -- abras la AH, o ya con el botón de encima de la AH)
   local mini = self.ShoppingMini and self.ShoppingMini()
@@ -41,6 +45,8 @@ local OPTIONS = {
     desc = "Al abrir un vendedor: lo que te falta de la lista de compra y lo que puedes venderle, con los botones Comprar todo y Vender todo." },
   { key = "noAuctionWindows", label = "Ventanas junto a la Casa de Subastas",
     desc = "Al abrir la AH: tu lista de compra y lo que puedes vender en la AH. Desactivadas, la lista de compra se sigue pudiendo abrir con el botón de encima de la AH." },
+  { key = "noCraftWindow", label = "Ventana junto a la profesión",
+    desc = "Al abrir una profesión: lo que la pestaña Ganar dinero propone fabricar de esa profesión. Clic en una fila para fabricarlo." },
   -- (por defecto desactivada: se propone todo y lo tuyo lo apartas con clic derecho)
   { key = "protectGear", label = "No vender tu equipo",
     desc = "Activado, el equipo ligado a ti (tu otro equipo, lo de las misiones) y el de los conjuntos del gestor de equipo no se propone vender (ni Vender todo lo vende); los verdes sin ligar de botín, lo que fabricas y lo gris, sí. Desactivado, se propone todo: lo que quieras guardar, clic derecho y no se vende nunca.",

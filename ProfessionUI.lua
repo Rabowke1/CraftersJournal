@@ -368,6 +368,14 @@ function ES:StartRoute(page)
   plan.lockStarted, plan.lockPrices = lock.started, lock.scanTime
   self.lockedPlans[page.profKey] = plan
   self:RenderPlan(page)
+  -- Empezar la ruta pone su lista en la Lista de compra (se calcula sola): se avisa
+  -- como cualquier otra cosa que se añade
+  local list = ES.Shopping and ES.Shopping.PhaseList(page.profKey)
+  if list then
+    self:Print(string.format(L["Añadido a la lista de compra: %s."], list.title))
+    self:FlashTab("shopping", true)
+    if self.RenderShopping then self:RenderShopping() end
+  end
 end
 
 function ES:StopRoute(profKey)
@@ -890,6 +898,25 @@ end
 ---------------------------------------------------------------------------
 -- Filas de la lista
 ---------------------------------------------------------------------------
+-- Tooltip del objeto al pasar el ratón por un icono (en filas propias de otras
+-- páginas: la calculadora). getItem() da el itemID o nil. Los clics pasan a la fila
+function ES.UI.ItemIconTooltip(row, icon, getItem)
+  local hover = CreateFrame("Frame", nil, row)
+  hover:SetAllPoints(icon)
+  hover:EnableMouse(true)
+  if hover.SetMouseClickEnabled then hover:SetMouseClickEnabled(false) end
+  if hover.SetPropagateMouseClicks then hover:SetPropagateMouseClicks(true) end
+  hover:SetScript("OnEnter", function(self)
+    local id = getItem()
+    if not id then return end
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:SetHyperlink("item:" .. id)
+    GameTooltip:Show()
+  end)
+  hover:SetScript("OnLeave", function() GameTooltip:Hide() end)
+  return hover
+end
+
 local function CreateRow(parent)
   local row = CreateFrame("Button", nil, parent, "BackdropTemplate")
   row:SetWidth(LIST_WIDTH)
@@ -1068,6 +1095,46 @@ local function SetUseItem(row, itemID)
   b:Show()
 end
 
+-- Botones − y + para cambiar una cantidad (line.onStep(delta); con Mayús, de 5 en 5),
+-- a la izquierda del valor. Solo se crean en las filas que los usan (lote de Ganar dinero)
+local function SetStepper(row, line)
+  local onStep = line.onStep
+  if not onStep then
+    if row.stepper then row.stepper:Hide() end
+    return
+  end
+  local s = row.stepper
+  if not s then
+    s = CreateFrame("Frame", nil, row)
+    s:SetSize(44, 18)
+    local function Button(label, sign, x)
+      local b = CreateFrame("Button", nil, s, "UIPanelButtonTemplate")
+      b:SetSize(20, 18)
+      b:SetPoint("LEFT", x, 0)
+      b:SetText(label)
+      b:SetScript("OnClick", function()
+        local step = (IsShiftKeyDown and IsShiftKeyDown()) and 5 or 1
+        if row.onStep then row.onStep(sign * step) end
+      end)
+      b:SetScript("OnEnter", function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_TOP")
+        GameTooltip:AddLine(sign > 0 and L["Fabricar más"] or L["Fabricar menos"])
+        GameTooltip:AddLine(L["Con Mayús, de 5 en 5. Tu cantidad dura hasta el siguiente escaneo; luego vuelve a la recomendada."], 0.8, 0.8, 0.8, true)
+        GameTooltip:Show()
+      end)
+      b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+      return b
+    end
+    s.minus = Button("-", -1, 0)
+    s.plus = Button("+", 1, 22)
+    row.stepper = s
+  end
+  row.onStep = onStep
+  s:ClearAllPoints()
+  s:SetPoint("RIGHT", row.value, "LEFT", -8, 0)
+  s:Show()
+end
+
 -- Pinta una línea en una fila y devuelve el alto que ocupa
 local function StyleRow(row, line)
   local isSection = line.section ~= nil
@@ -1141,6 +1208,7 @@ local function StyleRow(row, line)
   row.skip:SetShown(line.onSkip ~= nil)
   row.value:ClearAllPoints()
   row.value:SetPoint("RIGHT", line.onSkip and -30 or -12, 0)
+  SetStepper(row, line)
   SetUseItem(row, line.useItem)
   return height
 end
@@ -1605,6 +1673,12 @@ function ES:RefreshAfterLearn()
       if self:RouteLock(page.profKey) then self:RenderPlan(page) else self:CalculatePlan(page) end
     end
   end
+  -- Ganar dinero: lo que sabes cambia sus ideas (lo que estaba en "Recetas que puedes
+  -- aprender" pasa al lote). Su caché solo se vaciaba con un escaneo nuevo o al cambiar
+  -- las bolsas: aprender del instructor no las cambia y seguía saliendo como por aprender
+  if self.Earn then self.Earn:Clear() end
+  if self.RenderEarn then self:RenderEarn() end
+  if self.CraftWindow and self.CraftWindow.Refresh then self.CraftWindow:Refresh() end
 end
 
 -- Sube tu nivel (fabricando): la profesión abierta lo relee al momento. Con la ruta

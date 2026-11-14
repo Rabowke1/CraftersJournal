@@ -43,7 +43,15 @@ local function IdeaTooltip(idea)
     GameTooltip:AddDoubleLine(L["Beneficio por fabricación"], GREEN .. "+" .. ES.Money(e.profit) .. "|r", unpack(W))
     if idea.crafts then
       GameTooltip:AddLine(" ")
-      GameTooltip:AddLine(string.format(L["Fabrica %d: %s"], idea.crafts, idea.why or ""), 1, 0.82, 0, true)
+      if idea.custom then
+        GameTooltip:AddLine(string.format(L["Fabrica %d: la cantidad la elegiste tú (recomendadas: %d). Vuelve a la recomendada con el siguiente escaneo."],
+          idea.crafts, idea.recommended or idea.crafts), 1, 0.82, 0, true)
+        if idea.recommended and idea.wanted > idea.recommended then
+          GameTooltip:AddLine(L["Más de lo recomendado: si no se venden, tienes el oro parado y puedes perder depósitos al caducar."], 1, 0.6, 0.2, true)
+        end
+      else
+        GameTooltip:AddLine(string.format(L["Fabrica %d: %s"], idea.crafts, idea.why or ""), 1, 0.82, 0, true)
+      end
       if idea.why2 then GameTooltip:AddLine(idea.why2, 0.6, 1, 0.6, true) end
       if idea.fewer then GameTooltip:AddLine(L["Menos de las que caben: con más, los materiales salen más caros y ya no compensa."], 1, 0.6, 0.2, true) end
       if idea.limit == "margin" then
@@ -80,11 +88,19 @@ local function IdeaTooltip(idea)
     if idea.shopping then
       GameTooltip:AddLine(" ")
       GameTooltip:AddLine(L["Cada línea del vendedor se calcula por separado: si dos usan los mismos materiales, haz una."], 0.6, 0.6, 0.6, true)
-      GameTooltip:AddLine(L["Clic: añadir sus materiales a la lista de compra."], 0.6, 0.6, 0.6, true)
+    end
+    if not idea.learnable and (idea.crafts or 0) > 0 then
+      GameTooltip:AddLine(" ")
+      GameTooltip:AddLine(string.format(L["Clic: abrir la receta y fabricar %d (con la profesión cerrada, el primer clic la abre)."], idea.crafts), 0.5, 0.8, 1, true)
+    end
+    if idea.shopping then
+      GameTooltip:AddLine(L["Clic derecho: añadir sus materiales a la lista de compra."], 0.5, 0.8, 1, true)
     end
     GameTooltip:Show()
   end
 end
+
+ES.UI.EarnTooltip = IdeaTooltip -- (también la ventana junto a la profesión, CraftWindowUI.lua)
 
 local function IdeaLine(idea, dim)
   local e = idea.e
@@ -103,17 +119,37 @@ local function IdeaLine(idea, dim)
     return { icon = texture or 134400, title = string.format(L["Ya tienes %d× %s"], idea.have, name or e.recipe.name),
       sub = sub, value = GREEN .. L["anúncialas"] .. "|r", item = e.itemID, tooltip = IdeaTooltip(idea) }
   end
-  local onClick
+  -- Clic: abre la receta en la ventana de la profesión y fabrica las que tocan, como
+  -- los pasos de la ruta (ES:CraftRecipe: con la ventana cerrada, el primer clic la
+  -- abre y el segundo fabrica; como mucho, las que dan los materiales que llevas)
+  local onClick, onRightClick
+  if not idea.learnable and (idea.crafts or 0) > 0 then
+    onClick = function() ES:CraftRecipe(e.id, idea.crafts) end
+  end
   if idea.shopping then
-    -- Venta al vendedor: cada línea, su propia lista de compra (una por receta y día)
-    onClick = function()
+    -- Venta al vendedor: cada línea, su propia lista de compra (una por receta y día).
+    -- Clic derecho: el clic es fabricar
+    onRightClick = function()
       local day = date and date("%d/%m") or ""
       ES:AddToShopping("money", string.format(L["Ganar dinero: %d× %s"], idea.crafts, name or e.recipe.name), idea.shopping,
         { key = e.id .. ":" .. day, minusBags = true })
     end
   end
+  -- Lote de la AH: botones − y + para elegir tú cuántas (Earn.StepQuantity). Por
+  -- encima de lo recomendado, se dice en naranja
+  local onStep
+  if idea.inBatch and idea.sellWhere == "ah" then
+    onStep = function(delta)
+      ES.Earn.StepQuantity(idea, delta)
+      if ES.RenderEarn then ES:RenderEarn() end
+    end
+    if idea.custom and idea.recommended and idea.wanted > idea.recommended then
+      sub = sub .. ORANGE .. string.format(L[" · más de lo recomendado (%d)"], idea.recommended) .. "|r"
+    end
+  end
   return { icon = texture or 134400, title = string.format("%d× %s", idea.crafts, name or e.recipe.name), sub = sub,
-    value = ES.UI.Signed(-idea.profit), item = e.itemID, tooltip = IdeaTooltip(idea), onClick = onClick }
+    value = ES.UI.Signed(-idea.profit), item = e.itemID, tooltip = IdeaTooltip(idea), onClick = onClick,
+    onRightClick = onRightClick, onStep = onStep }
 end
 
 function ES:CreateEarnPage(page)
