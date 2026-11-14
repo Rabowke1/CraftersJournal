@@ -115,7 +115,7 @@ function ES.Num(x)
   if not x then return "—" end
   if math.abs(x) >= 10 then return tostring(math.floor(x + 0.5)) end
   local s = string.format("%.1f", x):gsub("%.0$", "")
-  if ES.lang == "es" then s = s:gsub("%.", ",") end -- en inglés, punto decimal
+  if ES.lang == "es" or ES.lang == "de" then s = s:gsub("%.", ",") end -- en inglés, punto decimal
   return s
 end
 
@@ -173,14 +173,20 @@ end
 local GetItemInfoCompat = (C_Item and C_Item.GetItemInfo) or GetItemInfo
 local GetItemInfoInstantCompat = (C_Item and C_Item.GetItemInfoInstant) or GetItemInfoInstant
 
+-- Nombres propios (recetas y objetos) del idioma del addon: Data/Names_esES.lua o
+-- Data/Names_deDE.lua; nil en inglés, que es el idioma de los datos
+function ES:LangNames()
+  return (self.lang == "es" and ES.Data.NamesES) or (self.lang == "de" and ES.Data.NamesDE) or nil
+end
+
 -- Nombre de un objeto en el idioma del addon según los datos propios: español
--- (Data/Names_esES.lua) o inglés (ES.Data.ItemNames); nil si no lo tenemos
+-- (Data/Names_esES.lua), alemán (Data/Names_deDE.lua) o inglés (ES.Data.ItemNames);
+-- nil si no lo tenemos
 function ES:DataItemName(itemID)
-  if self.lang == "es" then
-    local es = ES.Data.NamesES and ES.Data.NamesES.items[itemID]
-    if es then return es end
-  end
-  return ES.Data.ItemNames and ES.Data.ItemNames[itemID] -- en español, si no cambia, es igual que en inglés
+  local names = self:LangNames()
+  local name = names and names.items[itemID]
+  if name then return name end
+  return ES.Data.ItemNames and ES.Data.ItemNames[itemID] -- en español o alemán, si no cambia, es igual que en inglés
 end
 
 -- Datos de un objeto. El nombre que da el juego va en el idioma del cliente: si el
@@ -195,12 +201,14 @@ function ES:GetItemData(itemID)
 end
 
 -- Recetas con el nombre en el idioma del addon: en español, el de Data/Names_esES.lua;
--- en inglés, el original (guardado en nameEN, que también usa el buscador)
+-- en alemán, el de Data/Names_deDE.lua; en inglés, el original (guardado en nameEN,
+-- que también usa el buscador)
 function ES:LocalizeRecipeNames()
-  local names = ES.Data.NamesES and ES.Data.NamesES.spells or {}
+  local names = self:LangNames()
+  names = names and names.spells or {}
   for _, prof in ipairs(self.PROFESSIONS) do
     for id, r in pairs(ES.Data[prof.key] and ES.Data[prof.key].recipes or {}) do
-      if self.lang == "es" and names[id] then
+      if names[id] then
         r.nameEN = r.nameEN or r.name
         r.name = names[id]
       elseif r.nameEN then

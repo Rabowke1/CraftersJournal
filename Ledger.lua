@@ -116,12 +116,13 @@ local function ServiceRecipe(i, profs)
   local item = link and tonumber(link:match("item:(%d+)"))
   local name = GetTrainerServiceInfo and (GetTrainerServiceInfo(i))
   local names = ES.Data.NamesES and ES.Data.NamesES.spells or {}
+  local namesDE = ES.Data.NamesDE and ES.Data.NamesDE.spells or {}
   local byName = {}
   for _, key in ipairs(profs) do
     for id, r in pairs(ES.Data[key].recipes) do
       if spell == id then return id, r, key end
       if item and r.out and r.out[1] == item then return id, r, key end
-      if name and (name == r.name or name == r.nameEN or name == names[id] or name == SpellName(id)) then
+      if name and (name == r.name or name == r.nameEN or name == names[id] or name == namesDE[id] or name == SpellName(id)) then
         byName[#byName + 1] = { id, r, key }
       end
     end

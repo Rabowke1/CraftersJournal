@@ -11,12 +11,13 @@ local _, ES = ...
 ES.LANGS = {
   { key = "es", name = "Español" },
   { key = "en", name = "English" },
+  { key = "de", name = "Deutsch" },
 }
 ES.Locales = {}
 
 function ES.DefaultLanguage()
   local loc = GetLocale and GetLocale() or "esES"
-  return (loc == "esES" or loc == "esMX") and "es" or "en"
+  return (loc == "esES" or loc == "esMX") and "es" or (loc == "deDE" and "de") or "en"
 end
 
 ES.lang = ES.DefaultLanguage()
