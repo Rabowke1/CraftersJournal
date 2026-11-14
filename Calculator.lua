@@ -119,20 +119,17 @@ function Calc.CityDiscount()
   return best, bestID and ES:FactionName(bestID)
 end
 
--- Precio de la AH más reciente de un objeto: el del último escaneo, o el que vio
--- Auctionator al buscarlo desde la calculadora si es posterior. Devuelve precio y
--- fuente ("ah" o "auctionator"), o nil
+-- Precio de la AH de un objeto: el del último escaneo. Devuelve precio y fuente
+-- ("ah"), o nil
 function Calc.AHPrice(itemID, scan)
   local entry = scan and scan.items and scan.items[itemID]
-  local atr = ES.Auctionator and ES.Auctionator.Price(itemID)
-  if atr and (not (entry and entry.minUnit) or atr.time > (scan.time or 0)) then return atr.price, "auctionator" end
   if entry and entry.minUnit then return entry.minUnit, "ah" end
   return nil
 end
 
 -- Precio automático de un material: lo más barato entre el vendedor (con el descuento
 -- de ciudad) y la subasta más barata (Calc.AHPrice). Devuelve precio y fuente
--- ("vendor", "ah" o "auctionator"), o nil si no hay ninguno
+-- ("vendor" o "ah"), o nil si no hay ninguno
 function Calc.AutoPrice(itemID, scan, discount)
   local vendor = ES.Data.VendorPrices and ES.Data.VendorPrices[itemID]
   if vendor then vendor = math.floor(vendor * (1 - (discount or 0)) + 0.5) end
@@ -224,12 +221,15 @@ end
 
 -- Suma a `need` lo que hay que conseguir para `crafts` fabricaciones; `made` apunta
 -- cada intermedio con lo que cuesta de cada forma y cómo se consigue (la hoja lo
--- enseña y deja cambiarlo)
-local function Expand(ctx, data, recipe, crafts, need, order, made, depth)
+-- enseña y deja cambiarlo). `display` es el orden de la hoja, como un árbol: cada
+-- intermedio ({ made = m, depth }) con lo suyo debajo, un nivel más adentro
+-- ({ item = itemID, depth }); comprado hecho, debajo sale él mismo. Un material que
+-- piden dos sitios distintos sale una vez, sin sangría (su cantidad es la de todos)
+local function Expand(ctx, data, recipe, crafts, need, order, made, depth, display, parent)
   for _, rq in ipairs(recipe.r or {}) do
     local id, n = rq[1], rq[2] * crafts
     local sub = depth < MAX_DEPTH and Producer(data, id)
-    local mode
+    local mode, m
     if sub then
       local buy = UnitPrice(ctx, id)
       local buyCost = buy and buy * n
@@ -237,13 +237,25 @@ local function Expand(ctx, data, recipe, crafts, need, order, made, depth)
       local craftCost = RecipeRaw(ctx, data, sub, subCrafts, depth + 1)
       local chosen
       mode, chosen = Mode(ctx, id, buyCost, craftCost)
-      made[#made + 1] = { itemID = id, qty = n, mode = mode, chosen = chosen, buyCost = buyCost, craftCost = craftCost,
+      m = { itemID = id, qty = n, mode = mode, chosen = chosen, buyCost = buyCost, craftCost = craftCost,
         depth = depth }
-      if mode == "craft" then Expand(ctx, data, sub, subCrafts, need, order, made, depth + 1) end
+      made[#made + 1] = m
+      display[#display + 1] = { made = m, depth = depth }
+      if mode == "craft" then Expand(ctx, data, sub, subCrafts, need, order, made, depth + 1, display, m) end
     end
     if not sub or mode == "buy" then
       if not need[id] then need[id] = 0 order[#order + 1] = id end
       need[id] = need[id] + n
+      -- (comprado hecho: debajo de su fila de intermedio)
+      local owner, d = m or parent, m and depth + 1 or depth
+      local node = display.byItem[id]
+      if not node then
+        node = { item = id, depth = d, owner = owner }
+        display.byItem[id] = node
+        display[#display + 1] = node
+      elseif node.owner ~= owner then
+        node.depth, node.owner = 0, nil -- (lo piden dos sitios: sin sangría)
+      end
     end
   end
 end
@@ -259,7 +271,7 @@ end
 
 -- Todo el cálculo de una receta guardada:
 -- { recipe, rows = { { itemID, qty, price, source ("manual"/"vendor"/"ah"), total } },
---   made, cost, missing, outID, outN, sale, saleSource, revenue, cut, cutRate, deposit,
+--   made, display (el orden de la hoja: ver Expand), cost, missing, outID, outN, sale, saleSource, revenue, cut, cutRate, deposit,
 --   profit, discount, city }; nil si la receta ya no existe en los datos
 function Calc:Compute(c)
   local data = ES.Data[c.prof]
@@ -287,9 +299,11 @@ function Calc:Compute(c)
     if recipe.out and Stale(recipe.out[1], c.saleTime) then c.sale, c.saleTime = nil, nil end
   end
   -- (después de quitar los precios a mano caducados: comprar o fabricar se decide con los buenos)
+  local display = { byItem = {} }
   Expand({ scan = scan, discount = discount, prices = c.prices, via = c.via or {} }, data, recipe, c.qty or 1,
-    need, order, made, 0)
-  local res = { recipe = recipe, rows = {}, made = made, cost = 0, missing = false, discount = discount, city = city }
+    need, order, made, 0, display, nil)
+  display.byItem = nil
+  local res = { recipe = recipe, rows = {}, made = made, display = display, cost = 0, missing = false, discount = discount, city = city }
   for _, id in ipairs(order) do
     local price, source = c.prices[id], "manual"
     if not price then price, source = Calc.AutoPrice(id, scan, discount) end

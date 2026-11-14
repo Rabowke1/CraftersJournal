@@ -667,6 +667,7 @@ events:SetScript("OnEvent", function(_, event, arg1)
     ES.db.earnBudget = nil -- (presupuesto de Ganar dinero: ya no existe)
     ES.db.activeAH = nil -- (la última AH abierta: siempre es la de tu facción, ver RealmKey)
     ES.db.sellGear = nil -- (la opción del equipo es ahora protectGear, desactivada por defecto)
+    ES.db.atrPrices = nil -- (precios de las búsquedas en Auctionator: ya no hay botón)
     ES.ApplyLocalization()
     ES:LocalizeRecipeNames()
   elseif event == "PLAYER_LOGOUT" then

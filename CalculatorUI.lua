@@ -31,83 +31,72 @@ end
 local function SourceText(res, source)
   if source == "manual" then return GOLD .. L["a mano"] .. "|r" end
   if source == "ah" then return L["AH"] end
-  if source == "auctionator" then return "Auctionator" end -- (buscado desde la calculadora: más reciente que el escaneo)
   -- (el descuento de ciudad va en la nota de abajo: "vendedor −10%" no cabía)
   if source == "vendor" then return L["vendedor"] end
   return ORANGE .. L["sin precio"] .. "|r"
 end
 
--- Precio con tres casillas, oro, plata y cobre, cada una con su icono (como el correo
--- del juego). Al pulsar Intro o salir de una casilla, `commit(cobre)`; con las tres
--- vacías, commit(nil): vuelve al precio automático. Tab pasa a la siguiente.
-local COIN_ICONS = { "Interface\\MoneyFrame\\UI-GoldIcon", "Interface\\MoneyFrame\\UI-SilverIcon", "Interface\\MoneyFrame\\UI-CopperIcon" }
-local BOX_W = { 34, 24, 24 }  -- oro (hasta 5 cifras), plata y cobre (2)
-local ICON_GAP, COIN_GAP = 4, 7 -- casilla → icono, icono → siguiente casilla
--- Ancho de las tres casillas con sus iconos (el marco de la plantilla sobresale ~6 px a la izquierda)
-local MONEY_W = 6 + BOX_W[1] + BOX_W[2] + BOX_W[3] + 3 * (ICON_GAP + 12) + 2 * COIN_GAP
-local function MoneyInput(parent, commit)
-  local input = CreateFrame("Frame", nil, parent)
-  input:SetSize(MONEY_W, 20)
-  local widths, maxLetters = BOX_W, { 5, 2, 2 }
-  local boxes, x = {}, 6
-  local function Value()
-    local g, s, c = tonumber(boxes[1]:GetText()), tonumber(boxes[2]:GetText()), tonumber(boxes[3]:GetText())
-    if not g and not s and not c then return nil end
-    return (g or 0) * 10000 + math.min(s or 0, 99) * 100 + math.min(c or 0, 99)
+-- Precio por unidad: se lee como texto con su fuente pegada ("6s 50c · AH"; a mano, en
+-- dorado). Clic: se abre una sola casilla con el precio para escribirlo ("6.5" = 6s
+-- 50c, "1g 20s", Calc.ParseMoney). Intro o salir de ella guarda: `commit(cobre)`;
+-- vacía, commit(nil) (vuelve al automático). Escape la cierra sin cambiar nada.
+-- (Antes eran tres casillas, oro/plata/cobre, en cada fila: la hoja se veía muy cargada)
+local function PriceField(parent, commit)
+  local f = CreateFrame("Button", nil, parent)
+  f:SetHeight(20)
+  local hl = f:CreateTexture(nil, "HIGHLIGHT")
+  hl:SetAllPoints()
+  hl:SetColorTexture(1, 0.82, 0.25, 0.10)
+  f.text = ES.UI.Label(f, "", "GameFontHighlightSmall")
+  f.text:SetPoint("LEFT", 4, 0)
+  f.text:SetPoint("RIGHT", -4, 0)
+  f.text:SetJustifyH("LEFT")
+  f.text:SetWordWrap(false)
+  local box = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
+  box:SetSize(110, 20)
+  box:SetPoint("LEFT", 6, 0)
+  box:SetAutoFocus(false)
+  box:Hide()
+  f.box = box
+  local function Close()
+    box:Hide()
+    f.text:Show()
   end
   local function Save()
-    if input.saving then return end
-    input.saving = true
-    commit(Value())
-    input.saving = false
+    if not box:IsShown() then return end
+    local text = strtrim(box:GetText() or "")
+    local copper = Calc.ParseMoney(text)
+    Close()
+    -- (lo que no se entiende no cambia nada; vacío = automático)
+    if text == "" or copper then commit(copper) else ES:RenderCalculator() end
   end
-  for i = 1, 3 do
-    local box = CreateFrame("EditBox", nil, input, "InputBoxTemplate")
-    box:SetSize(widths[i], 20)
-    box:SetPoint("LEFT", x, 0)
-    box:SetAutoFocus(false)
-    box:SetNumeric(true)
-    box:SetMaxLetters(maxLetters[i])
-    box:SetJustifyH("CENTER") -- centrado: con el número pegado al borde no respiraba
-    local icon = input:CreateTexture(nil, "ARTWORK")
-    icon:SetSize(12, 12)
-    icon:SetPoint("LEFT", box, "RIGHT", ICON_GAP, 0)
-    icon:SetTexture(COIN_ICONS[i])
-    x = x + widths[i] + ICON_GAP + 12 + COIN_GAP
-    box:SetScript("OnEnterPressed", function(self) self.leaving = true self:ClearFocus() Save() self.leaving = false end)
-    box:SetScript("OnEditFocusLost", function(self)
-      -- Pasar a otra casilla del mismo precio (Tab) no guarda todavía
-      C_Timer.After(0, function()
-        for _, b in ipairs(boxes) do if b:HasFocus() == true then return end end
-        Save()
-      end)
-    end)
-    box:SetScript("OnTabPressed", function() boxes[i % 3 + 1]:SetFocus() end)
-    box:SetScript("OnEscapePressed", function(self) self:ClearFocus() ES:RenderCalculator() end)
-    box:SetScript("OnEnter", function(self)
-      GameTooltip:SetOwner(self, "ANCHOR_TOP")
-      GameTooltip:AddLine(L["Escribe el precio por unidad"])
-      GameTooltip:AddLine(L["Oro, plata y cobre; Tab pasa a la siguiente casilla. Con las tres vacías vuelve al precio automático."], 0.8, 0.8, 0.8, true)
-      GameTooltip:Show()
-    end)
-    box:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    boxes[i] = box
+  box:SetScript("OnEnterPressed", function(self) self:ClearFocus() end)
+  box:SetScript("OnEditFocusLost", Save)
+  box:SetScript("OnEscapePressed", function(self)
+    Close()
+    self:ClearFocus()
+  end)
+  f:SetScript("OnClick", function()
+    f.text:Hide()
+    box:Show()
+    box:SetText(f.copper and Calc.FormatMoney(f.copper) or "")
+    box:SetFocus()
+    box:HighlightText()
+  end)
+  f:SetScript("OnEnter", function(self)
+    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    GameTooltip:AddLine(L["Clic: escribir el precio por unidad"])
+    GameTooltip:AddLine(L["Por ejemplo 6.5 (6s 50c) o 1g 20s. Vacío vuelve al precio automático; Escape no cambia nada."], 0.8, 0.8, 0.8, true)
+    GameTooltip:Show()
+  end)
+  f:SetScript("OnLeave", function() GameTooltip:Hide() end)
+  -- Pone el precio y de dónde sale, salvo si lo estás escribiendo
+  function f:SetValue(copper, sourceText)
+    if box:IsShown() and box:HasFocus() == true then return end
+    self.copper = copper
+    self.text:SetText((copper and Money(copper) or (ORANGE .. "?|r")) .. (sourceText and (GREY .. " · |r" .. sourceText) or ""))
   end
-  input.g, input.s, input.c = boxes[1], boxes[2], boxes[3]
-  -- Pone el precio, salvo si estás escribiendo en alguna de sus casillas
-  function input:SetValue(copper)
-    for _, b in ipairs(boxes) do if b:HasFocus() == true then return end end
-    if not copper then
-      for _, b in ipairs(boxes) do b:SetText("") end
-      return
-    end
-    copper = math.floor(copper + 0.5)
-    local g, s, c = math.floor(copper / 10000), math.floor(copper / 100) % 100, copper % 100
-    boxes[1]:SetText(g > 0 and tostring(g) or "")
-    boxes[2]:SetText((g > 0 or s > 0) and tostring(s) or "")
-    boxes[3]:SetText(tostring(c))
-  end
-  return input
+  return f
 end
 
 ---------------------------------------------------------------------------
@@ -282,14 +271,14 @@ end
 -- Hoja del cálculo elegido
 ---------------------------------------------------------------------------
 -- Columnas (x desde la izquierda del panel; el total, pegado a la derecha). La hoja
--- mide ~610 px con la ventana de 840: nombre 130, cantidad 36 (14 de aire), precio
--- ~170, 12 de aire, de dónde 78 y el total, ~100 a la derecha
+-- mide ~610 px con la ventana de 840: nombre 130, cantidad 36 (14 de aire), el precio
+-- con su fuente ("6s 50c · AH") hasta el total, ~100 a la derecha
 local COL_NAME, COL_QTY_RIGHT = 36, 196
 local COL_PRICE = COL_QTY_RIGHT + 14
-local COL_SOURCE = COL_PRICE + MONEY_W + 10
--- El total va pegado a la derecha y crece con el oro ("1g 48s 80c" ~90 px): la columna
--- "De dónde" acaba siempre TOTAL_W antes del borde, así nunca se pisan
+-- El total va pegado a la derecha y crece con el oro ("1g 48s 80c" ~90 px): el precio
+-- acaba siempre TOTAL_W antes del borde, así nunca se pisan
 local TOTAL_W = 104
+local INDENT = 18 -- sangría de lo que va dentro de un intermedio
 
 local function SheetRow(page, i)
   local row = page.sheetRows[i]
@@ -311,7 +300,7 @@ local function SheetRow(page, i)
   row.qty:SetPoint("RIGHT", row, "LEFT", COL_QTY_RIGHT, 0)
   row.qty:SetWidth(36)
   row.qty:SetJustifyH("RIGHT")
-  row.box = MoneyInput(row, function(copper)
+  row.price = PriceField(row, function(copper)
     local c = Calc:Selected()
     if not c or not row.itemID then return end
     c.prices[row.itemID] = copper -- nil: vuelve al automático
@@ -320,12 +309,8 @@ local function SheetRow(page, i)
     c.priceTimes[row.itemID] = copper and time() or nil
     ES:RenderCalculator()
   end)
-  row.box:SetPoint("LEFT", COL_PRICE, 0)
-  row.source = ES.UI.Label(row, "", "GameFontDisableSmall")
-  row.source:SetPoint("LEFT", COL_SOURCE, 0)
-  row.source:SetPoint("RIGHT", -TOTAL_W, 0)
-  row.source:SetJustifyH("LEFT")
-  row.source:SetWordWrap(false)
+  row.price:SetPoint("LEFT", COL_PRICE, 0)
+  row.price:SetPoint("RIGHT", -TOTAL_W, 0)
   row.total = ES.UI.Label(row, "", "GameFontHighlightSmall")
   row.total:SetPoint("RIGHT", -14, 0)
   row.total:SetJustifyH("RIGHT")
@@ -349,11 +334,11 @@ local function MadeRow(page, i)
   row.iconHover = ES.UI.ItemIconTooltip(row, row.icon, function() return row.m and row.m.itemID end)
   row.name = ES.UI.Label(row, "", "GameFontHighlightSmall")
   row.name:SetPoint("LEFT", row.icon, "RIGHT", 6, 0)
-  row.name:SetPoint("RIGHT", row, "LEFT", COL_SOURCE - 6, 0)
+  row.name:SetPoint("RIGHT", row, "LEFT", COL_PRICE - 6, 0)
   row.name:SetJustifyH("LEFT")
   row.name:SetWordWrap(false)
   row.source = ES.UI.Label(row, "", "GameFontHighlightSmall")
-  row.source:SetPoint("LEFT", COL_SOURCE, 0)
+  row.source:SetPoint("LEFT", COL_PRICE + 4, 0)
   row.source:SetPoint("RIGHT", -TOTAL_W, 0)
   row.source:SetJustifyH("LEFT")
   row.source:SetWordWrap(false)
@@ -399,45 +384,6 @@ local function SummaryLine(p, template)
   return line
 end
 
--- Botones unidos (el elegido, en dorado): uno por valor de `values`. Al pulsar,
--- `apply(calc, valor)` lo guarda en el cálculo elegido y se repinta
-local function Segmented(parent, values, width, label, apply, tooltip)
-  local seg = CreateFrame("Frame", nil, parent)
-  seg:SetSize(#values * (width + 2) + 2, 20)
-  seg:SetPoint("LEFT", COL_PRICE + 6, 0)
-  seg.buttons = {}
-  for i, value in ipairs(values) do
-    local b = CreateFrame("Button", nil, seg, "BackdropTemplate")
-    b:SetSize(width, 20)
-    b:SetPoint("LEFT", (i - 1) * (width + 2), 0)
-    b:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1 })
-    b.text = ES.UI.Label(b, label(value), "GameFontHighlightSmall")
-    b.text:SetPoint("CENTER", 0, 0)
-    b.value = value
-    b:SetScript("OnClick", function(self)
-      local c = Calc:Selected()
-      if c then apply(c, self.value) end
-      ES:RenderCalculator()
-    end)
-    b:SetScript("OnEnter", function(self)
-      GameTooltip:SetOwner(self, "ANCHOR_TOP")
-      tooltip(self.value)
-      GameTooltip:Show()
-    end)
-    b:SetScript("OnLeave", function() GameTooltip:Hide() end)
-    seg.buttons[i] = b
-  end
-  function seg:SetSelected(value)
-    for _, b in ipairs(self.buttons) do
-      local on = b.value == value
-      b:SetBackdropColor(on and 0.55 or 0.10, on and 0.40 or 0.08, on and 0.12 or 0.06, 0.95)
-      b:SetBackdropBorderColor(0.52, 0.38, 0.17, 1)
-      b.text:SetTextColor(on and 1 or 0.75, on and 0.85 or 0.72, on and 0.35 or 0.65)
-    end
-  end
-  return seg
-end
-
 local function CreateSheet(page)
   local p = page.sheet
   page.title = ES.UI.Label(p, "", "GameFontNormalLarge")
@@ -471,7 +417,7 @@ local function CreateSheet(page)
   head:SetPoint("TOPLEFT", 6, -54)
   head:SetPoint("TOPRIGHT", -6, -54)
   for _, col in ipairs({ { L["Material"], COL_NAME, "LEFT" }, { L["Cantidad"], COL_QTY_RIGHT, "RIGHT" },
-    { L["Precio por unidad"], COL_PRICE + 6, "LEFT" }, { L["De dónde"], COL_SOURCE, "LEFT" } }) do
+    { L["Precio por unidad"], COL_PRICE + 4, "LEFT" } }) do
     local fs = ES.UI.Label(head, col[1], "GameFontNormalSmall")
     fs:SetPoint(col[3], head, "LEFT", col[2], 0)
   end
@@ -485,7 +431,7 @@ local function CreateSheet(page)
   page.saleLine = SummaryLine(p)
   page.saleLine.label:SetWidth(COL_PRICE - COL_NAME - 8)
   page.saleLine.label:SetWordWrap(false)
-  page.saleBox = MoneyInput(page.saleLine, function(copper)
+  page.saleBox = PriceField(page.saleLine, function(copper)
     local c = Calc:Selected()
     if not c then return end
     c.sale = copper -- nil: vuelve al automático
@@ -493,47 +439,124 @@ local function CreateSheet(page)
     ES:RenderCalculator()
   end)
   page.saleBox:SetPoint("LEFT", COL_PRICE, 0)
-  page.saleSource = ES.UI.Label(page.saleLine, "", "GameFontDisableSmall")
-  page.saleSource:SetPoint("LEFT", COL_SOURCE, 0)
-  page.saleSource:SetPoint("RIGHT", -TOTAL_W, 0)
-  page.saleSource:SetJustifyH("LEFT")
-  page.saleSource:SetWordWrap(false)
-  page.cutLine = SummaryLine(p)
-  page.depositLine = SummaryLine(p)
-  -- Dónde se vende: AH · Chat de comercio (sin comisión ni depósito)
-  page.channel = Segmented(page.cutLine, Calc.CHANNELS, 70, function(channel)
-    return channel == "ah" and L["AH"] or channel == "vendor" and L["Vendedor"] or L["Chat de comercio"]
-  end, function(c, channel) c.channel = channel end, function(channel)
-    if channel == "ah" then
-      GameTooltip:AddLine(L["Vender en la Casa de Subastas"])
-      GameTooltip:AddLine(L["Se descuenta la comisión de la AH y se pide depósito."], 0.8, 0.8, 0.8, true)
-    elseif channel == "vendor" then
-      GameTooltip:AddLine(L["Vender al vendedor"])
-      GameTooltip:AddLine(L["Al precio que paga el vendedor: venta segura, sin comisión ni depósito."], 0.8, 0.8, 0.8, true)
-    else
-      GameTooltip:AddLine(L["Vender por el chat de comercio"])
-      GameTooltip:AddLine(L["Cara a cara (comercio): sin comisión de la AH ni depósito. Mira abajo la diferencia con la AH."], 0.8, 0.8, 0.8, true)
-    end
-  end)
-  -- Duración de la subasta: 2 h · 8 h · 24 h
-  page.duration = Segmented(page.depositLine, Calc.DURATIONS, 44, function(hours)
-    return string.format(L["%d h"], hours)
-  end, function(c, hours) c.hours = hours end, function(hours)
-    GameTooltip:AddLine(string.format(L["Subasta de %d h"], hours))
-    GameTooltip:AddLine(string.format(L["Depósito: el %d%% del precio de vendedor, mínimo %s por subasta. Se devuelve si se vende; lo pierdes si caduca o la cancelas."],
-      Calc.DepositPct(hours), ES.Money(Calc.MIN_DEPOSIT)), 0.8, 0.8, 0.8, true)
-  end)
+  page.saleBox:SetPoint("RIGHT", -TOTAL_W, 0)
+  page.cutLine = SummaryLine(p) -- (solo al vender en la AH)
   page.profitLine = SummaryLine(p, "GameFontNormalLarge")
-  -- Los dos beneficios, AH y chat de comercio, para ver la diferencia de un vistazo
-  -- (en su propia línea, debajo: junto al beneficio en grande se pisaban)
-  page.profitCompare = ES.UI.Label(p, "", "GameFontHighlightSmall")
-  page.profitCompare:SetJustifyH("LEFT")
+  -- Ratón sobre el beneficio: lo que darían las otras formas de vender y el depósito
+  -- (antes en una línea y una fila propias: la hoja se veía muy cargada)
+  page.profitLine:EnableMouse(true)
+  page.profitLine:SetScript("OnEnter", function(self)
+    local res = page.lastRes
+    if not res then return end
+    GameTooltip:SetOwner(self, "ANCHOR_TOP")
+    GameTooltip:AddLine(L["Beneficio"])
+    if res.canChoose then
+      local W = { 0.8, 0.8, 0.8, 1, 1, 1 }
+      GameTooltip:AddDoubleLine(L["En la AH"], ES.UI.Signed(-res.profitAH), unpack(W))
+      GameTooltip:AddDoubleLine(L["Por el chat de comercio (sin comisión)"], ES.UI.Signed(-res.profitTrade), unpack(W))
+      if res.profitVendor then GameTooltip:AddDoubleLine(L["Al vendedor"], ES.UI.Signed(-res.profitVendor), unpack(W)) end
+    end
+    if res.deposit and res.deposit > 0 then
+      GameTooltip:AddLine(" ")
+      GameTooltip:AddLine(string.format(L["Depósito: %s (%d subastas de %d h). Se devuelve si se vende: no resta del beneficio; lo pierdes si caduca."],
+        ES.Money(res.deposit), res.listings or 0, res.hours or 24), 0.8, 0.8, 0.8, true)
+    end
+    GameTooltip:Show()
+  end)
+  page.profitLine:SetScript("OnLeave", function() GameTooltip:Hide() end)
+
+  -- Dónde se vende, en un solo selector: "Vender en: AH · 24 h". Clic: un menú con la
+  -- AH (2, 8 o 24 h), el chat de comercio y el vendedor (antes, dos filas de botones)
+  page.sellOnLine = SummaryLine(p)
+  page.sellOnLine.label:SetText(L["Vender en:"])
+  local sellOn = CreateFrame("Button", nil, page.sellOnLine, "BackdropTemplate")
+  page.sellOn = sellOn
+  sellOn:SetSize(170, 20)
+  sellOn:SetPoint("LEFT", page.sellOnLine.label, "RIGHT", 8, 0)
+  sellOn:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Buttons\\WHITE8X8", edgeSize = 1 })
+  sellOn:SetBackdropColor(0.10, 0.08, 0.06, 0.95)
+  sellOn:SetBackdropBorderColor(0.52, 0.38, 0.17, 1)
+  sellOn:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+  sellOn.text = ES.UI.Label(sellOn, "", "GameFontHighlightSmall")
+  sellOn.text:SetPoint("LEFT", 8, 0)
+  sellOn.text:SetPoint("RIGHT", -18, 0)
+  sellOn.text:SetJustifyH("LEFT")
+  local caret = sellOn:CreateTexture(nil, "OVERLAY")
+  caret:SetTexture("Interface\\Buttons\\Arrow-Down-Up")
+  caret:SetSize(12, 12)
+  caret:SetPoint("RIGHT", -4, -2)
+  local OPTIONS = {
+    { channel = "ah", hours = 24 }, { channel = "ah", hours = 8 }, { channel = "ah", hours = 2 },
+    { channel = "trade" }, { channel = "vendor" },
+  }
+  local function OptionLabel(o)
+    if o.channel == "ah" then return string.format(L["AH · %d h"], o.hours) end
+    return o.channel == "vendor" and L["Vendedor"] or L["Chat de comercio"]
+  end
+  page.SellOnLabel = OptionLabel
+  local menu = CreateFrame("Frame", nil, sellOn, "BackdropTemplate")
+  page.sellOnMenu = menu
+  menu:SetSize(190, #OPTIONS * 20 + 8)
+  menu:SetPoint("TOPLEFT", sellOn, "BOTTOMLEFT", 0, -2)
+  menu:SetFrameStrata("TOOLTIP")
+  menu:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8X8", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = 10,
+    insets = { left = 3, right = 3, top = 3, bottom = 3 } })
+  menu:SetBackdropColor(0.055, 0.05, 0.043, 0.99)
+  menu:SetBackdropBorderColor(0.57, 0.43, 0.20, 1)
+  menu:Hide()
+  menu.options = {}
+  for i, o in ipairs(OPTIONS) do
+    local b = CreateFrame("Button", nil, menu)
+    b:SetPoint("TOPLEFT", 4, -4 - (i - 1) * 20)
+    b:SetPoint("TOPRIGHT", -4, -4 - (i - 1) * 20)
+    b:SetHeight(20)
+    b:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+    b.text = ES.UI.Label(b, OptionLabel(o), "GameFontHighlightSmall")
+    b.text:SetPoint("LEFT", 8, 0)
+    b.option = o
+    b:SetScript("OnClick", function(self)
+      local c = Calc:Selected()
+      if c then
+        c.channel = self.option.channel
+        if self.option.hours then c.hours = self.option.hours end
+      end
+      page.CloseSellOn()
+      ES:RenderCalculator()
+    end)
+    b:SetScript("OnEnter", function(self)
+      GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+      local opt = self.option
+      if opt.channel == "ah" then
+        GameTooltip:AddLine(string.format(L["Subasta de %d h"], opt.hours))
+        GameTooltip:AddLine(string.format(L["Depósito: el %d%% del precio de vendedor, mínimo %s por subasta. Se devuelve si se vende; lo pierdes si caduca o la cancelas."],
+          Calc.DepositPct(opt.hours), ES.Money(Calc.MIN_DEPOSIT)), 0.8, 0.8, 0.8, true)
+      elseif opt.channel == "vendor" then
+        GameTooltip:AddLine(L["Vender al vendedor"])
+        GameTooltip:AddLine(L["Al precio que paga el vendedor: venta segura, sin comisión ni depósito."], 0.8, 0.8, 0.8, true)
+      else
+        GameTooltip:AddLine(L["Vender por el chat de comercio"])
+        GameTooltip:AddLine(L["Cara a cara (comercio): sin comisión de la AH ni depósito."], 0.8, 0.8, 0.8, true)
+      end
+      GameTooltip:Show()
+    end)
+    b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+    menu.options[i] = b
+  end
+  local function SetOpen(open)
+    sellOn.open = open or nil
+    menu:SetShown(open and true or false)
+  end
+  sellOn:SetScript("OnClick", function() SetOpen(not sellOn.open) end)
+  sellOn:SetScript("OnHide", function() SetOpen(false) end)
+  page.CloseSellOn = function() SetOpen(false) end
   page.note = ES.UI.Label(p, "", "GameFontDisableSmall")
   page.note:SetJustifyH("LEFT")
 
+  -- Abajo: el botón principal, "Añadir a la lista de compra", a la derecha y más
+  -- grande; "Precios automáticos", pequeño a la izquierda (antes tres botones iguales)
   page.reset = CreateFrame("Button", nil, p, "UIPanelButtonTemplate")
-  page.reset:SetSize(BUTTON_W, 22)
-  page.reset:SetPoint("BOTTOMRIGHT", -12, 10)
+  page.reset:SetSize(BUTTON_W - 30, 20)
+  page.reset:SetPoint("BOTTOMLEFT", 12, 11)
   page.reset:SetText(L["Precios automáticos"])
   page.reset:SetScript("OnClick", function()
     local c = Calc:Selected()
@@ -549,9 +572,9 @@ local function CreateSheet(page)
 
   -- Los materiales de este cálculo a la Lista de compra (ShoppingUI.lua)
   page.addShopping = CreateFrame("Button", nil, p, "UIPanelButtonTemplate")
-  page.addShopping:SetSize(BUTTON_W, 22)
-  -- (los tres botones en una fila abajo: las notas acaban encima, ver FOOTER_H)
-  page.addShopping:SetPoint("RIGHT", page.reset, "LEFT", -8, 0)
+  page.addShopping:SetSize(BUTTON_W + 60, 24)
+  -- (los botones en una fila abajo: las notas acaban encima, ver FOOTER_H)
+  page.addShopping:SetPoint("BOTTOMRIGHT", -12, 10)
   page.addShopping:SetText(L["Añadir a la lista de compra"])
   page.addShopping:SetScript("OnClick", function()
     local c = Calc:Selected()
@@ -572,49 +595,6 @@ local function CreateSheet(page)
   end)
   page.addShopping:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-  -- Con Auctionator instalado: los materiales de este cálculo a su pestaña Shopping
-  page.auctionator = CreateFrame("Button", nil, p, "UIPanelButtonTemplate")
-  page.auctionator:SetSize(BUTTON_W, 22)
-  page.auctionator:SetPoint("RIGHT", page.addShopping, "LEFT", -8, 0)
-  page.auctionator:SetText(L["Buscar en Auctionator"])
-  page.auctionator:SetScript("OnClick", function()
-    local items = ES.CalculatorShoppingItems()
-    local result, why, missing = ES.Auctionator.Send(items)
-    if result == "search" then
-      ES:Print(string.format(L["Buscando %d objetos en Auctionator (pestaña Shopping): los precios que encuentre pasan a la calculadora."], #items - (missing or 0)))
-    elseif result == "list" then
-      ES:Print(string.format(L["Lista \"%s\" creada en Auctionator: abre la Casa de Subastas y búscala en la pestaña Shopping."], ES.Auctionator.LIST_NAME))
-    elseif why == "empty" then
-      ES:Print(L["No hay materiales que comprar en la AH en este cálculo (o el juego aún no ha cargado sus nombres: vuelve a pulsar en un momento)."])
-    else
-      ES:Print(L["Auctionator no ha aceptado la lista. ¿Está actualizado?"])
-    end
-    if missing and missing > 0 and result then
-      ES:Print(string.format(L["%d materiales aún sin nombre (el juego los está cargando): vuelve a pulsar en un momento para añadirlos."], missing))
-    end
-  end)
-  page.auctionator:SetScript("OnEnter", function(self)
-    GameTooltip:SetOwner(self, "ANCHOR_TOP")
-    GameTooltip:AddLine(L["Buscar en Auctionator"])
-    GameTooltip:AddLine(L["Manda los materiales de este cálculo (con la cantidad que necesitas) y lo que fabrica a la pestaña Shopping de Auctionator. Los que se compran al vendedor no se incluyen."], 0.8, 0.8, 0.8, true)
-    GameTooltip:AddLine(L["Con la Casa de Subastas abierta, busca al momento y los precios que encuentre pasan a la calculadora (fuente \"Auctionator\"). Si no, deja creada la lista \"Crafter's Journal\" para cuando la abras."], 0.5, 0.8, 1, true)
-    GameTooltip:Show()
-  end)
-  page.auctionator:SetScript("OnLeave", function() GameTooltip:Hide() end)
-end
-
--- Materiales del cálculo seleccionado que se compran en la AH (o sin precio, o con
--- precio escrito a mano): no los del vendedor. { { itemID, qty } }. Y lo que fabrica
--- (sin cantidad: es para ver a cuánto se vende), salvo si se liga al recogerlo
-function ES.CalculatorShoppingItems()
-  local c = Calc:Selected()
-  local res = c and Calc:Compute(c)
-  local items = {}
-  for _, r in ipairs(res and res.rows or {}) do
-    if r.source ~= "vendor" then items[#items + 1] = { itemID = r.itemID, qty = r.qty } end
-  end
-  if res and res.outID and not res.recipe.bop then items[#items + 1] = { itemID = res.outID } end
-  return items
 end
 
 function ES:CreateCalculatorPage(page)
@@ -703,9 +683,8 @@ function ES:RenderCalculator()
   local res = selected and Calc:Compute(selected)
   local showSheet = res ~= nil
   for _, w in ipairs({ page.title, page.titleSub, page.qty, page.colHead, page.matTotal, page.saleLine, page.cutLine,
-    page.depositLine, page.profitLine, page.profitCompare, page.note, page.reset, page.addShopping }) do w:SetShown(showSheet) end
-  -- Solo con Auctionator instalado y algo que comprar en la AH
-  page.auctionator:SetShown(showSheet and ES.Auctionator.Available() and #ES.CalculatorShoppingItems() > 0)
+    page.profitLine, page.sellOnLine, page.note, page.reset, page.addShopping }) do w:SetShown(showSheet) end
+  page.lastRes = res -- (el tooltip del beneficio)
   if not showSheet then
     for _, row in ipairs(page.sheetRows) do row:Hide() end
     for _, row in ipairs(page.madeRows or {}) do row:Hide() end
@@ -719,46 +698,63 @@ function ES:RenderCalculator()
   if page.qty:HasFocus() ~= true then page.qty:SetText(tostring(selected.qty or 1)) end
 
   local y = -78
-  -- Lo intermedio, arriba: cómo se consigue (clic para cambiarlo)
-  for i, m in ipairs(res.made) do
-    local row = MadeRow(page, i)
-    row.m = m
+  -- La hoja como un árbol (Calc:Compute, res.display): cada intermedio con su fila
+  -- (cómo se consigue; clic para cambiarlo) y lo suyo debajo, un poco más adentro
+  local rowOf = {}
+  for _, r in ipairs(res.rows) do rowOf[r.itemID] = r end
+  local nMade, nRows = 0, 0
+  local function Place(row)
     row:ClearAllPoints()
     row:SetPoint("TOPLEFT", 6, y)
     row:SetPoint("TOPRIGHT", -6, y)
     y = y - ROW_H
-    row.icon:ClearAllPoints()
-    row.icon:SetPoint("LEFT", 10 + 12 * (m.depth or 0), 0) -- (lo de dentro de otro, un poco más a la derecha)
-    local label, texture, pending = ES.UI.ItemLabel(m.itemID, L["Objeto "] .. m.itemID)
-    if pending then page.pendingItems = true end
-    row.icon:SetTexture(texture or 134400)
-    row.name:SetText(Qty(m.qty) .. "× " .. label)
-    local cheapest = (m.buyCost and (not m.craftCost or m.buyCost < m.craftCost)) and "buy" or "craft"
-    row.source:SetText((m.mode == "craft" and L["lo fabricas"] or L["lo compras hecho"])
-      .. (m.mode ~= cheapest and (ORANGE .. L[" · no es lo más barato"] .. "|r") or (GREY .. L[" · clic para cambiar"] .. "|r")))
-    local cost = m.mode == "craft" and m.craftCost or m.buyCost
-    row.total:SetText(cost and Money(cost) or (ORANGE .. "?|r"))
-    row:Show()
   end
-  for i = #res.made + 1, #(page.madeRows or {}) do page.madeRows[i]:Hide() end
-  for i, r in ipairs(res.rows) do
-    local row = SheetRow(page, i)
-    row:ClearAllPoints()
-    row:SetPoint("TOPLEFT", 6, y)
-    row:SetPoint("TOPRIGHT", -6, y)
-    y = y - ROW_H
-    row.itemID = r.itemID
-    local label, texture, pending = ES.UI.ItemLabel(r.itemID, L["Objeto "] .. r.itemID)
-    if pending then page.pendingItems = true end
-    row.icon:SetTexture(texture or 134400)
-    row.name:SetText(label)
-    row.qty:SetText(Qty(r.qty))
-    row.box:SetValue(r.price)
-    row.source:SetText(SourceText(res, r.source))
-    row.total:SetText(r.total and Money(r.total) or (ORANGE .. "?|r"))
-    row:Show()
+  for _, node in ipairs(res.display or {}) do
+    local indent = INDENT * (node.depth or 0)
+    if node.made then
+      local m = node.made
+      nMade = nMade + 1
+      local row = MadeRow(page, nMade)
+      row.m = m
+      Place(row)
+      row.icon:ClearAllPoints()
+      row.icon:SetPoint("LEFT", 10 + indent, 0)
+      local label, texture, pending = ES.UI.ItemLabel(m.itemID, L["Objeto "] .. m.itemID)
+      if pending then page.pendingItems = true end
+      row.icon:SetTexture(texture or 134400)
+      row.name:SetText(Qty(m.qty) .. "× " .. label)
+      local cheapest = (m.buyCost and (not m.craftCost or m.buyCost < m.craftCost)) and "buy" or "craft"
+      row.source:SetText((m.mode == "craft" and L["lo fabricas"] or L["lo compras hecho"])
+        .. (m.mode ~= cheapest and (ORANGE .. L[" · no es lo más barato"] .. "|r") or (GREY .. L[" · clic para cambiar"] .. "|r")))
+      local cost = m.mode == "craft" and m.craftCost or m.buyCost
+      row.total:SetText(cost and Money(cost) or (ORANGE .. "?|r"))
+      row:Show()
+    else
+      local r = rowOf[node.item]
+      if r then
+        nRows = nRows + 1
+        local row = SheetRow(page, nRows)
+        Place(row)
+        row.itemID = r.itemID
+        row.icon:ClearAllPoints()
+        row.icon:SetPoint("LEFT", 10 + indent, 0)
+        row.name:ClearAllPoints()
+        row.name:SetPoint("LEFT", COL_NAME + indent, 0)
+        row.name:SetWidth(COL_QTY_RIGHT - 42 - COL_NAME - indent)
+        local label, texture, pending = ES.UI.ItemLabel(r.itemID, L["Objeto "] .. r.itemID)
+        if pending then page.pendingItems = true end
+        row.icon:SetTexture(texture or 134400)
+        -- (lo de dentro de un intermedio, más apagado: es parte de él)
+        row.name:SetText(indent > 0 and (GREY .. (label:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")) .. "|r") or label)
+        row.qty:SetText(Qty(r.qty))
+        row.price:SetValue(r.price, SourceText(res, r.source))
+        row.total:SetText(r.total and Money(r.total) or (ORANGE .. "?|r"))
+        row:Show()
+      end
+    end
   end
-  for i = #res.rows + 1, #page.sheetRows do page.sheetRows[i]:Hide() end
+  for i = nMade + 1, #(page.madeRows or {}) do page.madeRows[i]:Hide() end
+  for i = nRows + 1, #page.sheetRows do page.sheetRows[i]:Hide() end
 
   local function Place(line, gap)
     y = y - (gap or 0)
@@ -775,52 +771,37 @@ function ES:RenderCalculator()
   if res.outID then
     local outLabel = ES.UI.ItemLabel(res.outID, L["Objeto "] .. res.outID)
     page.saleLine.label:SetText(string.format(L["Venta: %s × %s"], Qty(res.outN), outLabel))
-    page.saleBox:SetValue(res.sale)
+    page.saleBox:SetValue(res.sale, SourceText(res, res.saleSource))
     page.saleBox:Show()
-    page.saleSource:SetText(SourceText(res, res.saleSource))
     page.saleLine.value:SetText(Signed(-res.revenue))
   else
     page.saleLine.label:SetText(L["No fabrica un objeto que se pueda vender (encantamiento)."])
     page.saleBox:Hide()
-    page.saleSource:SetText("")
     page.saleLine.value:SetText("")
   end
 
-  Place(page.cutLine)
-  page.cutLine.label:SetText(res.channel == "trade" and res.canChoose and L["Comisión (chat: ninguna)"]
-    or res.channel == "vendor" and L["Comisión (vendedor: ninguna)"]
-    or string.format(L["Comisión de la AH (%d%%)"], math.floor(res.cutRate * 100 + 0.5)))
-  page.cutLine.value:SetText(res.cut > 0 and Signed(res.cut) or (GREY .. "—|r"))
-  page.channel:SetSelected(res.channel)
-  page.channel:SetShown(res.canChoose)
-  -- El depósito se devuelve al venderse: no resta, se enseña en gris (lo que arriesgas)
-  Place(page.depositLine)
-  page.depositLine.label:SetText(L["Depósito"])
-  page.depositLine.value:SetText(res.deposit > 0 and (GREY .. ES.Money(res.deposit) .. "|r") or (GREY .. "—|r"))
-  page.duration:SetSelected(res.hours)
-  page.duration:SetShown(res.canChoose and res.channel == "ah")
+  -- Comisión: solo al vender en la AH (por el chat o al vendedor no hay)
+  local ahCut = res.cut > 0
+  page.cutLine:SetShown(ahCut)
+  if ahCut then
+    Place(page.cutLine)
+    page.cutLine.label:SetText(string.format(L["Comisión de la AH (%d%%)"], math.floor(res.cutRate * 100 + 0.5)))
+    page.cutLine.value:SetText(Signed(res.cut))
+  end
+  -- El beneficio, en grande (el depósito y lo que darían las otras formas de vender,
+  -- en su tooltip)
   Place(page.profitLine, 8)
   page.profitLine.label:SetText(L["Beneficio"])
   page.profitLine.value:SetText(Signed(-res.profit))
-  -- AH frente a chat de comercio: lo que te ahorras de comisión
-  if res.canChoose and (res.profitTrade ~= res.profitAH or res.profitVendor) then
-    page.profitCompare:SetText(string.format(L["AH %s  ·  Chat %s  (%s de comisión)"],
-      Signed(-res.profitAH), Signed(-res.profitTrade), ES.Money(res.profitTrade - res.profitAH))
-      .. (res.profitVendor and ("  ·  " .. string.format(L["Vendedor %s"], Signed(-res.profitVendor))) or ""))
-    page.profitCompare:ClearAllPoints()
-    page.profitCompare:SetPoint("TOPLEFT", 6 + COL_NAME, y + 2)
-    page.profitCompare:SetPoint("RIGHT", -20, 0)
-    page.profitCompare:Show()
-    y = y - 16
-  else
-    page.profitCompare:Hide()
+  -- Dónde se vende (solo si se puede elegir: lo que se liga al recogerlo, no)
+  page.sellOnLine:SetShown(res.canChoose)
+  if res.canChoose then
+    Place(page.sellOnLine)
+    page.sellOn.text:SetText(page.SellOnLabel({ channel = res.channel, hours = res.hours }))
   end
 
-  -- Notas cortas: si no, no caben bajo la hoja (lo del depósito va en el tooltip de 2 h/8 h/24 h)
+  -- Notas cortas: si no, no caben bajo la hoja
   local notes = {}
-  if res.deposit > 0 then
-    notes[#notes + 1] = string.format(L["El depósito (%d subastas) se devuelve si se vende: no resta del beneficio."], res.listings or 0)
-  end
   if res.missing then notes[#notes + 1] = ORANGE .. L["Algún material no tiene precio (ni en el escaneo ni en el vendedor): escríbelo para que cuente."] .. "|r" end
   if res.discount > 0 then
     notes[#notes + 1] = string.format(L["Precios de vendedor con el descuento de tu reputación con %s (-%d%%)."], res.city or "", math.floor(res.discount * 100 + 0.5))

@@ -3401,6 +3401,13 @@ step("calculadora: desglose en crudo, precios a mano y cálculos guardados", fun
   assert(by[SILK].qty == boltsNeeded * silkPerBolt / (data.recipes[boltID].out[2] or 1), "tela: " .. by[SILK].qty)
   assert(by[SILK].source == "ah" and by[SILK].price == 200, "la seda, del escaneo")
   assert(res.made[1].mode == "craft" and not res.made[1].chosen, "sin precio del Bolt hecho, se fabrica")
+  -- La hoja como árbol: el Bolt y, debajo y más adentro, su seda
+  do
+    local pos = {}
+    for i, node in ipairs(res.display) do pos[node.made and "bolt" or node.item] = { i = i, depth = node.depth } end
+    assert(pos.bolt and pos[SILK] and pos[SILK].i == pos.bolt.i + 1 and pos[SILK].depth == pos.bolt.depth + 1,
+      "la seda no va debajo del Bolt, con sangría")
+  end
   -- Comprarlo hecho o fabricarlo: lo más barato; clic en su fila para cambiarlo
   do
     c.prices[BOLT] = 1 -- (el Bolt hecho, casi regalado: comprarlo es lo más barato)
@@ -3408,6 +3415,11 @@ step("calculadora: desglose en crudo, precios a mano y cálculos guardados", fun
     local byB = {}
     for _, row in ipairs(rb.rows) do byB[row.itemID] = row end
     assert(rb.made[1].mode == "buy" and byB[BOLT] and not byB[SILK], "con el Bolt barato debería comprarse hecho")
+    -- (comprado hecho: debajo de su fila sale él mismo, con su precio)
+    local boltNode
+    for i, node in ipairs(rb.display) do if node.item == BOLT then boltNode = { i = i, depth = node.depth } end end
+    assert(boltNode and rb.display[boltNode.i - 1].made and boltNode.depth == rb.display[boltNode.i - 1].depth + 1,
+      "comprado hecho, el Bolt no sale debajo de su fila")
     Calc:ToggleVia(c, rb.made[1])
     local rc = Calc:Compute(c)
     local byC = {}
@@ -3507,119 +3519,77 @@ step("calculadora: desglose en crudo, precios a mano y cálculos guardados", fun
   local silkRow
   for _, row in ipairs(page.sheetRows) do if row._shown and row.itemID == SILK then silkRow = row end end
   -- Tres casillas: oro, plata y cobre
-  local b = silkRow and silkRow.box
-  assert(b and b.g._text == "" and b.s._text == "2" and b.c._text == "70",
-    "casillas con 2s 70c: " .. tostring(b and b.g._text) .. "|" .. tostring(b and b.s._text) .. "|" .. tostring(b and b.c._text))
-  b.g:SetText("1") b.s:SetText("3") b.c:SetText("")
-  b.s._scripts.OnEnterPressed(b.s)
-  assert(c.prices[SILK] == 10300, "1 oro y 3 platas = 1g 3s: " .. tostring(c.prices[SILK]))
-  assert(b.g._text == "1" and b.s._text == "3" and b.c._text == "0", "se repinta con 1g 3s 0c")
-  b.g:SetText("") b.s:SetText("") b.c:SetText("")
-  b.c._scripts.OnEnterPressed(b.c)
-  assert(c.prices[SILK] == nil, "con las tres vacías vuelve al automático")
-  -- Selector de duración: 24 h marcado; pulsar 8 h lo guarda en el cálculo
-  assert(page.duration._shown, "el selector de duración se ve al vender en la AH")
-  local b8 = page.duration.buttons[2]
-  b8._scripts.OnClick(b8)
-  assert(c.hours == 8, "pulsar 8 h guarda la duración: " .. tostring(c.hours))
-  b8._scripts.OnEnter(b8)
-  -- AH / chat de comercio: por el chat no hay comisión ni depósito
-  assert(page.channel._shown and page.profitCompare._shown, "selector AH/chat y comparación visibles")
-  local before = Calc:Compute(c)
-  assert(before.channel == "ah" and math.abs(before.profit - before.profitAH) < 0.01, "por defecto, la AH")
-  local bt = page.channel.buttons[2]
-  bt._scripts.OnClick(bt)
-  bt._scripts.OnEnter(bt)
+  -- Precio como texto con su fuente; clic: una sola casilla para escribirlo
+  local pf = silkRow and silkRow.price
+  local function plain(t) return (tostring(t or ""):gsub("|T[^|]+|t", ""):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")) end
+  -- (escrito a mano más arriba: 2s 70c)
+  assert(pf and pf.copper == 270 and plain(pf.text._text):find("a mano"), "el precio se lee con su fuente: " .. plain(pf and pf.text._text))
+  pf._scripts.OnClick(pf)
+  assert(pf.box._shown ~= false and pf.box._text == "2s 70c", "al pulsar se abre la casilla con el precio: " .. tostring(pf.box._text))
+  pf.box:SetText("1g 3s")
+  pf.box._scripts.OnEditFocusLost(pf.box)
+  assert(c.prices[SILK] == 10300, "1g 3s = 10300: " .. tostring(c.prices[SILK]))
+  pf = silkRow.price
+  assert(pf.copper == 10300 and plain(pf.text._text):find("a mano"), "se repinta a mano: " .. plain(pf.text._text))
+  -- Escape: no cambia nada
+  pf._scripts.OnClick(pf)
+  pf.box:SetText("99g")
+  pf.box._scripts.OnEscapePressed(pf.box)
+  assert(c.prices[SILK] == 10300, "Escape cambió el precio")
+  -- Vacía: vuelve al automático
+  pf._scripts.OnClick(pf)
+  pf.box:SetText("")
+  pf.box._scripts.OnEditFocusLost(pf.box)
+  assert(c.prices[SILK] == nil, "vacía vuelve al automático")
+  -- "Vender en": un solo selector con un menú (AH 24/8/2 h, chat, vendedor)
+  local function plainT(s) return (tostring(s or ""):gsub("|T[^|]+|t", ""):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")) end
+  local function Choose(channel, hours)
+    page.sellOn._scripts.OnClick(page.sellOn)
+    assert(page.sellOnMenu._shown ~= false, "el selector no abre su menú")
+    for _, b in ipairs(page.sellOnMenu.options) do
+      if b.option.channel == channel and (not hours or b.option.hours == hours) then
+        b._scripts.OnEnter(b)
+        b._scripts.OnClick(b)
+        return
+      end
+    end
+    error("falta la opción " .. channel .. " " .. tostring(hours))
+  end
+  local function ProfitTooltip()
+    local all = {}
+    local savedAdd, savedDouble = GameTooltip.AddLine, GameTooltip.AddDoubleLine
+    GameTooltip.AddLine = function(_, l) all[#all + 1] = plainT(l) end
+    GameTooltip.AddDoubleLine = function(_, a, b) all[#all + 1] = plainT(a) .. " = " .. plainT(b) end
+    page.profitLine._scripts.OnEnter(page.profitLine)
+    GameTooltip.AddLine, GameTooltip.AddDoubleLine = savedAdd, savedDouble
+    return table.concat(all, " | ")
+  end
+  assert(page.sellOnLine._shown ~= false and plainT(page.sellOn.text._text):find("24"), "por defecto, AH 24 h: " .. plainT(page.sellOn.text._text))
+  Choose("ah", 8)
+  assert(c.channel == "ah" and c.hours == 8, "elegir AH 8 h lo guarda en el cálculo: " .. tostring(c.hours))
+  assert(page.cutLine._shown ~= false, "en la AH se ve la comisión")
+  -- El depósito y lo que darían las otras formas de vender, en el tooltip del beneficio
+  local tip = ProfitTooltip()
+  assert(tip:find("Depósito") and tip:find("chat"), "el tooltip del beneficio no trae depósito y comparación: " .. tip)
+  -- Por el chat: sin comisión ni depósito
+  Choose("trade")
   local rt = Calc:Compute(c)
   assert(c.channel == "trade" and rt.cut == 0 and rt.deposit == 0, "por el chat: sin comisión ni depósito")
   assert(math.abs(rt.profit - (rt.revenue - rt.cost)) < 0.01, "beneficio por el chat = venta - materiales")
   assert(math.abs((rt.profitTrade - rt.profitAH) - rt.revenue * rt.cutRate) < 0.01, "la diferencia es la comisión")
-  assert(not page.duration._shown, "sin duración al vender por el chat")
-  log[#log+1] = "     calculadora chat: " .. tostring(page.profitCompare._text)
+  assert(page.cutLine._shown == false, "por el chat no se enseña la comisión")
+  log[#log+1] = "     calculadora: vender en " .. plainT(page.sellOn.text._text) .. " · " .. ProfitTooltip():sub(1, 140)
   -- Al vendedor (Discord): su precio, sin comisión ni depósito
-  local bv = page.channel.buttons[3]
-  bv._scripts.OnClick(bv)
-  bv._scripts.OnEnter(bv)
+  Choose("vendor")
   local rv = Calc:Compute(c)
   assert(c.channel == "vendor" and rv.cut == 0 and rv.deposit == 0 and rv.sale == ES:VendorSellPrice(rv.outID),
     "al vendedor: su precio, sin comisión ni depósito")
   assert(rv.profitVendor and math.abs(rv.profit - rv.profitVendor) < 0.01, "beneficio al vendedor")
-  assert(tostring(page.profitCompare._text):find("Vendedor"), "la comparación incluye al vendedor: " .. tostring(page.profitCompare._text))
-  page.channel.buttons[1]._scripts.OnClick(page.channel.buttons[1])
-  assert(c.channel == "ah", "vuelve a la AH")
+  assert(ProfitTooltip():find("vendedor"), "el tooltip del beneficio incluye al vendedor")
+  Choose("ah", 24)
+  assert(c.channel == "ah" and c.hours == 24, "vuelve a la AH 24 h")
   log[#log+1] = "     calculadora: " .. tostring(page.title._text) .. " · beneficio " .. tostring(page.profitLine.value._text)
-  -- Auctionator: sin él, no hay botón
-  assert(not page.auctionator._shown, "sin Auctionator no debería verse el botón")
-  -- Con él (API v1 simulada): la lista con el nombre del juego, exacta y con la cantidad
-  local calls = {}
-  local savedGII, savedCItem, savedAHF = GetItemInfo, C_Item, AuctionHouseFrame
-  GetItemInfo = function(id)
-    if id == SILK then return "Paño de seda" end
-    if id == outID then return "Lo fabricado" end
-  end
-  C_Item = nil
-  local dbUpdate, atrDB = nil, {}
-  Auctionator = { API = { v1 = {
-    ConvertToSearchString = function(caller, term)
-      return '"' .. term.searchString .. '"' .. (term.quantity and (";;;;;;;;;;;;;" .. term.quantity) or "")
-    end,
-    CreateShoppingList = function(caller, name, strings) calls[#calls + 1] = { "list", caller, name, strings } end,
-    MultiSearchAdvanced = function(caller, terms) calls[#calls + 1] = { "search", caller, terms } end,
-    RegisterForDBUpdate = function(caller, fn) dbUpdate = fn end,
-    GetAuctionPriceByItemID = function(caller, id) return atrDB[id] and atrDB[id].price end,
-    GetAuctionAgeByItemID = function(caller, id) return atrDB[id] and atrDB[id].age end,
-  } } }
-  local savedAtr = ES.db.atrPrices
-  ES.db.atrPrices = nil
-  ES:RenderCalculator()
-  assert(page.auctionator._shown, "con Auctionator debería verse el botón")
-  local silkQty
-  for _, row in ipairs(Calc:Compute(c).rows) do if row.itemID == SILK then silkQty = math.ceil(row.qty - 0.001) end end
-  -- AH cerrada: solo la lista guardada
-  local savedAF = AuctionFrame
-  AuctionHouseFrame, AuctionFrame = nil, nil
-  page.auctionator._scripts.OnClick(page.auctionator)
-  assert(#calls == 1 and calls[1][1] == "list" and calls[1][3] == "Crafter's Journal", "AH cerrada: debería crear la lista")
-  local found
-  for _, s in ipairs(calls[1][4]) do if s:find('"Paño de seda"', 1, true) then found = s end end
-  assert(found and found:find(tostring(silkQty), 1, true), "la seda, por su nombre del juego y con la cantidad: " .. tostring(found))
-  for _, s in ipairs(calls[1][4]) do
-    assert(not s:find("Hilo", 1, true), "lo del vendedor no se manda")
-  end
-  -- AH abierta: además busca ya
-  AuctionHouseFrame = CreateFrame("Frame")
-  AuctionHouseFrame:Show()
-  calls = {}
-  page.auctionator._scripts.OnClick(page.auctionator)
-  assert(#calls == 2 and calls[2][1] == "search", "AH abierta: debería buscar en Shopping")
-  local term = calls[2][3][1]
-  assert(term.isExact and term.searchString == "Paño de seda" and term.quantity == silkQty, "búsqueda exacta con cantidad")
-  -- Lo fabricado también se busca (sin cantidad: es para ver a cuánto se vende)
-  local outTerm
-  for _, t in ipairs(calls[2][3]) do if t.searchString == "Lo fabricado" then outTerm = t end end
-  assert(outTerm and outTerm.quantity == nil, "lo fabricado debería buscarse, sin cantidad")
-  -- Auctionator procesa los precios: los vistos hoy pasan a la calculadora; uno de
-  -- otro día, no
-  assert(dbUpdate, "debería escuchar los precios de Auctionator")
-  atrDB[SILK] = { price = 150, age = 0 }
-  atrDB[outID] = { price = 60000, age = 0 }
-  atrDB[4234] = { price = 1, age = 3 }
-  dbUpdate()
-  local ra = Calc:Compute(c)
-  local silkRowA, otherRowA
-  for _, row in ipairs(ra.rows) do
-    if row.itemID == SILK then silkRowA = row end
-    if row.itemID == 4234 then otherRowA = row end
-  end
-  assert(silkRowA.source == "auctionator" and silkRowA.price == 150, "la seda, con el precio de Auctionator: " .. tostring(silkRowA.source))
-  assert(not otherRowA or otherRowA.source ~= "auctionator", "un precio de otro día no debería usarse")
-  assert(ra.saleSource == "auctionator" and ra.sale == 59999, "la venta, con el de Auctionator a 1c menos: " .. tostring(ra.sale))
-  -- Un escaneo posterior vuelve a mandar
-  ES.db.scans[ES:RealmKey()].time = time() + 60
-  assert(Calc:Compute(c).saleSource == "ah", "un escaneo más reciente debería mandar")
-  ES.db.scans[ES:RealmKey()].time = time() - 600
-  Auctionator, GetItemInfo, C_Item, AuctionHouseFrame, AuctionFrame = nil, savedGII, savedCItem, savedAHF, savedAF
-  ES.db.atrPrices = savedAtr
+  assert(page.auctionator == nil, "ya no hay botón de Auctionator")
   -- Escaneo nuevo: los precios a mano de lo que trae dejan paso al escaneo (en todos
   -- los cálculos guardados); lo que no trae se queda con el tuyo
   local NOT_SCANNED = 2589
